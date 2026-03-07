@@ -1,124 +1,114 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vibe Pro - OIO ONE</title>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OIO ONE - Vibe Família</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
     <style>
-        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; }
         
-        /* TELA DE LOGIN (DNA OIO ONE) */
-        #login-screen { 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            height: 100vh; background: radial-gradient(circle at top, #001a33, #000); position: fixed; width: 100%; z-index: 100;
-        }
-        .vibe-input { background: #111; border: 1px solid #0044cc; color: #fff; padding: 12px; border-radius: 25px; width: 80%; max-width: 300px; margin-bottom: 10px; text-align: center; outline: none; }
-        .btn-vibe { background: #0066ff; color: #fff; border: none; padding: 12px 40px; border-radius: 25px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 80%; max-width: 300px; }
+        /* Camada 1: Feed TikTok (Fundo Infinito) */
+        #feed { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; }
+        .post { height: 100vh; width: 100vw; scroll-snap-align: start; position: relative; display: flex; align-items: center; justify-content: center; background: #000; }
+        .post img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; } /* Foto de fundo */
+        .post-info { position: absolute; bottom: 120px; left: 20px; text-shadow: 2px 2px 10px #000; }
 
-        /* TELA DE CHAT */
-        #chat-screen { display: none; flex-direction: column; height: 100vh; }
-        #mensagens { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .balao { padding: 12px; border-radius: 15px; max-width: 80%; background: rgba(0, 153, 255, 0.15); border: 1px solid rgba(0, 102, 255, 0.3); align-self: flex-start; }
-        .balao.minha { align-self: flex-end; background: #0066ff; border: none; }
-        .balao img { max-width: 100%; border-radius: 10px; margin-top: 5px; }
+        /* Camada 2: Identidade (O Centro) */
+        #centro { position: fixed; top: 35%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none; z-index: 10; }
+        .foto-perfil { width: 120px; height: 120px; border-radius: 50%; border: 3px solid #00ffcc; box-shadow: 0 0 20px #00ffcc55; }
 
-        .barra { display: flex; gap: 10px; padding: 15px; background: #111; align-items: center; }
-        .barra input { flex: 1; padding: 12px; border-radius: 25px; border: none; background: #222; color: #fff; outline: none; }
+        /* Camada 3: Salto Quântico (Menu) */
+        #salto { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; background: rgba(255,255,255,0.1); padding: 15px 25px; border-radius: 50px; backdrop-filter: blur(15px); z-index: 1000; border: 1px solid #333; }
+        .icon { font-size: 30px; cursor: pointer; }
+
+        /* Camada 4: Janela de Chat */
+        .win { position: absolute; width: 94%; height: 75%; top: 5%; left: 3%; background: rgba(10,10,10,0.9); border-radius: 25px; display: none; flex-direction: column; border: 1px solid #444; z-index: 500; backdrop-filter: blur(10px); }
+        #chat { flex: 1; padding: 15px; overflow-y: auto; }
+        .msg { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; margin-bottom: 8px; border-left: 3px solid #00ffcc; }
+        
+        /* Login */
+        #login { position: fixed; inset: 0; background: #000; z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        input { background: #111; border: 1px solid #333; padding: 12px; border-radius: 10px; color: #fff; width: 80%; margin-bottom: 15px; }
+        button { background: #00ffcc; border: none; padding: 12px 30px; border-radius: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <h2 style="color: #0099ff;">Vibe Identidade</h2>
-        <input type="text" id="nome-id" class="vibe-input" placeholder="Seu Nome">
-        <input type="email" id="email-id" class="vibe-input" placeholder="Email">
-        <input type="password" id="senha-id" class="vibe-input" placeholder="Senha">
-        <button class="btn-vibe" onclick="cadastrar()">CADASTRAR</button>
-        <button class="btn-vibe" style="background:#222;" onclick="entrar()">ENTRAR</button>
-        <p id="feedback" style="font-size: 12px; margin-top: 10px;"></p>
+    <div id="login">
+        <h2 style="letter-spacing:2px">VIBE PRO MASTER</h2>
+        <input type="text" id="user-name" placeholder="Seu nome...">
+        <button onclick="entrar()">ENTRAR</button>
     </div>
 
-    <div id="chat-screen">
-        <div id="mensagens"></div>
-        <div class="barra">
-            <input type="file" id="foto-file" style="display:none" onchange="enviarFoto(this)">
-            <button style="background:none; border:none; color:#0099ff; font-size:24px;" onclick="document.getElementById('foto-file').click()">📸</button>
-            <input type="text" id="msg-input" placeholder="Sua vibe...">
-            <button style="background:none; border:none; color:#0099ff; font-size:24px;" onclick="enviarTexto()">🚀</button>
+    <div id="feed">
+        <div class="post">
+            <img src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1">
+            <div class="post-info"><h2>Bem-vindo, <span id="welcome-name"></span></h2><p>Role para ver as fotos da família</p></div>
         </div>
     </div>
 
+    <div id="centro"><img src="https://github.com/detiillimichel.png" class="foto-perfil"><h2 id="my-name"></h2></div>
+    
+    <div id="salto">
+        <div class="icon" onclick="abr()">💬</div>
+        <div class="icon" onclick="document.getElementById('cam').click()">📸</div>
+        <div class="icon" onclick="window.location.href='tel:11999999999'">📞</div>
+        <input type="file" id="cam" accept="image/*" style="display:none" onchange="subirFoto(this)">
+    </div>
+
+    <div id="vibe-win" class="win">
+        <div style="padding:15px; display:flex; justify-content:space-between; border-bottom:1px solid #222"><span>Chat Família</span><span onclick="abr()">✕</span></div>
+        <div id="chat"></div>
+        <div style="padding:15px; display:flex; gap:10px;"><input type="text" id="m" style="margin:0; flex:1"><button onclick="env()">OK</button></div>
+    </div>
+
     <script>
-        // CONFIGURAÇÃO REAL DO SEU PROJETO vibe-app-bbba2
-        const firebaseConfig = {
-            apiKey: "AIzaSyAkJlFLnzPdwJUbnfJdwvQ3_YFC7A33sAQ",
-            databaseURL: "https://vibe-app-bbba2-default-rtdb.firebaseio.com/",
-            projectId: "vibe-app-bbba2",
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.database().ref("mensagens_vibe_pro");
-
-        let userNome = "";
-
-        // LÓGICA DE LOGIN/CADASTRO
-        function cadastrar() {
-            userNome = document.getElementById("nome-id").value;
-            auth.createUserWithEmailAndPassword(document.getElementById("email-id").value, document.getElementById("senha-id").value)
-            .then(() => abrirChat())
-            .catch(e => document.getElementById("feedback").innerText = e.message);
-        }
+        const conf = { databaseURL: "https://vibe-app-bbba2-default-rtdb.firebaseio.com/" };
+        firebase.initializeApp(conf);
+        const db = firebase.database().ref("vibe_master");
+        let user = "";
 
         function entrar() {
-            userNome = document.getElementById("nome-id").value;
-            auth.signInWithEmailAndPassword(document.getElementById("email-id").value, document.getElementById("senha-id").value)
-            .then(() => abrirChat())
-            .catch(e => document.getElementById("feedback").innerText = e.message);
+            user = document.getElementById('user-name').value;
+            if(!user) return;
+            document.getElementById('login').style.display = "none";
+            document.getElementById('my-name').innerText = user.toUpperCase();
+            document.getElementById('welcome-name').innerText = user;
         }
 
-        function abrirChat() {
-            document.getElementById("login-screen").style.display = "none";
-            document.getElementById("chat-screen").style.display = "flex";
-            if(navigator.vibrate) navigator.vibrate(50);
-            ouvirMensagens();
-        }
+        function abr(){ const w = document.getElementById('vibe-win'); w.style.display = w.style.display === 'flex' ? 'none' : 'flex'; }
+        function env(){ const t = document.getElementById('m').value; if(t){ db.child("msgs").push({ u: user, t: t }); document.getElementById('m').value = ""; } }
 
-        // LÓGICA DO CHAT SENSORIAL
-        function ouvirMensagens() {
-            db.limitToLast(20).on("child_added", snap => {
-                const d = snap.val();
-                const div = document.createElement("div");
-                div.className = "balao " + (d.nome === userNome ? "minha" : "");
-                div.innerHTML = `<b>${d.nome}</b><br>${d.img ? `<img src="${d.img}">` : d.texto}`;
-                document.getElementById("mensagens").appendChild(div);
-                document.getElementById("mensagens").scrollTop = 99999;
-            });
-        }
-
-        function enviarTexto() {
-            const input = document.getElementById("msg-input");
-            if(input.value) {
-                db.push({ nome: userNome, texto: input.value });
-                input.value = "";
-                if(navigator.vibrate) navigator.vibrate(40);
-            }
-        }
-
-        // FILEREADER (O TRUQUE QUE NÃO TRAVA O FIREBASE)
-        function enviarFoto(input) {
+        async function subirFoto(input) {
             if (input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    db.push({ nome: userNome, img: e.target.result });
-                    if(navigator.vibrate) navigator.vibrate(100);
-                };
-                reader.readAsDataURL(input.files[0]);
+                const formData = new FormData();
+                formData.append("image", input.files[0]);
+                const res = await fetch("https://api.imgbb.com/1/upload?key=6dad88476d05988172c9596395b03737", { method: "POST", body: formData });
+                const json = await res.json();
+                db.child("posts").push({ u: user, img: json.data.url });
             }
         }
+
+        // Atualiza Chat
+        db.child("msgs").limitToLast(15).on("child_added", (s) => {
+            const d = s.val();
+            const p = document.createElement("div");
+            p.className = "msg"; p.innerHTML = `<b>${d.u}:</b> ${d.t}`;
+            document.getElementById('chat').appendChild(p);
+            document.getElementById('chat').scrollTop = 9999;
+        });
+
+        // Atualiza Feed TikTok
+        db.child("posts").on("child_added", (s) => {
+            const d = s.val();
+            const div = document.createElement("div");
+            div.className = "post";
+            div.innerHTML = `<img src="${d.img}"><div class="post-info"><h3>@${d.u}</h3><p>Nova lembrança</p></div>`;
+            document.getElementById('feed').prepend(div);
+        });
     </script>
 </body>
 </html>
