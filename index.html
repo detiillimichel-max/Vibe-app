@@ -1,98 +1,178 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OIO ONE - Vibe</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-    <style>
-        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; height: 100vh; overflow: hidden; }
-        #tela-inicial { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: radial-gradient(circle at top, #001a33, #000); position: absolute; width: 100%; z-index: 10; transition: 0.5s; }
-        .avatar-box { width: 130px; height: 130px; border-radius: 50%; border: 3px solid #0066ff; margin-bottom: 20px; overflow: hidden; background: #111; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
-        .input-identidade { background: #111; border: 1px solid #0044cc; color: #fff; padding: 15px; border-radius: 30px; width: 80%; max-width: 300px; text-align: center; margin-bottom: 20px; outline: none; }
-        .btn-vibe { background: #0066ff; color: #fff; border: none; padding: 15px 50px; border-radius: 30px; font-weight: bold; cursor: pointer; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>App Chat Firebase</title>
 
-        #tela-chat { display: none; flex-direction: column; height: 100vh; background: #000; position: relative; }
-        #mensagens { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .balao { padding: 12px; border-radius: 18px; max-width: 80%; background: rgba(0, 153, 255, 0.15); align-self: flex-start; border: 1px solid rgba(0, 102, 255, 0.2); }
-        .balao.minha { align-self: flex-end; background: #0066ff; border: none; }
-        .balao img { max-width: 100%; border-radius: 10px; margin-top: 5px; }
-        .barra { display: flex; align-items: center; gap: 10px; padding: 15px; background: #111; }
-        .barra input { flex: 1; background: #222; border: none; padding: 12px; border-radius: 25px; color: #fff; outline: none; }
-    </style>
+<style>
+/* === CSS === */
+body { font-family: sans-serif; background: #f2f2f2; }
+.login-container, .chat-container {
+  width: 400px; margin: 20px auto; padding: 20px;
+  background: #fff; border-radius: 10px; box-shadow: 0 0 10px #ccc;
+}
+input { width: 95%; padding: 8px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc; }
+button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 5px; border: none; background: #4CAF50; color: #fff; font-weight: bold; cursor: pointer; }
+.mensagem { border-bottom: 1px solid #ddd; padding: 5px; margin-bottom:5px; }
+.mensagem img, .mensagem video { max-width: 100%; display:block; margin-top: 5px; border-radius: 5px; }
+.nome { font-weight: bold; }
+.share { cursor:pointer; color:#2196F3; margin-left:10px; }
+</style>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
+
 </head>
 <body>
 
-    <div id="tela-inicial">
-        <div class="avatar-box" onclick="document.getElementById('in-foto').click()">
-            <img id="p-foto" src="https://via.placeholder.com/150">
-        </div>
-        <input type="file" id="in-foto" style="display:none" onchange="ler(this)">
-        <input type="text" id="in-nome" class="input-identidade" placeholder="Digita Nome ou URL">
-        <button class="btn-vibe" onclick="entrar()">ENTRAR NO OIO ONE</button>
-    </div>
+<div class="login-container" id="login">
+  <h2>Login / Cadastro</h2>
+  <input type="text" id="nome" placeholder="Seu nome">
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="senha" placeholder="Senha">
+  <button id="btnCadastrar">Cadastrar</button>
+  <button id="btnLogin">Entrar</button>
+  <p id="msg"></p>
+</div>
 
-    <div id="tela-chat">
-        <div id="mensagens"></div>
-        <div class="barra">
-            <i class="fa-solid fa-camera" style="font-size: 24px; color: #0066ff;" onclick="document.getElementById('in-chat').click()"></i>
-            <input type="file" id="in-chat" style="display:none" onchange="enviarF(this)">
-            <input type="text" id="m-text" placeholder="Escreva...">
-            <i class="fa-solid fa-paper-plane" style="font-size: 24px; color: #0066ff;" onclick="enviarT()"></i>
-        </div>
-    </div>
+<div class="chat-container" id="chat" style="display:none;">
+  <h2>Chat</h2>
+  <div id="mensagens"></div>
+  <input type="text" id="textoMsg" placeholder="Digite sua mensagem">
+  <input type="file" id="fotoMsg" accept="image/*,video/*">
+  <button id="btnEnviar">Enviar</button>
+</div>
 
-    <script>
-        const conf = { databaseURL: "https://vibe-app-bbba2-default-rtdb.firebaseio.com/" };
-        firebase.initializeApp(conf);
-        const db = firebase.database().ref("vibe_oio_final");
+<script>
+// === JS ===
+// Config Firebase - substitua pelos seus dados
+const firebaseConfig = {
+  apiKey: "SUA_API_KEY",
+  authDomain: "SEU_PROJETO.firebaseapp.com",
+  databaseURL: "https://SEU_PROJETO.firebaseio.com",
+  projectId: "SEU_PROJETO",
+  storageBucket: "SEU_PROJETO.appspot.com",
+  messagingSenderId: "SEU_MESSAGING_ID",
+  appId: "SEU_APP_ID"
+};
 
-        let nick = "";
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+const storage = firebase.storage();
 
-        function ler(i) {
-            if (i.files[0]) {
-                const r = new FileReader();
-                r.onload = e => { document.getElementById('p-foto').src = e.target.result; };
-                r.readAsDataURL(i.files[0]);
-            }
-        }
+const loginDiv = document.getElementById("login");
+const chatDiv = document.getElementById("chat");
+const nomeInput = document.getElementById("nome");
+const emailInput = document.getElementById("email");
+const senhaInput = document.getElementById("senha");
+const btnCadastrar = document.getElementById("btnCadastrar");
+const btnLogin = document.getElementById("btnLogin");
+const msgP = document.getElementById("msg");
 
-        function entrar() {
-            nick = document.getElementById('in-nome').value.trim();
-            if(nick) {
-                document.getElementById('tela-inicial').style.display = 'none';
-                document.getElementById('tela-chat').style.display = 'flex';
-                if(navigator.vibrate) navigator.vibrate(50);
-                conectar();
-            } else { alert("Insira um nome!"); }
-        }
+const textoMsg = document.getElementById("textoMsg");
+const fotoMsg = document.getElementById("fotoMsg");
+const btnEnviar = document.getElementById("btnEnviar");
+const mensagensDiv = document.getElementById("mensagens");
 
-        function conectar() {
-            db.limitToLast(15).on("child_added", s => {
-                const d = s.val();
-                const div = document.createElement("div");
-                div.className = "balao " + (d.u === nick ? "minha" : "");
-                div.innerHTML = `<b>${d.u}</b><br>${d.img ? `<img src="${d.img}">` : d.t}`;
-                document.getElementById("mensagens").appendChild(div);
-                document.getElementById("mensagens").scrollTop = 9999;
-            });
-        }
+let nomeUsuario = "";
 
-        function enviarT() {
-            const m = document.getElementById("m-text");
-            if(m.value) { db.push({ u: nick, t: m.value }); m.value = ""; }
-        }
+// Cadastro
+btnCadastrar.addEventListener("click", ()=>{
+  const email = emailInput.value;
+  const senha = senhaInput.value;
+  nomeUsuario = nomeInput.value;
 
-        function enviarF(i) {
-            if (i.files[0]) {
-                const r = new FileReader();
-                r.onload = e => db.push({ u: nick, img: e.target.result });
-                r.readAsDataURL(i.files[0]);
-            }
-        }
-    </script>
+  auth.createUserWithEmailAndPassword(email, senha)
+  .then(userCredential=>{
+    msgP.style.color="green";
+    msgP.textContent="Cadastro feito!";
+    loginDiv.style.display="none";
+    chatDiv.style.display="block";
+  })
+  .catch(err=>{
+    msgP.style.color="red";
+    msgP.textContent=err.message;
+  });
+});
+
+// Login
+btnLogin.addEventListener("click", ()=>{
+  const email = emailInput.value;
+  const senha = senhaInput.value;
+  nomeUsuario = nomeInput.value;
+
+  auth.signInWithEmailAndPassword(email, senha)
+  .then(user=>{
+    msgP.style.color="green";
+    msgP.textContent="Logado!";
+    loginDiv.style.display="none";
+    chatDiv.style.display="block";
+  })
+  .catch(err=>{
+    msgP.style.color="red";
+    msgP.textContent=err.message;
+  });
+});
+
+// Enviar mensagem
+btnEnviar.addEventListener("click", async ()=>{
+  const texto = textoMsg.value;
+  const file = fotoMsg.files[0];
+
+  let mediaUrl = "";
+  let tipo = "";
+  if(file){
+    const ref = storage.ref('midia/' + Date.now() + "_" + file.name);
+    await ref.put(file);
+    mediaUrl = await ref.getDownloadURL();
+    tipo = file.type.startsWith("video") ? "video" : "image";
+  }
+
+  const novaMsg = {
+    nome: nomeUsuario,
+    texto: texto,
+    media: mediaUrl,
+    tipo: tipo,
+    timestamp: Date.now(),
+    likes: 0
+  };
+
+  db.ref('mensagens').push(novaMsg);
+  textoMsg.value="";
+  fotoMsg.value="";
+});
+
+// Mostrar mensagens em tempo real
+db.ref('mensagens').on('value', snapshot=>{
+  mensagensDiv.innerHTML="";
+  snapshot.forEach(child=>{
+    const data = child.val();
+    const div = document.createElement("div");
+    div.classList.add("mensagem");
+    
+    let mediaHTML = "";
+    if(data.tipo === "image") mediaHTML = `<img src="${data.media}" />`;
+    else if(data.tipo === "video") mediaHTML = `<video controls src="${data.media}"></video>`;
+
+    div.innerHTML = `
+      <span class="nome">${data.nome}</span>: ${data.texto}
+      ${mediaHTML}
+      <span class="share" onclick="navigator.clipboard.writeText('${data.texto}')">📤 Compartilhar</span>
+      <span class="share" style="margin-left:20px; cursor:pointer;" onclick="likeMessage('${child.key}', ${data.likes})">❤️ ${data.likes}</span>
+    `;
+    mensagensDiv.appendChild(div);
+  });
+});
+
+function likeMessage(id, currentLikes){
+  db.ref('mensagens/' + id).update({ likes: currentLikes + 1 });
+}
+</script>
+
 </body>
 </html>
