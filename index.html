@@ -2,12 +2,54 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>OIO ONE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="manifest" href="manifest.json">
+    <title>Vibe Pro Master - Michel</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+    <style>
+        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; }
+        #centro { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+        .foto { width: 140px; height: 140px; border-radius: 50%; border: 4px solid #00ffcc; }
+        #salto { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 50px; backdrop-filter: blur(10px); z-index: 1000; }
+        .win { position: absolute; width: 94%; height: 80%; top: 5%; left: 3%; background: #111; border-radius: 25px; display: none; flex-direction: column; border: 1px solid #333; z-index: 500; }
+        #chat { flex: 1; padding: 15px; overflow-y: auto; }
+        .box { padding: 15px; display: flex; gap: 10px; background: #222; border-radius: 0 0 25px 25px; }
+        input { flex: 1; background: #333; border: none; padding: 12px; border-radius: 10px; color: #fff; }
+    </style>
 </head>
 <body>
-    <div id="identidade">
-        </div>
-    <button onclick="location.reload()">Fresh 🔄</button>
-    <script src="index.js"></script>
+    <div id="centro"><img src="https://github.com/detiillimichel.png" class="foto"><h1>MICHEL</h1></div>
+    <div id="salto"><div onclick="abr('vibe')" style="font-size:35px">💬</div><div onclick="location.reload()" style="font-size:35px">🔄</div></div>
+    <div id="vibe-win" class="win">
+        <div style="padding:15px; background:#222; border-radius:25px 25px 0 0; display:flex; justify-content:space-between"><span>Vibe Chat</span><span onclick="abr('vibe')">✕</span></div>
+        <div id="chat"></div>
+        <div class="box"><input type="text" id="m" placeholder="Mensagem..."><button onclick="env()" style="background:#00ffcc; border:none; padding:10px; border-radius:8px">OK</button></div>
+    </div>
+    <script>
+        const conf = { databaseURL: "https://vibe-app-bbba2-default-rtdb.firebaseio.com/" };
+        firebase.initializeApp(conf);
+        const db = firebase.database().ref("mensagens");
+        function abr(id){ 
+            document.body.style.filter = "brightness(2)"; 
+            setTimeout(() => { 
+                document.body.style.filter = "brightness(1)";
+                const w = document.getElementById(id + '-win');
+                w.style.display = w.style.display === 'flex' ? 'none' : 'flex';
+            }, 100);
+        }
+        function env(){ 
+            const t = document.getElementById('m').value;
+            if(t){ db.push({ u: "Michel", t: t }); document.getElementById('m').value = ""; }
+        }
+        db.limitToLast(20).on("child_added", (s) => {
+            const d = s.val();
+            const p = document.createElement("div");
+            p.innerHTML = `<b>${d.u}:</b> ${d.t}`;
+            p.style.margin = "8px 0";
+            document.getElementById('chat').appendChild(p);
+            document.getElementById('chat').scrollTop = 9999;
+        });
+    </script>
 </body>
 </html>
