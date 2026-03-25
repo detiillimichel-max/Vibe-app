@@ -1,5 +1,8 @@
 // OIO ONE - O Maestro (Arquitetura Central)
+// Este arquivo coordena a Interface Orgânica por Profundidade
+
 import { initDrawer } from './components/glass_drawer.js';
+import { Storage } from './services/storage.js';
 
 const App = {
     init() {
@@ -10,8 +13,9 @@ const App = {
 
     renderBase() {
         const appElement = document.getElementById('app');
-        // Vídeo Profissional de Fundo (Abstrato Dark)
-        const videoUrl = "https://assets.mixkit.co/videos/preview/mixkit-abstract-flowing-smoke-in-dark-background-3031-large.mp4";
+        
+        // Link direto de vídeo abstrato (Estilo Premium)
+        const videoUrl = "https://v1.pexels.com/video-files/2813583/2813583-uhd_2560_1440_30fps.mp4";
 
         appElement.innerHTML = `
             <div class="vibe-container">
@@ -44,11 +48,9 @@ const App = {
                 const drawerElement = document.getElementById('vibe-drawer');
 
                 if (target === 'identity') {
-                    drawerElement.style.height = '55vh'; // Salto para cima
+                    drawerElement.style.height = '55vh'; 
                 } else if (target === 'feed') {
-                    drawerElement.style.height = '30vh'; // Salto para o padrão
-                } else {
-                    console.log("Acesso a Módulos Externos");
+                    drawerElement.style.height = '30vh';
                 }
             });
         });
