@@ -1,0 +1,14 @@
+/* OIO ONE - DNA Visual (Fundo Preto Absoluto) */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #000; /* Garante o Dark Mode profissional */
+    color: #fff;
+    font-family: -apple-system, sans-serif;
+    overflow: hidden;
+}
+
