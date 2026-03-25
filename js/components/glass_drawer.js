@@ -1,4 +1,4 @@
-// OIO ONE - Camada de Interação e Identidade Dinâmica
+// OIO ONE - Camada de Interação e Identidade
 import { createBubble } from './chatBubble.js';
 import { Storage } from '../services/storage.js';
 
@@ -6,50 +6,40 @@ export function initDrawer() {
     const container = document.getElementById('interaction-layer');
     if (!container) return;
 
-    // Recupera o nome guardado ou usa o padrão da Identidade
     const savedName = Storage.get('user_name') || 'IDENTIDADE';
 
     container.innerHTML = `
         <div id="vibe-drawer" class="glass-container">
             <div class="drag-handle"></div>
             
-            <div id="chat-display" style="flex: 1; width: 100%; overflow-y: auto; padding: 10px; display: flex; flex-direction: column;">
+            <div id="chat-display" style="flex: 1; width: 100%; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; align-items: center;">
                 <div class="drawer-content">
-                    <p id="display-name" style="text-transform: uppercase;">${savedName}</p>
+                    <div class="profile-photo" style="width: 70px; height: 70px; border-radius: 50%; background: #222; margin: 0 auto 15px; border: 2px solid rgba(255,255,255,0.1); overflow: hidden;">
+                        <img src="https://via.placeholder.com/70/333/fff?text=M" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <p id="display-name" style="text-transform: uppercase; letter-spacing: -0.05em; font-weight: 800;">${savedName}</p>
                     <div class="status-dot"></div>
                 </div>
             </div>
 
-            <div class="input-area" style="width: 100%; padding: 15px; background: rgba(0,0,0,0.2);">
-                <input type="text" id="chat-input" placeholder="Define o teu nome ou envia uma mensagem..." 
-                    style="width: 100%; background: rgba(255,255,255,0.1); border: none; padding: 12px; border-radius: 25px; color: #fff; outline: none; font-size: 16px;">
+            <div class="input-area" style="width: 100%; padding: 20px; background: rgba(0,0,0,0.3);">
+                <input type="text" id="chat-input" placeholder="Mensagem..." 
+                    style="width: 100%; background: rgba(255,255,255,0.1); border: none; padding: 14px; border-radius: 25px; color: #fff; outline: none; font-size: 16px;">
             </div>
         </div>
     `;
 
     const input = document.getElementById('chat-input');
     const display = document.getElementById('chat-display');
-    const nameLabel = document.getElementById('display-name');
 
     input.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && input.value.trim() !== '') {
-            const val = input.value.trim();
-
-            // Lógica de Identidade: Se for a primeira interação ou um comando, guarda o nome
-            if (nameLabel.innerText === 'IDENTIDADE') {
-                Storage.save('user_name', val);
-                nameLabel.innerText = val.toUpperCase();
-                display.appendChild(createBubble(`Prazer, ${val}! O teu nome foi guardado na memória.`, false));
-            } else {
-                display.appendChild(createBubble(val, true));
-            }
-
+            display.appendChild(createBubble(input.value.trim(), true));
             input.value = '';
             display.scrollTop = display.scrollHeight;
         }
     });
 
-    // Ergonomia Dinâmica: Lógica de Arrasto
     const drawer = document.getElementById('vibe-drawer');
     let startY = 0;
 
