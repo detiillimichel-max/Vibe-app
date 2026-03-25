@@ -1,0 +1,76 @@
+/* OIO ONE - DNA Visual: Interface de Profundidade */
+
+:root {
+    --bg-main: #000000;
+    --glass-bg: rgba(9, 9, 11, 0.6); /* bg-zinc-950/60 */
+    --accent: #ffffff;
+    --blur-strength: 20px; /* backdrop-blur-xl */
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--accent);
+    overflow: hidden; /* Impede o scroll nativo para manter a Interface Orgânica */
+}
+
+/* Camada de Mídia (70%) */
+.video-feed {
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #111, #000);
+}
+
+.placeholder-content {
+    font-size: 0.9rem;
+    opacity: 0.5;
+    letter-spacing: 0.05em;
+}
+
+/* Camada de Interação (Gaveta de Vidro) */
+#vibe-drawer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30vh; /* Valor inicial que o JS vai controlar */
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(var(--blur-strength));
+    -webkit-backdrop-filter: blur(var(--blur-strength));
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px 24px 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 100;
+}
+
+/* Alça de Arrasto (Ergonomia Dinâmica) */
+.drag-handle {
+    width: 40px;
+    height: 5px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    margin-top: 12px;
+    margin-bottom: 20px;
+}
+
+/* Tipografia Estilo Apple */
+.drawer-content {
+    width: 100%;
+    padding: 0 20px;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: -0.05em; /* tracking-tighter */
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #00ff00;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #00ff00;
+    display: inline-block;
+    margin-top: 10px;
+}
