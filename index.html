@@ -3,18 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vibe App</title>
-    <link rel="stylesheet" href="styles/global.css">
-    <link rel="stylesheet" href="styles/premium_clean.css">
+    <title>OIO ONE</title>
+    <link rel="stylesheet" href="styles/style.css">
 </head>
-<body>
+<body class="bg-black">
 
-    <div id="app">
-        <h1>Vibe App</h1>
-        <p>Carregando interface...</p>
+    <div id="portal-layer" class="portal-active">
+        <div class="portal-star" id="star-trigger"></div>
+        <p class="portal-text">Deslize para entrar</p>
     </div>
 
-    <script type="module" src="js/main.js"></script>
+    <main id="app-layer" class="hidden">
+        <section class="video-container">
+            <video autoplay muted loop playsinline id="main-video">
+                <source src="https://v1.pexels.com/video-files/2813583/2813583-uhd_2560_1440_30fps.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay"></div>
+        </section>
+
+        <nav class="floating-icons">
+            <button class="icon-btn" id="btn-upload" title="Upload">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+            <button class="icon-btn spark-glow" id="btn-spark" title="Sintonia">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </button>
+            <button class="icon-btn" id="btn-mic" title="Áudio">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+            </button>
+            <button class="icon-btn hub-trigger" id="btn-hub" title="Hub">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/></svg>
+            </button>
+        </nav>
+    </main>
+
+    <div id="hub-layer" class="hub-hidden">
+        <div class="hub-content">
+            <header class="hub-header">
+                <div class="profile-glow"></div>
+                <h1 class="user-name">MICHEL</h1>
+                <p class="user-status">Em Sintonia com o Universo</p>
+            </header>
+            
+            <div class="vitrine-grid" id="vitrine-main">
+                </div>
+            
+            <button class="close-hub">FECHAR</button>
+        </div>
+    </div>
+
+    <script src="js/app.js" type="module"></script>
 </body>
 </html>
-
