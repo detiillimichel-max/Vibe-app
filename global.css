@@ -1,0 +1,15 @@
+/* Reset básico para o Vibe App não ter bordas brancas */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent; /* Remove o brilho ao tocar no celular */
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background-color: #000000; /* Força o fundo a ser preto logo no início */
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
