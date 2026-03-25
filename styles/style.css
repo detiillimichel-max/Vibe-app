@@ -1,0 +1,217 @@
+/* OIO ONE - DNA Visual: Interface Orgânica por Profundidade */
+
+:root {
+    --bg-black: #000000;
+    --zinc-950: rgba(9, 9, 11, 0.8);
+    --glass: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glow-star: rgba(255, 255, 255, 0.8);
+    --tracking: -0.05em;
+}
+
+/* Reset de Fábrica */
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent; 
+}
+
+body { 
+    background: var(--bg-black); 
+    color: #fff; 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+    height: 100vh; 
+    overflow: hidden; 
+}
+
+/* --- CAMADA 1: O PORTAL --- */
+#portal-layer { 
+    position: fixed; 
+    inset: 0; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    z-index: 1000; 
+    background: #000; 
+    transition: opacity 1s ease-in-out; 
+}
+
+.portal-star { 
+    width: 6px; 
+    height: 6px; 
+    background: #fff; 
+    border-radius: 50%; 
+    box-shadow: 0 0 25px 8px var(--glow-star); 
+    animation: pulse 2s infinite; 
+    cursor: pointer; 
+}
+
+.portal-text { 
+    margin-top: 25px; 
+    font-size: 0.65rem; 
+    letter-spacing: 3px; 
+    text-transform: uppercase; 
+    opacity: 0.4; 
+    font-weight: 300;
+}
+
+/* --- CAMADA 2: O FEED (70%) --- */
+#app-layer { height: 100vh; position: relative; }
+
+.video-container { 
+    height: 75vh; 
+    width: 100%; 
+    position: relative; 
+    overflow: hidden; 
+    background: #050505;
+}
+
+#main-video { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+}
+
+.video-overlay { 
+    position: absolute; 
+    inset: 0; 
+    background: linear-gradient(180deg, transparent 50%, #000 100%); 
+}
+
+/* NAVEGAÇÃO FLUTUANTE GEMINI STYLE */
+.floating-icons { 
+    position: fixed; 
+    bottom: 30px; 
+    right: 20px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+    z-index: 100; 
+}
+
+.icon-btn { 
+    width: 52px; 
+    height: 52px; 
+    border-radius: 50%; 
+    background: var(--glass); 
+    backdrop-filter: blur(20px); 
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border); 
+    color: rgba(255,255,255,0.7); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    cursor: pointer; 
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+}
+
+.icon-btn svg { width: 22px; height: 22px; stroke: currentColor; }
+
+.icon-btn:active { 
+    transform: scale(0.85); 
+    background: rgba(255,255,255,0.15); 
+    color: #fff;
+}
+
+.spark-glow { 
+    box-shadow: 0 0 20px rgba(255,255,255,0.1); 
+}
+
+/* --- CAMADA 3: O HUB (VITRINE) --- */
+#hub-layer { 
+    position: fixed; 
+    inset: 0; 
+    background: rgba(0,0,0,0.85); 
+    backdrop-filter: blur(40px); 
+    -webkit-backdrop-filter: blur(40px);
+    z-index: 500; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1); 
+}
+
+.hub-hidden { 
+    opacity: 0; 
+    pointer-events: none; 
+    transform: translateY(100px); 
+}
+
+.hub-content { 
+    width: 90%; 
+    max-width: 420px; 
+    text-align: center; 
+}
+
+.user-name { 
+    font-weight: 900; 
+    letter-spacing: var(--tracking); 
+    font-size: 3.5rem; 
+    margin-bottom: 5px; 
+    background: linear-gradient(to bottom, #fff, #666);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.user-status { 
+    font-size: 0.75rem; 
+    opacity: 0.4; 
+    text-transform: uppercase; 
+    letter-spacing: 2px; 
+}
+
+/* PRATELEIRAS AUTOMÁTICAS */
+.vitrine-grid { 
+    margin-top: 50px; 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 15px; 
+}
+
+.vitrine-card { 
+    background: rgba(20, 20, 20, 0.6); 
+    padding: 25px 20px; 
+    border-radius: 24px; 
+    border: 1px solid rgba(255,255,255,0.05); 
+    text-align: left; 
+    transition: 0.3s;
+}
+
+.vitrine-card:active {
+    transform: scale(0.95);
+    background: rgba(40, 40, 40, 0.6);
+}
+
+.vitrine-card h3 { 
+    font-size: 0.85rem; 
+    margin-bottom: 4px; 
+    letter-spacing: 0.5px;
+}
+
+.vitrine-card p { 
+    font-size: 0.6rem; 
+    opacity: 0.3; 
+    text-transform: uppercase;
+}
+
+.close-hub {
+    margin-top: 40px;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+}
+
+/* AUXILIARES */
+.hidden { display: none; }
+
+@keyframes pulse { 
+    0%, 100% { transform: scale(1); opacity: 0.7; } 
+    50% { transform: scale(2); opacity: 1; box-shadow: 0 0 40px 12px var(--glow-star); } 
+}
