@@ -1,18 +1,18 @@
-/* OIO ONE - DNA Visual: Interface Orgânica por Profundidade */
+/* OIO ONE - DNA Visual: Interface Unificada (Premium Clean) */
 
 :root {
-    --bg-zinc-800: #27272a;
-    --bg-zinc-950: #09090b;
-    --glass: rgba(24, 24, 27, 0.7);
-    --glow: rgba(255, 255, 255, 0.1);
+    --bg-main: #000000;
+    --glass: rgba(24, 24, 27, 0.6); /* zinc-900/60 */
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --blur-strength: 24px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 body {
-    background: var(--bg-zinc-950);
+    background-color: var(--bg-main);
     color: #fff;
-    font-family: -apple-system, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     overflow: hidden;
     height: 100vh;
 }
@@ -25,87 +25,88 @@ body {
     z-index: 1;
 }
 
-/* MENU LATERAL ESQUERDO (Área de Contatos/Atalhos) */
-.left-nav-pill {
+/* Unified Input Bar (Gemini Style - Imagem 2) */
+.unified-input-bar {
     position: fixed;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 60px;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
     background: var(--glass);
-    backdrop-filter: blur(20px);
-    border-radius: 40px;
-    padding: 20px 0;
+    backdrop-filter: blur(var(--blur-strength));
+    -webkit-backdrop-filter: blur(var(--blur-strength));
+    border-radius: 30px;
+    padding: 10px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 20px;
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
     z-index: 100;
 }
 
-.nav-dot {
-    width: 42px;
-    height: 42px;
+/* Avatar dentro da Barra (Esq) */
+.user-avatar-small {
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.2);
-    background: rgba(255,255,255,0.03);
-}
-
-/* CONTATOS TÁTIL DIREITA (Menu Redondo Dinâmico) */
-.right-touch-area {
-    position: fixed;
-    right: -20px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 100px;
-    height: 300px;
-    background: radial-gradient(circle at right, var(--glass) 0%, transparent 70%);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-end;
-    padding-right: 35px;
-    z-index: 100;
-}
-
-.contact-circle {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.1);
-    margin-bottom: -10px; /* Efeito de sobreposição circular */
-    transition: 0.3s;
-    background: #1a1a1a;
-}
-
-.contact-circle:active {
-    transform: translateX(-15px) scale(1.1);
-    border-color: #fff;
-}
-
-/* IDENTIDADE (Pílula Flutuante Inferior) */
-.identity-layer {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--glass);
-    backdrop-filter: blur(25px);
-    padding: 10px 25px;
-    border-radius: 50px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    border: 1px solid rgba(255,255,255,0.15);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-    z-index: 110;
-}
-
-.profile-avatar {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
+    background: #27272a; /* zinc-800 */
     border: 2px solid #fff;
-    box-shadow: 0 0 15px var(--glow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255,255,255,0.2);
+    margin-right: 12px;
+}
+
+/* Input Campo (Meio) */
+.unified-input-bar input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: #fff;
+    outline: none;
+    font-size: 16px;
+    padding: 8px 0;
+}
+
+.unified-input-bar input::placeholder {
+    color: rgba(255,255,255,0.4);
+}
+
+/* Stack de Ícones (Dir) */
+.icon-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 10px;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn:active {
+    color: #fff;
+    transform: scale(1.1);
+}
+
+/* Ajustes nas Bolhas de Chat para Column-Reverse */
+#chat-display > div {
+    animation: bubbleFadeIn 0.3s ease-out;
+}
+
+@keyframes bubbleFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
