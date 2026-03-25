@@ -1,6 +1,4 @@
 // OIO ONE - O Maestro (Arquitetura Central)
-// Gerenciamento do Salto Quântico (Navegação por Pontos)
-
 import { initDrawer } from './components/glass_drawer.js';
 
 const App = {
@@ -12,6 +10,7 @@ const App = {
 
     renderBase() {
         const appElement = document.getElementById('app');
+        // Vídeo Profissional de Fundo (Abstrato Dark)
         const videoUrl = "https://assets.mixkit.co/videos/preview/mixkit-abstract-flowing-smoke-in-dark-background-3031-large.mp4";
 
         appElement.innerHTML = `
@@ -26,9 +25,9 @@ const App = {
                 <div id="interaction-layer"></div>
 
                 <nav class="quantum-leap">
-                    <div class="leap-dot" data-target="identity" title="Identidade"></div>
-                    <div class="leap-dot active" data-target="feed" title="Feed"></div>
-                    <div class="leap-dot" data-target="modules" title="Módulos"></div>
+                    <div class="leap-dot" data-target="identity"></div>
+                    <div class="leap-dot active" data-target="feed"></div>
+                    <div class="leap-dot" data-target="modules"></div>
                 </nav>
             </div>
         `;
@@ -36,25 +35,20 @@ const App = {
 
     setupQuantumLeap() {
         const dots = document.querySelectorAll('.leap-dot');
-        const drawer = document.getElementById('vibe-drawer');
-
         dots.forEach(dot => {
             dot.addEventListener('click', () => {
-                // Remove classe ativa de todos e coloca no clicado
                 dots.forEach(d => d.classList.remove('active'));
                 dot.classList.add('active');
 
                 const target = dot.getAttribute('data-target');
                 const drawerElement = document.getElementById('vibe-drawer');
 
-                // Lógica de Salto Quântico (Troca de profundidade)
                 if (target === 'identity') {
-                    drawerElement.style.height = '55vh'; // Salta para Identidade
+                    drawerElement.style.height = '55vh'; // Salto para cima
                 } else if (target === 'feed') {
-                    drawerElement.style.height = '30vh'; // Salta para o Feed
-                } else if (target === 'modules') {
-                    // Placeholder para os novos apps
-                    alert("Acessando Módulos de Acoplamento...");
+                    drawerElement.style.height = '30vh'; // Salto para o padrão
+                } else {
+                    console.log("Acesso a Módulos Externos");
                 }
             });
         });
