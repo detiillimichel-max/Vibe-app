@@ -1,3 +1,4 @@
+// OIO ONE - Maestro Unificado
 import { initUI } from './components/ui_layers.js';
 
 const App = {
@@ -13,10 +14,12 @@ const App = {
         appElement.innerHTML = `
             <div class="vibe-container">
                 <section class="video-feed">
-                    <video autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover;">
+                    <video autoplay muted loop playsinline id="bg-video">
                         <source src="${videoUrl}" type="video/mp4">
                     </video>
+                    <div class="video-overlay"></div>
                 </section>
+
                 <div id="interaction-layer"></div>
             </div>
         `;
