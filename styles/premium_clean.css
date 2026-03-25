@@ -2,9 +2,9 @@
 
 :root {
     --bg-main: #000000;
-    --glass-bg: rgba(9, 9, 11, 0.65); /* bg-zinc-950/60 com ajuste de opacidade */
+    --glass-bg: rgba(9, 9, 11, 0.7); 
     --accent: #ffffff;
-    --blur-strength: 24px; /* backdrop-blur-xl */
+    --blur-strength: 25px; /* backdrop-blur-xl intenso */
 }
 
 * {
@@ -17,8 +17,9 @@
 body {
     background-color: var(--bg-main);
     color: var(--accent);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: -apple-system, sans-serif;
     overflow: hidden;
+    height: 100vh;
 }
 
 /* Camada de Mídia (70%) */
@@ -27,89 +28,67 @@ body {
     height: 70vh;
     width: 100%;
     overflow: hidden;
-    background: #000;
+    background: #050505;
 }
 
 .bg-video {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Faz o vídeo preencher a área sem esticar */
+    object-fit: cover; /* Faz o vídeo preencher tudo sem distorcer */
 }
 
 .video-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%);
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, transparent 40%, rgba(0,0,0,0.8) 100%);
     pointer-events: none;
 }
 
 /* Camada de Interação (Gaveta de Vidro) */
 #vibe-drawer {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 0; left: 0; right: 0;
     height: 30vh;
     background-color: var(--glass-bg);
     backdrop-filter: blur(var(--blur-strength));
     -webkit-backdrop-filter: blur(var(--blur-strength));
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 32px 32px 0 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 36px 36px 0 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
     z-index: 100;
 }
 
 .drag-handle {
-    width: 36px;
-    height: 4px;
-    background-color: rgba(255, 255, 255, 0.25);
+    width: 45px;
+    height: 5px;
+    background-color: rgba(255, 255, 255, 0.3);
     border-radius: 10px;
-    margin: 14px 0;
+    margin: 15px auto;
 }
 
-.drawer-content {
-    width: 100%;
-    padding: 10px 24px;
-    text-align: center;
-    font-weight: 700;
-    letter-spacing: -0.05em; /* tracking-tighter estilo Apple */
-}
-
-.status-dot {
-    width: 6px;
-    height: 6px;
-    background-color: #00ff00;
-    border-radius: 50%;
-    box-shadow: 0 0 12px #00ff00;
-    display: inline-block;
-    margin-top: 8px;
-}
-
-/* Salto Quântico */
+/* Salto Quântico (Pontos Maiores e mais Brilhantes) */
 .quantum-leap {
     position: fixed;
-    right: 15px;
-    top: 35%;
+    right: 25px; /* Mais para dentro para o polegar alcançar melhor */
+    top: 40%;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px; /* Mais espaço entre eles */
     z-index: 150;
 }
 
 .leap-dot {
-    width: 5px;
-    height: 5px;
-    background-color: rgba(255, 255, 255, 0.3);
+    width: 10px; /* Aumentei de 5px para 10px */
+    height: 10px;
+    background-color: rgba(255, 255, 255, 0.25);
     border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
 }
 
 .leap-dot.active {
-    background-color: #fff;
-    transform: scale(1.4);
-    box-shadow: 0 0 8px #fff;
+    background-color: var(--accent);
+    transform: scale(1.6);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
 }
