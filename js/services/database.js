@@ -1,16 +1,15 @@
-// OIO ONE - Banco de Dados em Tempo Real
-// Lógica: Usuário 1 posta -> Usuários 1,2,3,4,5 recebem.
+// OIO ONE - Banco de Dados em Tempo Real (Simulado)
 
 export const Database = {
-    // Envia o vídeo (Máximo 1 minuto para o Feed)
-    async sendPost(userId, videoUrl, description) {
-        console.log("Enviando post para a nuvem...");
-        // Lógica de postagem aqui
+    // 1 Posta
+    async sendPost(userName, videoUrl) {
+        console.log(`[FIREBASE] ${userName} postou um vídeo.`);
+        // Aqui o Firebase enviaria para todos os outros 4 usuários
+        this.notifyOthers(userName);
     },
 
-    // Escuta o feed em tempo real (Sem precisar de refresh)
-    listenFeed(callback) {
-        console.log("Sintonizando feed global...");
-        // O Firebase vai 'empurrar' o vídeo novo para todos aqui
+    // Todos Vêem (Simulação de Notificação)
+    notifyOthers(userName) {
+        console.log(`Notificando usuários 1, 2, 3 e 4 sobre o post de ${userName}`);
     }
 };
