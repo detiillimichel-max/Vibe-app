@@ -1,74 +1,154 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OIO ONE | Sistema Orgânico</title>
-    <link rel="stylesheet" href="./styles/dna.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>App Orgânico</title>
+    <style>
+        /* O DNA do Visual - Dark Mode Profissional */
+        :root { 
+            --bg-color: #000000; /* Fundo preto puro para AMOLED */
+            --card-color: #121212; /* Cinza bem escuro para os cards */
+            --text-main: #FFFFFF; /* Texto principal em branco */
+            --text-muted: #888888; /* Texto secundário em cinza */
+            --border-color: #222222; /* Bordas sutis */
+        }
+
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        }
+
+        /* Barra de Navegação Superior */
+        header { 
+            display: flex; 
+            justify-content: space-around; 
+            align-items: center;
+            padding: 15px 0; 
+            border-bottom: 1px solid var(--border-color); 
+            position: sticky; 
+            top: 0; 
+            background: var(--bg-color); 
+            z-index: 10; 
+        }
+
+        .icon { 
+            width: 24px; 
+            height: 24px; 
+            fill: var(--text-muted); /* Ícones inativos em cinza */
+            transition: fill 0.3s;
+        }
+
+        .icon.active { 
+            fill: var(--text-main); /* Ícone ativo (Casa) em branco brilhante */
+        }
+
+        /* Área Principal da Gaveta 1 */
+        main { 
+            padding: 20px; 
+        }
+
+        /* O Campo de Intenção (Fica no topo) */
+        .input-area { 
+            margin-bottom: 30px; 
+        }
+
+        .input-area input { 
+            width: 100%; 
+            background: var(--card-color); 
+            border: 1px solid var(--border-color); 
+            color: var(--text-main); 
+            padding: 16px; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            box-sizing: border-box; 
+            outline: none; 
+            transition: border-color 0.3s;
+        }
+
+        .input-area input:focus { 
+            border-color: #555555; /* Acende levemente ao digitar */
+        }
+
+        /* O Feed de Intenções (As mensagens dos outros) */
+        .feed { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+        }
+
+        .card { 
+            background: var(--card-color); 
+            padding: 18px; 
+            border-radius: 12px; 
+            border: 1px solid transparent;
+        }
+
+        .card-text { 
+            font-size: 16px; 
+            margin: 0 0 8px 0; 
+            line-height: 1.4; 
+            font-weight: 500;
+        }
+
+        .card-meta { 
+            font-size: 13px; 
+            color: var(--text-muted); 
+            margin: 0; 
+        }
+    </style>
 </head>
-<body class="bg-black">
+<body>
 
-    <!-- CAMADA 1: PORTAL DE ACESSO -->
-    <div id="portal-layer">
-        <div class="login-box">
-            <h2 class="portal-label">OIO ONE</h2>
-            <input type="text" id="user-email" placeholder="IDENTIDADE" autocomplete="off">
-            <input type="password" id="user-pass" placeholder="CÓDIGO">
-            <button id="btn-entrar" class="glass-btn">ENTRAR</button>
+    <!-- BARRA SUPERIOR (Gaveta 1 Ativa) -->
+    <header>
+        <!-- Ícone 1: Casa/Mural (ATIVO) -->
+        <svg class="icon active" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <!-- Ícone 2: Vídeos -->
+        <svg class="icon" viewBox="0 0 24 24"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+        <!-- Ícone 3: Conversas -->
+        <svg class="icon" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        <!-- Ícone 4: Marketplace -->
+        <svg class="icon" viewBox="0 0 24 24"><path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-1.99.9-1.99 2L3 20c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2l-1-12c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm0 10c-2.76 0-5-2.24-5-5h2c0 1.66 1.34 3 3 3s3-1.34 3-3h2c0 2.76-2.24 5-5 5z"/></svg>
+        <!-- Ícone 5: Sino -->
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
+        <!-- Ícone 6: Perfil -->
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    </header>
+
+    <!-- CONTEÚDO DA GAVETA 1 -->
+    <main>
+        <!-- Campo para o usuário digitar a intenção -->
+        <div class="input-area">
+            <input type="text" placeholder="O que você busca ou oferece agora?">
         </div>
-    </div>
 
-    <!-- CAMADA 2: APLICAÇÃO PRINCIPAL -->
-    <main id="app-layer" class="hidden">
-        
-        <!-- NAVEGAÇÃO QUANTUM (SISTEMA MUDE) -->
-        <nav class="quantum-nav glass-nav">
-            <button class="nav-item active" onclick="switchUniverse('home')">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9.5L12 3L21 9.5V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V9.5Z"/><path d="M9 21V12H15V21"/></svg>
-            </button>
-            <button class="nav-item" onclick="switchUniverse('reels')">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M10 9L15 12L10 15V9Z"/></svg>
-            </button>
-            <button class="nav-item" onclick="switchUniverse('friends')">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21V19C17 16.7909 15.2091 15 13 15H5C2.79086 15 1 16.7909 1 19V21"/><circle cx="9" cy="7" r="4"/></svg>
-            </button>
-            <button class="nav-item" onclick="switchUniverse('market')">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6H21L19 20H5L3 6Z"/><path d="M8 6V4C8 2.89543 8.89543 2 10 2H14C15.1046 2 16 2.89543 16 4V6"/></svg>
-            </button>
-            <button class="nav-item" onclick="switchUniverse('notify')">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8C18 4.68629 15.3137 2 12 2C8.68629 2 6 4.68629 6 8C6 14 3 16 3 16H21C21 16 18 14 18 8Z"/><path d="M10.3 21C10.7 21.6 11.3 22 12 22"/></svg>
-            </button>
-            <button class="nav-item" onclick="switchUniverse('profile')">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4"/><path d="M12 12C9.79086 12 8 13.7909 8 16C8 18.2091 9.79086 20 12 20"/></svg>
-            </button>
-        </nav>
-
-        <!-- PALCO DOS UNIVERSOS (CONTEÚDO DINÂMICO) -->
-        <section id="main-content" class="content-depth">
-            <div id="universe-display">
-                <!-- O conteúdo do Origin Controller entrará aqui -->
+        <!-- O Feed de Intenções (Sem avatares, direto ao ponto) -->
+        <div class="feed">
+            <div class="card">
+                <p class="card-text">Preciso de um frete para o centro de Bom Jesus dos Perdões amanhã cedo.</p>
+                <p class="card-meta">Agora mesmo</p>
             </div>
-        </section>
-
-        <!-- BOTÃO HUB CENTRAL -->
-        <nav class="floating-icons">
-            <button class="icon-btn" id="btn-hub">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/></svg>
-            </button>
-        </nav>
+            
+            <div class="card">
+                <p class="card-text">Alguém sabe se o posto de saúde já abriu?</p>
+                <p class="card-meta">Há 5 min</p>
+            </div>
+            
+            <div class="card">
+                <p class="card-text">Ofereço carona para SP todos os dias às 7h.</p>
+                <p class="card-meta">Há 12 min</p>
+            </div>
+            
+            <div class="card">
+                <p class="card-text">Procurando um fogão 4 bocas usado em bom estado para comprar.</p>
+                <p class="card-meta">Há 1h</p>
+            </div>
+        </div>
     </main>
 
-    <!-- CAMADA 3: HUB DE LUXO (VITRINE) -->
-    <div id="hub-layer" class="hub-hidden">
-        <div class="hub-content">
-            <h1 id="user-display-name" class="user-name">...</h1>
-            <div class="vitrine-grid" id="vitrine-main"></div>
-            <button class="close-hub">VOLTAR</button>
-        </div>
-    </div>
-
-    <!-- IMPORTAÇÃO DOS MOTORES (IMPORTANTE: TYPE="MODULE") -->
-    <script type="module" src="./js/core.js"></script>
-    <script type="module" src="./js/quantum.js"></script>
 </body>
 </html>
