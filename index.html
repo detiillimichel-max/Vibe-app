@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>App Orgânico - Teste Real</title>
+    <title>App Orgânico - Michel Detilli</title>
     <style>
         :root { 
             --bg-color: #000000; 
@@ -19,35 +19,73 @@
             background-color: var(--bg-color); 
             color: var(--text-main); 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            overflow-x: hidden;
+            overflow: hidden; /* Evita scroll duplo na navegação */
         }
 
         header { 
             display: flex; justify-content: space-around; align-items: center;
             padding: 15px 0; border-bottom: 1px solid var(--border-color); 
             position: sticky; top: 0; background: var(--bg-color); z-index: 100; 
+            height: 30px;
         }
 
         .icon { width: 24px; height: 24px; fill: var(--text-muted); transition: fill 0.3s; cursor: pointer; }
         .icon.active { fill: var(--text-main); }
 
-        .gaveta { display: none; animation: fadeIn 0.2s ease-in-out; padding: 20px; }
+        .gaveta { display: none; height: calc(100vh - 60px); overflow-y: auto; animation: fadeIn 0.2s ease-in-out; }
         .gaveta.ativa { display: block; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* GAVETA 1 - FEED INTERATIVO */
-        .input-group { display: flex; gap: 10px; margin-bottom: 25px; }
-        .main-input { flex: 1; background: var(--card-color); border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; color: #fff; outline: none; font-size: 16px; }
-        .btn-post { background: var(--accent); color: #000; border: none; padding: 0 20px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        /* GAVETA 1 - MURAL */
+        .container { padding: 20px; }
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        .main-input { flex: 1; background: var(--card-color); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; color: #fff; outline: none; }
+        .btn-post { background: var(--accent); color: #000; border: none; padding: 0 15px; border-radius: 10px; font-weight: bold; }
+        .card { background: var(--card-color); padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--border-color); }
 
-        .feed { display: flex; flex-direction: column; gap: 12px; }
-        .card { background: var(--card-color); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color); }
-        .card-text { font-size: 16px; margin: 0 0 8px 0; line-height: 1.4; font-weight: 500; }
-        .card-meta { font-size: 12px; color: var(--text-muted); margin: 0; display: flex; justify-content: space-between; }
+        /* GAVETA 2 - VÍDEO REAL (ESTILO REELS) */
+        .video-container { 
+            position: relative; 
+            width: 100%; 
+            height: 100%; 
+            background: #000; 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .video-player { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; /* Faz o vídeo preencher a tela como no TikTok */
+        }
 
-        /* Estilos Perfil e Outros */
-        .utility-link { background: #1a1a1a; padding: 15px; border-radius: 10px; margin-bottom: 8px; font-size: 15px; text-decoration: none; color: white; display: block; border: 1px solid var(--border-color); }
+        .video-overlay {
+            position: absolute;
+            bottom: 40px;
+            left: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        .btn-action-video {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            text-decoration: none;
+            display: block;
+        }
+
+        /* GAVETA 3 - CHAT */
+        .chat-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid var(--border-color); }
+        .avatar { width: 45px; height: 45px; background: #333; border-radius: 50%; }
+
     </style>
 </head>
 <body>
@@ -61,29 +99,52 @@
         <svg class="icon" onclick="abrirGaveta('gaveta-6', this)" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
     </header>
 
+    <!-- GAVETA 1: MURAL -->
     <main id="gaveta-1" class="gaveta ativa">
-        <div class="input-group">
-            <input type="text" id="postInput" class="main-input" placeholder="O que você precisa postar?">
-            <button class="btn-post" onclick="criarPost()">POSTAR</button>
-        </div>
-        
-        <div id="muralFeed" class="feed">
-            <div class="card">
-                <p class="card-text">Bem-vindo ao seu app! Tente postar algo acima para ver o mural funcionar.</p>
-                <p class="card-meta"><span>Sistema</span> <span>Agora</span></p>
+        <div class="container">
+            <div class="input-group">
+                <input type="text" id="postInput" class="main-input" placeholder="O que você busca?">
+                <button class="btn-post" onclick="criarPost()">POSTAR</button>
+            </div>
+            <div id="muralFeed">
+                <div class="card"><p>Preciso de frete para o centro.</p></div>
             </div>
         </div>
     </main>
 
-    <main id="gaveta-2" class="gaveta" style="text-align:center; padding-top:100px;">
-        <svg width="80" height="80" viewBox="0 0 24 24" fill="#333"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
-        <p>Gaveta de Vídeo Pronta para conteúdo real.</p>
+    <!-- GAVETA 2: VÍDEO REAL -->
+    <main id="gaveta-2" class="gaveta">
+        <div class="video-container">
+            <!-- VÍDEO DE EXEMPLO (Pode trocar o src pelo seu vídeo no futuro) -->
+            <video id="meuVideo" class="video-player" loop playsinline>
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                Seu navegador não suporta vídeos.
+            </video>
+            
+            <div class="video-overlay">
+                <h3 style="text-shadow: 2px 2px 4px #000;">Destaque do Dia</h3>
+                <p style="text-shadow: 1px 1px 2px #000; font-size: 14px; margin-bottom: 15px;">Assista como usar nosso app para vender mais rápido.</p>
+                <a href="#" class="btn-action-video" onclick="tocarVideo()">PLAY / PAUSE</a>
+            </div>
+        </div>
     </main>
 
-    <main id="gaveta-3" class="gaveta"><h3>Conversas em tempo real</h3><p>Próxima etapa: Simular chat.</p></main>
-    <main id="gaveta-4" class="gaveta"><h3>Marketplace</h3><p>Links de utilidade pública.</p></main>
-    <main id="gaveta-5" class="gaveta"><h3>Notificações</h3><p>Alertas do sistema.</p></main>
-    <main id="gaveta-6" class="gaveta"><h3>Meu Perfil</h3><p>Michel Detilli - Fundador</p></main>
+    <!-- GAVETA 3: CHAT -->
+    <main id="gaveta-3" class="gaveta">
+        <div class="chat-item">
+            <div class="avatar"></div>
+            <div><strong>Maria Silva</strong><br><span style="color:var(--text-muted); font-size:13px;">O fogão ainda está disponível?</span></div>
+        </div>
+        <div class="chat-item">
+            <div class="avatar"></div>
+            <div><strong>João Paulo</strong><br><span style="color:var(--text-muted); font-size:13px;">Consigo entregar o frete amanhã.</span></div>
+        </div>
+    </main>
+
+    <!-- DEMAIS GAVETAS (SIMPLIFICADAS PARA FOCO) -->
+    <main id="gaveta-4" class="gaveta container"><h3>Marketplace</h3></main>
+    <main id="gaveta-5" class="gaveta container"><h3>Notificações</h3></main>
+    <main id="gaveta-6" class="gaveta container"><h3>Perfil: Michel Detilli</h3></main>
 
     <script>
         function abrirGaveta(idGaveta, iconeClicado) {
@@ -91,27 +152,23 @@
             document.querySelectorAll('.icon').forEach(i => i.classList.remove('active'));
             document.getElementById(idGaveta).classList.add('ativa');
             iconeClicado.classList.add('active');
+            
+            // Pausa o vídeo se sair da gaveta 2
+            const video = document.getElementById('meuVideo');
+            if (idGaveta !== 'gaveta-2') { video.pause(); }
         }
 
         function criarPost() {
             const input = document.getElementById('postInput');
-            const mural = document.getElementById('muralFeed');
-            
-            if (input.value.trim() !== "") {
-                const novoCard = document.createElement('div');
-                novoCard.className = 'card';
-                novoCard.style.animation = "fadeIn 0.5s ease";
-                
-                novoCard.innerHTML = `
-                    <p class="card-text">${input.value}</p>
-                    <p class="card-meta"><span>Michel Detilli</span> <span>Agora</span></p>
-                `;
-                
-                mural.prepend(novoCard); // Coloca o post novo no topo
-                input.value = ""; // Limpa o campo
-            } else {
-                alert("Escreva algo antes de postar!");
-            }
+            if(input.value.trim() === "") return;
+            const card = `<div class="card"><p>${input.value}</p></div>`;
+            document.getElementById('muralFeed').innerHTML = card + document.getElementById('muralFeed').innerHTML;
+            input.value = "";
+        }
+
+        function tocarVideo() {
+            const v = document.getElementById('meuVideo');
+            if (v.paused) { v.play(); } else { v.pause(); }
         }
     </script>
 </body>
