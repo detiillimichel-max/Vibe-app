@@ -98,13 +98,13 @@ input {
 
 /* CONTEÚDO DINÂMICO */
 #main-content {
-    margin-top: 65px;
-    height: calc(100vh - 65px);
+    padding-top: 65px; /* Garante que o conteúdo não fique sob a barra */
+    height: 100vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }
 
-/* CARDS DE ARTE E CINEMA (SISTEMA DE VITRINE) */
+/* CARDS DE ARTE E CINEMA */
 .list-container { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
 .section-title { font-size: 11px; letter-spacing: 1px; opacity: 0.4; margin-bottom: 10px; text-transform: uppercase; }
 
@@ -121,7 +121,7 @@ input {
 .t-title { display: block; font-size: 16px; font-weight: 700; }
 .t-meta { font-size: 11px; opacity: 0.3; text-transform: uppercase; letter-spacing: 1px; }
 
-/* GRADE DO MARKETPLACE (VITRINE DE CLÁSSICOS) */
+/* GRADE DO MARKETPLACE */
 .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; }
 .movie-card { background: var(--zinc-950); border-radius: 15px; overflow: hidden; border: 1px solid var(--glass-border); }
 .movie-poster { width: 100%; aspect-ratio: 2/3; background: var(--glass); object-fit: cover; }
