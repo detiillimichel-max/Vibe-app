@@ -1,167 +1,68 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>App Orgânico - Michel Detilli</title>
-    <style>
-        :root { 
-            --bg-color: #000000; 
-            --card-color: #121212; 
-            --text-main: #FFFFFF; 
-            --text-muted: #888888; 
-            --border-color: #222222; 
-            --accent: #FFFFFF;
-        }
-
-        body { 
-            margin: 0; padding: 0; 
-            background-color: var(--bg-color); 
-            color: var(--text-main); 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            overflow: hidden; /* Evita scroll duplo na navegação */
-        }
-
-        header { 
-            display: flex; justify-content: space-around; align-items: center;
-            padding: 15px 0; border-bottom: 1px solid var(--border-color); 
-            position: sticky; top: 0; background: var(--bg-color); z-index: 100; 
-            height: 30px;
-        }
-
-        .icon { width: 24px; height: 24px; fill: var(--text-muted); transition: fill 0.3s; cursor: pointer; }
-        .icon.active { fill: var(--text-main); }
-
-        .gaveta { display: none; height: calc(100vh - 60px); overflow-y: auto; animation: fadeIn 0.2s ease-in-out; }
-        .gaveta.ativa { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* GAVETA 1 - MURAL */
-        .container { padding: 20px; }
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        .main-input { flex: 1; background: var(--card-color); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; color: #fff; outline: none; }
-        .btn-post { background: var(--accent); color: #000; border: none; padding: 0 15px; border-radius: 10px; font-weight: bold; }
-        .card { background: var(--card-color); padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--border-color); }
-
-        /* GAVETA 2 - VÍDEO REAL (ESTILO REELS) */
-        .video-container { 
-            position: relative; 
-            width: 100%; 
-            height: 100%; 
-            background: #000; 
-            display: flex; 
-            flex-direction: column;
-            justify-content: center;
-            overflow: hidden; /* Garante que o vídeo não "vaze" */
-        }
-        
-        .video-player { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; /* Faz o vídeo preencher a tela como no TikTok */
-            cursor: pointer; /* Indica que é clicável */
-        }
-
-        .video-overlay {
-            position: absolute;
-            bottom: 40px;
-            left: 20px;
-            right: 20px;
-            z-index: 10;
-            pointer-events: none; /* Deixa os toques passarem para o vídeo */
-        }
-
-        /* Removi o botão de PLAY/PAUSE anterior */
-
-        /* GAVETA 3 - CHAT */
-        .chat-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid var(--border-color); }
-        .avatar { width: 45px; height: 45px; background: #333; border-radius: 50%; }
-
-    </style>
-</head>
-<body>
-
-    <header>
-        <svg class="icon active" onclick="abrirGaveta('gaveta-1', this)" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-        <svg class="icon" onclick="abrirGaveta('gaveta-2', this)" viewBox="0 0 24 24"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-        <svg class="icon" onclick="abrirGaveta('gaveta-3', this)" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-        <svg class="icon" onclick="abrirGaveta('gaveta-4', this)" viewBox="0 0 24 24"><path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-1.99.9-1.99 2L3 20c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2l-1-12c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm0 10c-2.76 0-5-2.24-5-5h2c0 1.66 1.34 3 3 3s3-1.34 3-3h2c0 2.76-2.24 5-5 5z"/></svg>
-        <svg class="icon" onclick="abrirGaveta('gaveta-5', this)" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
-        <svg class="icon" onclick="abrirGaveta('gaveta-6', this)" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-    </header>
-
-    
-<main id="gaveta-1" class="gaveta ativa">
-        <div class="container">
-            <div class="input-group">
-                <input type="text" id="postInput" class="main-input" placeholder="O que você busca?">
-                <button class="btn-post" onclick="criarPost()">POSTAR</button>
-            </div>
-            <div id="muralFeed">
-                <div class="card"><p>Preciso de frete para o centro.</p></div>
-            </div>
-        </div>
-    </main>
-
-    
-<main id="gaveta-2" class="gaveta">
-        <div class="video-container">
-            
-<video id="meuVideo" class="video-player" loop playsinline onclick="alternarVideo()">
-                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-                Seu navegador não suporta vídeos.
-            </video>
-            
-            <div class="video-overlay">
-                <h3 style="text-shadow: 2px 2px 4px #000;">Destaque do Dia</h3>
-                <p style="text-shadow: 1px 1px 2px #000; font-size: 14px; margin-bottom: 15px;">Assista como usar nosso app para vender mais rápido.</p>
-                </div>
-        </div>
-    </main>
-
-    
+<!-- GAVETA 3: CHAT REAL COM FIREBASE -->
 <main id="gaveta-3" class="gaveta">
-        <div class="chat-item">
-            <div class="avatar"></div>
-            <div><strong>Maria Silva</strong><br><span style="color:var(--text-muted); font-size:13px;">O fogão ainda está disponível?</span></div>
+    <div id="chat-container" style="display: flex; flex-direction: column; height: 100%;">
+        <!-- Área onde as mensagens vão aparecer -->
+        <div id="messages" style="flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px;">
+            <p style="text-align: center; color: var(--text-muted); font-size: 12px;">Conectando ao Firebase...</p>
         </div>
-        <div class="chat-item">
-            <div class="avatar"></div>
-            <div><strong>João Paulo</strong><br><span style="color:var(--text-muted); font-size:13px;">Consigo entregar o frete amanhã.</span></div>
+
+        <!-- Campo de digitação fixo embaixo -->
+        <div style="padding: 15px; border-top: 1px solid var(--border-color); display: flex; gap: 10px; background: var(--bg-color);">
+            <input type="text" id="chatInput" class="main-input" placeholder="Digite sua mensagem...">
+            <button class="btn-post" onclick="enviarMensagem()">ENVIAR</button>
         </div>
-    </main>
+    </div>
+</main>
 
-    
-<main id="gaveta-4" class="gaveta container"><h3>Marketplace</h3></main>
-    <main id="gaveta-5" class="gaveta container"><h3>Notificações</h3></main>
-    <main id="gaveta-6" class="gaveta container"><h3>Perfil: Michel Detilli</h3></main>
+<!-- SCRIPTS DO FIREBASE (Colocar antes do fechamento do </body>) -->
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
 
-    <script>
-        function abrirGaveta(idGaveta, iconeClicado) {
-            document.querySelectorAll('.gaveta').forEach(g => g.classList.remove('ativa'));
-            document.querySelectorAll('.icon').forEach(i => i.classList.remove('active'));
-            document.getElementById(idGaveta).classList.add('ativa');
-            iconeClicado.classList.add('active');
+<script>
+  // COLE SUAS CONFIGURAÇÕES DO FIREBASE AQUI
+  const firebaseConfig = {
+    apiKey: "SUA_API_KEY",
+    authDomain: "SEU_PROJETO.firebaseapp.com",
+    projectId: "SEU_PROJETO_ID",
+    storageBucket: "SEU_PROJETO.appspot.com",
+    messagingSenderId: "SEU_SENDER_ID",
+    appId: "SEU_APP_ID"
+  };
+
+  // Inicializa o Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // Função para enviar mensagem
+  function enviarMensagem() {
+    const texto = document.getElementById('chatInput').value;
+    if (texto.trim() !== "") {
+        db.collection("chats").add({
+            nome: "Michel Detilli",
+            mensagem: texto,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        document.getElementById('chatInput').value = "";
+    }
+  }
+
+  // Função para "escutar" o banco em tempo real
+  db.collection("chats").orderBy("timestamp", "asc")
+    .onSnapshot((snapshot) => {
+        const msgDiv = document.getElementById('messages');
+        msgDiv.innerHTML = ""; // Limpa para atualizar
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const align = data.nome === "Michel Detilli" ? "flex-end" : "flex-start";
+            const color = data.nome === "Michel Detilli" ? "#333" : "#1a1a1a";
             
-            // Pausa o vídeo se sair da gaveta 2
-            const video = document.getElementById('meuVideo');
-            if (idGaveta !== 'gaveta-2') { video.pause(); }
-        }
-
-        function criarPost() {
-            const input = document.getElementById('postInput');
-            if(input.value.trim() === "") return;
-            const card = `<div class="card"><p>${input.value}</p></div>`;
-            document.getElementById('muralFeed').innerHTML = card + document.getElementById('muralFeed').innerHTML;
-            input.value = "";
-        }
-
-        // Nova função para alternar o vídeo ao tocar nele
-        function alternarVideo() {
-            const v = document.getElementById('meuVideo');
-            if (v.paused) { v.play(); } else { v.pause(); }
-        }
-    </script>
-</body>
-</html>
+            msgDiv.innerHTML += `
+                <div style="align-self: ${align}; background: ${color}; padding: 10px; border-radius: 12px; max-width: 80%;">
+                    <small style="color: #888; display: block; font-size: 10px;">${data.nome}</small>
+                    <span>${data.mensagem}</span>
+                </div>
+            `;
+        });
+        msgDiv.scrollTop = msgDiv.scrollHeight; // Rola para o fim
+    });
+</script>
