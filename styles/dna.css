@@ -1,0 +1,44 @@
+/* OIO ONE - DNA Visual: Interface Orgânica por Profundidade */
+:root {
+    --bg-black: #000000;
+    --zinc-950: rgba(9, 9, 11, 0.8);
+    --glass: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glow-star: rgba(255, 255, 255, 0.8);
+    --tracking: -0.05em;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { background: var(--bg-black); color: #fff; font-family: -apple-system, sans-serif; height: 100vh; overflow: hidden; }
+
+/* PORTAL */
+#portal-layer { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 1000; background: #000; transition: 1s ease; }
+.login-box { width: 85%; max-width: 300px; text-align: center; display: flex; flex-direction: column; gap: 15px; }
+.portal-label { letter-spacing: 5px; font-size: 10px; margin-bottom: 20px; opacity: 0.3; }
+
+input { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 15px; padding: 16px; color: #fff; font-size: 14px; outline: none; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+input::placeholder { color: rgba(255,255,255,0.2); text-transform: uppercase; font-size: 9px; letter-spacing: 2px; }
+
+.glass-btn { background: #fff; color: #000; border: none; padding: 16px; border-radius: 15px; font-weight: 900; font-size: 11px; letter-spacing: 2px; cursor: pointer; }
+
+/* FEED & VIDEO */
+#app-layer { height: 100vh; position: relative; }
+.video-container { height: 75vh; width: 100%; position: relative; overflow: hidden; background: #050505; }
+#main-video { width: 100%; height: 100%; object-fit: cover; }
+.video-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, #000 100%); }
+
+/* ÍCONES FLUTUANTES */
+.floating-icons { position: fixed; bottom: 30px; right: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 100; }
+.icon-btn { width: 52px; height: 52px; border-radius: 50%; background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); color: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+
+/* HUB & VITRINE */
+#hub-layer { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(40px); z-index: 500; display: flex; align-items: center; justify-content: center; transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
+.hub-hidden { opacity: 0; pointer-events: none; transform: translateY(100px); }
+.user-name { font-weight: 900; letter-spacing: var(--tracking); font-size: 3.5rem; background: linear-gradient(to bottom, #fff, #666); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.user-status { font-size: 0.75rem; opacity: 0.4; text-transform: uppercase; letter-spacing: 2px; }
+
+.vitrine-grid { margin-top: 50px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.vitrine-card { background: rgba(20, 20, 20, 0.6); padding: 25px 20px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); text-align: left; }
+.close-hub { margin-top: 40px; background: none; border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px 30px; border-radius: 30px; font-size: 0.7rem; letter-spacing: 2px; }
+
+.hidden { display: none; }
