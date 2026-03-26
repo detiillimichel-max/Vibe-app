@@ -1,29 +1,130 @@
-/* Espaçamento entre seções de descoberta */
-.discovery-header {
-    padding: 25px 0 10px;
-    font-size: 0.65rem;
-    letter-spacing: 3px;
-    color: var(--inactive);
-    text-transform: uppercase;
+/* =========================================
+   OIO ONE - O Quarto de Design (styles/dna.css)
+   ========================================= */
+
+:root {
+  /* O DNA do Dark Mode */
+  --cor-fundo: #050505;     /* Um preto profundo e profissional */
+  --cor-texto: #ffffff;     /* Branco puro para leitura clara */
+  --cor-borda: #333333;     /* Cinza escuro para bordas sutis */
+  --cor-destaque: #ffffff;  /* Cor para quando o usuário clicar no campo */
+  
+  /* Fonte padrão limpa e moderna */
+  --fonte-principal: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Card de Pensamento (Ideias) */
-.thought-card {
-    margin-bottom: 20px;
-    padding: 30px;
-    text-align: center;
-    border-left: 2px solid var(--accent); /* Detalhe lateral em Ouro */
+/* 1. Limpeza de Terreno (Reset) */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.thought-card p {
-    font-style: italic;
-    font-weight: 300;
-    font-size: 1.1rem;
-    line-height: 1.6;
-    margin-bottom: 10px;
+/* 2. O Corpo da Aplicação */
+body {
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-family: var(--fonte-principal);
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centraliza tudo no meio da tela */
+  min-height: 100vh;   /* Ocupa a tela inteira do celular */
+  padding: 20px;
 }
 
-.thought-card small {
-    color: var(--accent);
-    letter-spacing: 1px;
+/* 3. Textos e Títulos */
+h1.logo {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  margin-bottom: 2rem;
+  margin-top: 10vh;
+}
+
+.subtitulo {
+  font-size: 0.85rem;
+  letter-spacing: 1.5px;
+  color: #aaaaaa;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 320px;
+  text-align: left;
+}
+
+/* 4. A Fachada (Formulário e Inputs) */
+form.login-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 320px; /* Largura ideal para mobile */
+  gap: 15px; /* Espaço perfeito entre os campos */
+}
+
+input {
+  width: 100%;
+  padding: 16px;
+  background-color: transparent; /* Fundo transparente para o Dark Mode */
+  border: 1px solid var(--cor-borda);
+  color: var(--cor-texto);
+  font-size: 1rem;
+  border-radius: 8px; /* Cantos levemente arredondados, super moderno */
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+/* Efeito quando o usuário toca para digitar */
+input:focus {
+  border-color: var(--cor-destaque);
+}
+
+/* 5. Botões (O Motor Visual) */
+button.btn-primario {
+  width: 100%;
+  padding: 16px;
+  background-color: var(--cor-texto); /* Botão branco */
+  color: var(--cor-fundo);            /* Texto preto */
+  font-weight: bold;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-top: 10px;
+}
+
+button.btn-primario:active {
+  opacity: 0.8; /* Efeito de clique */
+}
+
+button.btn-voltar {
+  background: transparent;
+  color: #888888;
+  border: none;
+  font-size: 0.9rem;
+  margin-top: 2rem;
+  cursor: pointer;
+}
+
+/* 6. Barra de Navegação (Gavetas) */
+.barra-icones {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 320px;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--cor-borda);
+}
+
+.barra-icones button {
+  background: transparent;
+  color: var(--cor-texto);
+  border: 1px solid var(--cor-borda);
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
