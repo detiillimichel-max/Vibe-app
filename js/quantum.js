@@ -1,6 +1,6 @@
 /**
  * OIO ONE - SISTEMA QUANTUM (INTERAÇÃO)
- * Função: Navegação de Universos e Vitrine de Clássicos
+ * Função: Navegação de Universos e Curadoria Visual de Elite
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -17,15 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-/**
- * MOTOR DE TROCA DE UNIVERSO
- * Transforma o 'Market' em Galeria de Domínio Público
- */
 function switchUniverse(universeId) {
     const navItems = document.querySelectorAll('.nav-item');
     const display = document.getElementById('universe-display');
 
-    // Atualiza estado visual da barra superior
     navItems.forEach(item => {
         item.classList.remove('active');
         if (item.getAttribute('onclick').includes(universeId)) {
@@ -33,7 +28,6 @@ function switchUniverse(universeId) {
         }
     });
 
-    // Injeção de Estruturas de Elite
     switch(universeId) {
         case 'home':
             display.innerHTML = `
@@ -44,12 +38,12 @@ function switchUniverse(universeId) {
             if (v) v.play();
             break;
         
-        case 'reels': // Desenhos e Animações Curtas
+        case 'reels': 
             display.innerHTML = `
                 <div class="list-container">
                     <div class="section-title">DESENHOS E ANIMAÇÕES</div>
                     <div class="art-card">
-                        <div class="art-preview"></div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Popeye_the_Sailor_1933.jpg/800px-Popeye_the_Sailor_1933.jpg" class="art-preview">
                         <div class="art-info">
                             <span class="t-title">Popeye the Sailor</span>
                             <span class="t-meta">1933 • Fleischer Studios</span>
@@ -58,21 +52,21 @@ function switchUniverse(universeId) {
                 </div>`;
             break;
 
-        case 'market': // A VITRINE DE CLÁSSICOS (O "Novo" Marketplace)
+        case 'market': 
             display.innerHTML = `
                 <div class="grid-container">
                     <div class="movie-card">
-                        <div class="movie-poster"></div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Metropolis-poster.jpg/800px-Metropolis-poster.jpg" class="movie-poster">
                         <div class="movie-info">
                             <span class="price">DOMÍNIO PÚBLICO</span>
                             <span class="desc">Metropolis (1927)</span>
                         </div>
                     </div>
                     <div class="movie-card">
-                        <div class="movie-poster"></div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Nosferatu_1922_poster.jpg" class="movie-poster">
                         <div class="movie-info">
                             <span class="price">DOMÍNIO PÚBLICO</span>
-                            <span class="desc">The General (1926)</span>
+                            <span class="desc">Nosferatu (1922)</span>
                         </div>
                     </div>
                 </div>`;
@@ -85,18 +79,17 @@ function switchUniverse(universeId) {
         case 'notify':
             display.innerHTML = `
                 <div class="list-container">
-                    <div class="notify-item">
-                        <div class="dot-active"></div>
-                        <span>Acervo OIO atualizado com novas obras clássicas.</span>
+                    <div class="notify-item" style="padding: 20px; background: rgba(255,255,255,0.02); border-radius: 15px;">
+                        <span style="font-size: 13px; color: rgba(255,255,255,0.7);">Acervo OIO atualizado com obras de 1920.</span>
                     </div>
                 </div>`;
             break;
 
         case 'profile':
             display.innerHTML = `
-                <div class="profile-header">
-                    <div class="profile-avatar-large"></div>
-                    <span class="profile-status">AUTOR DO UNIVERSO</span>
+                <div class="profile-header" style="padding: 40px 20px; text-align: center;">
+                    <div style="width: 100px; height: 100px; background: rgba(255,255,255,0.05); border-radius: 50%; margin: 0 auto 20px;"></div>
+                    <span class="profile-status" style="letter-spacing: 4px; font-size: 10px; opacity: 0.5;">AUTOR DO UNIVERSO</span>
                 </div>`;
             break;
     }
