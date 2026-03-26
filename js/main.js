@@ -1,28 +1,19 @@
-// OIO ONE - Maestro Unificado
-import { initUI } from './components/ui_layers.js';
+import { Logger } from './services/Logger.js';
 
 const App = {
     init() {
-        this.renderBase();
-        initUI();
+        Logger.info("OIO ONE System Initialized...");
+        this.setupPWA();
     },
 
-    renderBase() {
-        const appElement = document.getElementById('app');
-        const videoUrl = "https://v1.pexels.com/video-files/2813583/2813583-uhd_2560_1440_30fps.mp4";
-
-        appElement.innerHTML = `
-            <div class="vibe-container">
-                <section class="video-feed">
-                    <video autoplay muted loop playsinline id="bg-video">
-                        <source src="${videoUrl}" type="video/mp4">
-                    </video>
-                    <div class="video-overlay"></div>
-                </section>
-
-                <div id="interaction-layer"></div>
-            </div>
-        `;
+    setupPWA() {
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(() => Logger.info("PWA Ready"))
+                    .catch(err => Logger.error("PWA Failed: " + err));
+            });
+        }
     }
 };
 
