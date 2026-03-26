@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>App Orgânico</title>
     <style>
-        /* O DNA do Visual - Dark Mode Profissional */
+        /* O DNA do Visual */
         :root { 
-            --bg-color: #000000; /* Fundo preto puro para AMOLED */
-            --card-color: #121212; /* Cinza bem escuro para os cards */
-            --text-main: #FFFFFF; /* Texto principal em branco */
-            --text-muted: #888888; /* Texto secundário em cinza */
-            --border-color: #222222; /* Bordas sutis */
+            --bg-color: #000000; 
+            --card-color: #121212; 
+            --text-main: #FFFFFF; 
+            --text-muted: #888888; 
+            --border-color: #222222; 
         }
 
         body { 
@@ -20,6 +20,7 @@
             background-color: var(--bg-color); 
             color: var(--text-main); 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            overflow-x: hidden;
         }
 
         /* Barra de Navegação Superior */
@@ -32,30 +33,39 @@
             position: sticky; 
             top: 0; 
             background: var(--bg-color); 
-            z-index: 10; 
+            z-index: 100; 
         }
 
         .icon { 
             width: 24px; 
             height: 24px; 
-            fill: var(--text-muted); /* Ícones inativos em cinza */
+            fill: var(--text-muted); 
             transition: fill 0.3s;
+            cursor: pointer;
         }
 
         .icon.active { 
-            fill: var(--text-main); /* Ícone ativo (Casa) em branco brilhante */
+            fill: var(--text-main); 
         }
 
-        /* Área Principal da Gaveta 1 */
-        main { 
-            padding: 20px; 
+        /* Controle das Gavetas (Esconde as inativas) */
+        .gaveta {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
         }
 
-        /* O Campo de Intenção (Fica no topo) */
-        .input-area { 
-            margin-bottom: 30px; 
+        .gaveta.ativa {
+            display: block;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- ESTILOS DA GAVETA 1 (Mural) --- */
+        .gaveta-1-content { padding: 20px; }
+        .input-area { margin-bottom: 30px; }
         .input-area input { 
             width: 100%; 
             background: var(--card-color); 
@@ -66,89 +76,120 @@
             font-size: 16px; 
             box-sizing: border-box; 
             outline: none; 
-            transition: border-color 0.3s;
+        }
+        .feed { display: flex; flex-direction: column; gap: 12px; }
+        .card { background: var(--card-color); padding: 18px; border-radius: 12px; }
+        .card-text { font-size: 16px; margin: 0 0 8px 0; line-height: 1.4; font-weight: 500; }
+        .card-meta { font-size: 13px; color: var(--text-muted); margin: 0; }
+
+        /* --- ESTILOS DA GAVETA 2 (Vídeos) --- */
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 56px); /* Ocupa a tela toda menos a barra superior */
+            background: linear-gradient(180deg, #111111 0%, #000000 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Simulando o botão de play no centro */
+        .play-button {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .play-button svg {
+            width: 24px;
+            height: 24px;
+            fill: #FFFFFF;
+            margin-left: 4px;
         }
 
-        .input-area input:focus { 
-            border-color: #555555; /* Acende levemente ao digitar */
+        /* Informações do Vídeo na base da tela */
+        .video-info {
+            position: absolute;
+            bottom: 30px;
+            left: 20px;
+            right: 20px;
         }
-
-        /* O Feed de Intenções (As mensagens dos outros) */
-        .feed { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
+        
+        .video-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0 0 5px 0;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
         }
-
-        .card { 
-            background: var(--card-color); 
-            padding: 18px; 
-            border-radius: 12px; 
-            border: 1px solid transparent;
-        }
-
-        .card-text { 
-            font-size: 16px; 
-            margin: 0 0 8px 0; 
-            line-height: 1.4; 
-            font-weight: 500;
-        }
-
-        .card-meta { 
-            font-size: 13px; 
-            color: var(--text-muted); 
-            margin: 0; 
+        
+        .video-subtitle {
+            font-size: 14px;
+            color: #CCCCCC;
+            margin: 0;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
         }
     </style>
 </head>
 <body>
 
-    <!-- BARRA SUPERIOR (Gaveta 1 Ativa) -->
+    <!-- BARRA SUPERIOR -->
     <header>
-        <!-- Ícone 1: Casa/Mural (ATIVO) -->
-        <svg class="icon active" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-        <!-- Ícone 2: Vídeos -->
-        <svg class="icon" viewBox="0 0 24 24"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-        <!-- Ícone 3: Conversas -->
+        <svg class="icon active" onclick="abrirGaveta('gaveta-1', this)" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <svg class="icon" onclick="abrirGaveta('gaveta-2', this)" viewBox="0 0 24 24"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
         <svg class="icon" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-        <!-- Ícone 4: Marketplace -->
         <svg class="icon" viewBox="0 0 24 24"><path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-1.99.9-1.99 2L3 20c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2l-1-12c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm0 10c-2.76 0-5-2.24-5-5h2c0 1.66 1.34 3 3 3s3-1.34 3-3h2c0 2.76-2.24 5-5 5z"/></svg>
-        <!-- Ícone 5: Sino -->
         <svg class="icon" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
-        <!-- Ícone 6: Perfil -->
         <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
     </header>
 
-    <!-- CONTEÚDO DA GAVETA 1 -->
-    <main>
-        <!-- Campo para o usuário digitar a intenção -->
+    <!-- GAVETA 1: MURAL DE INTENÇÕES (Inicia Ativa) -->
+    <main id="gaveta-1" class="gaveta ativa gaveta-1-content">
         <div class="input-area">
             <input type="text" placeholder="O que você busca ou oferece agora?">
         </div>
-
-        <!-- O Feed de Intenções (Sem avatares, direto ao ponto) -->
         <div class="feed">
-            <div class="card">
-                <p class="card-text">Preciso de um frete para o centro de Bom Jesus dos Perdões amanhã cedo.</p>
-                <p class="card-meta">Agora mesmo</p>
+            <div class="card"><p class="card-text">Preciso de um frete para o centro amanhã cedo.</p><p class="card-meta">Agora mesmo</p></div>
+            <div class="card"><p class="card-text">Alguém sabe se o posto de saúde já abriu?</p><p class="card-meta">Há 5 min</p></div>
+            <div class="card"><p class="card-text">Ofereço carona para SP todos os dias às 7h.</p><p class="card-meta">Há 12 min</p></div>
+            <div class="card"><p class="card-text">Procurando um fogão 4 bocas usado em bom estado.</p><p class="card-meta">Há 1h</p></div>
+        </div>
+    </main>
+
+    <!-- GAVETA 2: PLAYER DE VÍDEO (Inicia Oculta) -->
+    <main id="gaveta-2" class="gaveta">
+        <div class="video-container">
+            <!-- Botão Play Fictício -->
+            <div class="play-button">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
-            
-            <div class="card">
-                <p class="card-text">Alguém sabe se o posto de saúde já abriu?</p>
-                <p class="card-meta">Há 5 min</p>
-            </div>
-            
-            <div class="card">
-                <p class="card-text">Ofereço carona para SP todos os dias às 7h.</p>
-                <p class="card-meta">Há 12 min</p>
-            </div>
-            
-            <div class="card">
-                <p class="card-text">Procurando um fogão 4 bocas usado em bom estado para comprar.</p>
-                <p class="card-meta">Há 1h</p>
+            <!-- Informações do Vídeo -->
+            <div class="video-info">
+                <p class="video-title">Documentário: Natureza Orgânica</p>
+                <p class="video-subtitle">Domínio Público • 1.2M visualizações</p>
             </div>
         </div>
     </main>
 
+    <!-- O "Motorzinho" para trocar as gavetas -->
+    <script>
+        function abrirGaveta(idGaveta, iconeClicado) {
+            // 1. Esconde todas as gavetas
+            const gavetas = document.querySelectorAll('.gaveta');
+            gavetas.forEach(gaveta => gaveta.classList.remove('ativa'));
+
+            // 2. Tira a cor branca de todos os ícones
+            const icones = document.querySelectorAll('.icon');
+            icones.forEach(icone => icone.classList.remove('active'));
+
+            // 3. Mostra a gaveta certa e acende o ícone clicado
+            document.getElementById(idGaveta).classList.add('ativa');
+            iconeClicado.classList.add('active');
+        }
+    </script>
 </body>
 </html>
