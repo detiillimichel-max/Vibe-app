@@ -1,44 +1,221 @@
-/* OIO ONE - DNA Visual: Interface Orgânica por Profundidade */
+/* OIO ONE - DNA VISUAL PROFISSIONAL
+   Arquitetura: Interface Orgânica por Profundidade
+   Estilo: Dark Mode Elite (Zinc-950 / Apple Typography)
+*/
+
 :root {
     --bg-black: #000000;
-    --zinc-950: rgba(9, 9, 11, 0.8);
-    --glass: rgba(255, 255, 255, 0.05);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --glow-star: rgba(255, 255, 255, 0.8);
-    --tracking: -0.05em;
+    --zinc-950: rgba(9, 9, 11, 0.95);
+    --glass: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --active-accent: #ffffff;
+    --text-dim: rgba(255, 255, 255, 0.4);
+    --tracking-tight: -0.05em;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { background: var(--bg-black); color: #fff; font-family: -apple-system, sans-serif; height: 100vh; overflow: hidden; }
+/* RESET E BASE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
 
-/* PORTAL */
-#portal-layer { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 1000; background: #000; transition: 1s ease; }
-.login-box { width: 85%; max-width: 300px; text-align: center; display: flex; flex-direction: column; gap: 15px; }
-.portal-label { letter-spacing: 5px; font-size: 10px; margin-bottom: 20px; opacity: 0.3; }
+body {
+    background: var(--bg-black);
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    letter-spacing: var(--tracking-tight);
+}
 
-input { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 15px; padding: 16px; color: #fff; font-size: 14px; outline: none; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-input::placeholder { color: rgba(255,255,255,0.2); text-transform: uppercase; font-size: 9px; letter-spacing: 2px; }
+/* CAMADA 1: PORTAL DE ACESSO */
+#portal-layer {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-.glass-btn { background: #fff; color: #000; border: none; padding: 16px; border-radius: 15px; font-weight: 900; font-size: 11px; letter-spacing: 2px; cursor: pointer; }
+.login-box {
+    width: 85%;
+    max-width: 320px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
 
-/* FEED & VIDEO */
-#app-layer { height: 100vh; position: relative; }
-.video-container { height: 75vh; width: 100%; position: relative; overflow: hidden; background: #050505; }
-#main-video { width: 100%; height: 100%; object-fit: cover; }
-.video-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, #000 100%); }
+.portal-label {
+    font-size: 10px;
+    letter-spacing: 6px;
+    opacity: 0.3;
+    margin-bottom: 30px;
+    font-weight: 300;
+}
 
-/* ÍCONES FLUTUANTES */
-.floating-icons { position: fixed; bottom: 30px; right: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 100; }
-.icon-btn { width: 52px; height: 52px; border-radius: 50%; background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); color: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+input {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    padding: 18px;
+    color: #fff;
+    font-size: 15px;
+    outline: none;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: border 0.3s;
+}
 
-/* HUB & VITRINE */
-#hub-layer { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(40px); z-index: 500; display: flex; align-items: center; justify-content: center; transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
-.hub-hidden { opacity: 0; pointer-events: none; transform: translateY(100px); }
-.user-name { font-weight: 900; letter-spacing: var(--tracking); font-size: 3.5rem; background: linear-gradient(to bottom, #fff, #666); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.user-status { font-size: 0.75rem; opacity: 0.4; text-transform: uppercase; letter-spacing: 2px; }
+input:focus {
+    border-color: rgba(255, 255, 255, 0.2);
+}
 
-.vitrine-grid { margin-top: 50px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-.vitrine-card { background: rgba(20, 20, 20, 0.6); padding: 25px 20px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); text-align: left; }
-.close-hub { margin-top: 40px; background: none; border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px 30px; border-radius: 30px; font-size: 0.7rem; letter-spacing: 2px; }
+.glass-btn {
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 18px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
 
-.hidden { display: none; }
+/* CAMADA 2: NAVEGAÇÃO SUPERIOR (QUANTUM NAV) */
+.quantum-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 65px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: var(--zinc-950);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-bottom: 1px solid var(--glass-border);
+    z-index: 1000;
+    padding-top: env(safe-area-inset-top); /* Suporte para Notch de iPhones */
+}
+
+.nav-item {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    transition: 0.3s;
+    cursor: pointer;
+    position: relative;
+}
+
+.nav-item svg {
+    width: 24px;
+    height: 24px;
+}
+
+.nav-item.active {
+    color: var(--active-accent);
+}
+
+.nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    width: 20px;
+    height: 2px;
+    background: var(--active-accent);
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
+/* CONTEÚDO E IMERSÃO */
+#main-content {
+    margin-top: 65px;
+    height: calc(100vh - 65px);
+    width: 100%;
+}
+
+.video-container {
+    width: 100%;
+    height: 100%;
+    background: #050505;
+    position: relative;
+}
+
+video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.video-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 40%);
+}
+
+/* HUB E VITRINE (30% GAVETA) */
+#hub-layer {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    z-index: 1500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s;
+}
+
+.hub-hidden {
+    opacity: 0;
+    transform: translateY(100%);
+    pointer-events: none;
+}
+
+.user-name {
+    font-size: 3rem;
+    font-weight: 800;
+    text-align: center;
+    background: linear-gradient(to bottom, #fff 0%, #444 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 40px;
+}
+
+/* ÍCONE HUB FLUTUANTE (=) */
+.floating-icons {
+    position: fixed;
+    bottom: 30px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.icon-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--zinc-950);
+    border: 1px solid var(--glass-border);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.hidden { display: none !important; }
