@@ -226,4 +226,30 @@ body {
     background: rgba(255, 255, 255, 0.08);
     cursor: pointer;
 }
+/* --- ADIÇÃO: ESTILO DO PORTAL DE LOGIN --- */
+.login-box { 
+    width: 85%; max-width: 300px; text-align: center; 
+    display: flex; flex-direction: column; gap: 15px;
+}
+
+input { 
+    background: var(--glass); 
+    border: 1px solid var(--glass-border); 
+    border-radius: 15px; 
+    padding: 16px; 
+    color: #fff; 
+    font-size: 14px; 
+    outline: none; 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px);
+}
+
+input::placeholder { color: rgba(255,255,255,0.2); text-transform: uppercase; font-size: 9px; letter-spacing: 2px; }
+
+.glass-btn { 
+    background: #fff; color: #000; border: none; padding: 16px; 
+    border-radius: 15px; font-weight: 900; font-size: 11px; 
+    letter-spacing: 2px; cursor: pointer; margin-top: 10px;
+}
+
 
