@@ -1,0 +1,47 @@
+{
+  "marketing": [
+    {
+      "id": "mkt_01",
+      "type": "luxury_ad",
+      "title": "OIO ARCHITECTURE",
+      "description": "Espaços que respiram minimalismo e luz.",
+      "image": "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=600",
+      "link": "#"
+    }
+  ],
+  "suggestions": [
+    {
+      "id": "user_01",
+      "name": "Diego Soati",
+      "avatar": "https://i.pravatar.cc/150?u=diego",
+      "mutual_friends": 5
+    },
+    {
+      "id": "user_02",
+      "name": "Claudia Detilio",
+      "avatar": "https://i.pravatar.cc/150?u=claudia",
+      "mutual_friends": 3
+    },
+    {
+      "id": "user_03",
+      "name": "Michelle Amaro",
+      "avatar": "https://i.pravatar.cc/150?u=michelle",
+      "mutual_friends": 12
+    },
+    {
+      "id": "user_04",
+      "name": "Douglas José",
+      "avatar": "https://i.pravatar.cc/150?u=douglas",
+      "mutual_friends": 2
+    }
+  ],
+  "ideas": [
+    {
+      "id": "post_01",
+      "author": "Sistema OIO",
+      "content": "A parte mais solitária de envelhecer não é estar sozinho, mas perceber quem realmente faz o esforço de estar presente.",
+      "type": "thought"
+    }
+  ]
+}
+
