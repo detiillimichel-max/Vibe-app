@@ -1,35 +1,52 @@
 import { OriginTemplates } from './template.js';
 
 export const OriginController = {
-    render() {
+    async init() {
         const display = document.getElementById('universe-display');
         
+        // Estrutura Base
         display.innerHTML = `
             <div class="origin-wrapper">
-                <!-- Seção de Marketing de Luxo -->
                 <section id="marketing-area"></section>
-                
-                <!-- Grade de Sugestões de Amizade -->
-                <div class="discovery-header">
-                    <span>NOVAS CONEXÕES</span>
-                </div>
+                <div class="discovery-header"><span>CONEXÕES SUGERIDAS</span></div>
                 <section id="suggestions-area" class="horizontal-scroll"></section>
-                
-                <!-- Feed de Ideias (Placeholder para o que virá) -->
+                <div class="discovery-header"><span>FLUXO DE IDEIAS</span></div>
                 <section id="ideas-feed"></section>
             </div>
         `;
-        
-        this.loadMockData();
+
+        try {
+            const response = await fetch('./data/origin-feed.json');
+            const data = await response.json();
+            this.renderContent(data);
+        } catch (error) {
+            console.error("OIO-ERROR: Falha ao carregar o ecossistema.", error);
+        }
     },
 
-    loadMockData() {
-        // Exemplo de como o sistema preencherá os espaços
+    renderContent(data) {
         const mktArea = document.getElementById('marketing-area');
-        mktArea.innerHTML = OriginTemplates.marketingCard({
-            title: "OIO DESIGN",
-            description: "A nova era do minimalismo orgânico chegou.",
-            image: "https://images.unsplash.com/photo-1507646227500-4d389b0012be?q=80&w=500"
+        const suggestArea = document.getElementById('suggestions-area');
+        const ideasArea = document.getElementById('ideas-feed');
+
+        // Renderiza Marketing
+        data.marketing.forEach(item => {
+            mktArea.innerHTML += OriginTemplates.marketingCard(item);
+        });
+
+        // Renderiza Sugestões (Amizades)
+        data.suggestions.forEach(user => {
+            suggestArea.innerHTML += OriginTemplates.connectionSuggest(user);
+        });
+
+        // Renderiza Ideias (Postagens)
+        data.ideas.forEach(post => {
+            ideasArea.innerHTML += `
+                <div class="glass-card thought-card">
+                    <p>${post.content}</p>
+                    <small>— ${post.author}</small>
+                </div>
+            `;
         });
     }
 };
