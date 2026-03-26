@@ -3,25 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OIO ONE | Portal</title>
-    <link rel="stylesheet" href="styles/style.css">
+    <title>OIO ONE</title>
+    <link rel="stylesheet" href="styles/dna.css">
 </head>
 <body class="bg-black">
 
     <div id="portal-layer">
         <div class="login-box">
-            <div class="oio-logo">
-                <div class="logo-ring"></div>
-                <div class="logo-core"></div>
-            </div>
-            
-            <div class="input-group">
-                <input type="email" id="user-email" placeholder="Identidade (E-mail)" autocomplete="off">
-                <input type="password" id="user-pass" placeholder="Código (Senha)">
-            </div>
-
-            <button id="btn-entrar" class="glass-btn">ACESSAR UNIVERSO</button>
-            <p class="portal-footer">OIO ONE - SISTEMA ORGÂNICO</p>
+            <h2 class="portal-label">SISTEMA OIO</h2>
+            <input type="email" id="user-email" placeholder="IDENTIDADE">
+            <input type="password" id="user-pass" placeholder="CÓDIGO">
+            <button id="btn-entrar" class="glass-btn">ENTRAR NO UNIVERSO</button>
         </div>
     </div>
 
@@ -35,7 +27,7 @@
 
         <nav class="floating-icons">
             <button class="icon-btn" id="btn-hub">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/></svg>
             </button>
         </nav>
     </main>
@@ -43,11 +35,13 @@
     <div id="hub-layer" class="hub-hidden">
         <div class="hub-content">
             <h1 class="user-name">MICHEL</h1>
+            <p class="user-status">Autor & Criador</p>
             <div class="vitrine-grid" id="vitrine-main"></div>
             <button class="close-hub">VOLTAR</button>
         </div>
     </div>
 
-    <script src="js/app.js"></script>
+    <script src="js/core.js"></script>
+    <script src="js/quantum.js"></script>
 </body>
 </html>
