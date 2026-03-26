@@ -1,23 +1,55 @@
+/**
+ * OIO ONE - SISTEMA QUANTUM (ORQUESTRADOR)
+ * Gerencia a troca de camadas e a ativação de módulos dinâmicos.
+ */
+
+// Importamos os controladores (O Core que criamos antes)
 import { OriginController } from './modules/origin/controller.js';
 
-window.switchUniverse = (universe) => {
-    // 1. Gerir estado visual dos botões
-    const items = document.querySelectorAll('.nav-item');
-    items.forEach(item => item.classList.remove('active'));
-    
-    // Procura o botão clicado para ativar o brilho e o traço "__"
-    const clickedItem = event.currentTarget;
-    if(clickedItem) clickedItem.classList.add('active');
+document.addEventListener('DOMContentLoaded', () => {
+    const btnHub = document.getElementById('btn-hub');
+    const hubLayer = document.getElementById('hub-layer');
+    const btnCloseHub = document.querySelector('.close-hub');
 
-    // 2. Lógica de carregamento de módulos
-    if (universe === 'home') {
-        OriginController.init();
-    } else {
-        // Limpa o display para os outros módulos que vamos criar
-        document.getElementById('universe-display').innerHTML = `
-            <div class="module-container active" style="display:flex; align-items:center; justify-content:center; height:100vh;">
-                <p style="color:var(--inactive); letter-spacing:2px;">MÓDULO ${universe.toUpperCase()} EM DESENVOLVIMENTO</p>
-            </div>
-        `;
+    if (btnHub) btnHub.onclick = () => hubLayer.classList.remove('hub-hidden');
+    if (btnCloseHub) btnCloseHub.onclick = () => hubLayer.classList.add('hub-hidden');
+});
+
+// Tornamos a função global para o 'onclick' do HTML funcionar
+window.switchUniverse = function(universeId) {
+    const navItems = document.querySelectorAll('.nav-item');
+    const display = document.getElementById('universe-display');
+
+    // 1. Feedback Visual dos Ícones
+    navItems.forEach(item => {
+        item.classList.remove('active');
+        // Verifica se o atributo onclick contém o ID atual
+        if (item.getAttribute('onclick') && item.getAttribute('onclick').includes(universeId)) {
+            item.classList.add('active');
+        }
+    });
+
+    // 2. Troca de Universo Dinâmica
+    switch(universeId) {
+        case 'home':
+            // Em vez de escrever o HTML aqui, chamamos o controlador
+            OriginController.init(); 
+            break;
+        
+        case 'friends':
+            // Aqui chamaremos o NexusController no futuro
+            display.innerHTML = `<div class="universe-empty"><span>CONEXÕES EM REDE</span></div>`;
+            break;
+
+        case 'reels': 
+        case 'market': 
+        case 'notify':
+        case 'profile':
+            // Placeholder para os outros módulos
+            display.innerHTML = `
+                <div class="module-loading">
+                    <span style="letter-spacing: 5px; opacity: 0.3;">CARREGANDO ${universeId.toUpperCase()}...</span>
+                </div>`;
+            break;
     }
-};
+}
