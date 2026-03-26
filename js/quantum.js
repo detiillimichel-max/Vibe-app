@@ -1,43 +1,73 @@
 /**
  * OIO ONE - SISTEMA QUANTUM (INTERAÇÃO)
- * Função: Gestão do Hub, Vitrine e Transições de Profundidade
+ * Função: Navegação entre Universos e Controle de Profundidade
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Referências dos Elementos da Vitrine
+    // Referências do Hub (Vitrine)
     const btnHub = document.getElementById('btn-hub');
     const hubLayer = document.getElementById('hub-layer');
     const btnCloseHub = document.querySelector('.close-hub');
-    const vitrineMain = document.getElementById('vitrine-main');
 
-    /**
-     * Lógica de Ativação do Hub (=)
-     * Remove a classe de ocultação para revelar a camada de vidro
-     */
+    // --- 1. LÓGICA DO HUB (=) ---
     if (btnHub) {
         btnHub.onclick = () => {
-            if (hubLayer) {
-                hubLayer.classList.remove('hub-hidden');
-                console.log("Salto Quântico: Vitrine Ativada.");
-            }
+            hubLayer.classList.remove('hub-hidden');
         };
     }
 
-    /**
-     * Lógica de Fecho
-     * Adiciona a classe que aplica o efeito de descida e opacidade
-     */
     if (btnCloseHub) {
         btnCloseHub.onclick = () => {
-            if (hubLayer) {
-                hubLayer.classList.add('hub-hidden');
-            }
+            hubLayer.classList.add('hub-hidden');
         };
     }
-
-    // Futura função para injetar os "Universos" (Cards) sem quebrar o sistema
-    const carregarUniversos = () => {
-        // Esta área está preparada para receber os seus módulos de 
-        // Desenhos, Motores ou Memórias de forma dinâmica.
-    };
 });
+
+/**
+ * --- 2. LÓGICA DE NAVEGAÇÃO ENTRE UNIVERSOS ---
+ * Esta função é chamada pelos botões da 'quantum-nav' no index.html
+ */
+function switchUniverse(universeId) {
+    const navItems = document.querySelectorAll('.nav-item');
+    const display = document.getElementById('universe-display');
+
+    // 1. Atualiza o estado visual dos ícones (Botão Ativo)
+    navItems.forEach(item => {
+        item.classList.remove('active');
+        // Verifica se o onclick do botão contém o ID do universo clicado
+        if (item.getAttribute('onclick').includes(universeId)) {
+            item.classList.add('active');
+        }
+    });
+
+    // 2. Transição de Conteúdo (Simulação de Profundidade)
+    // Aqui o sistema decide o que mostrar em cada seção
+    switch(universeId) {
+        case 'home':
+            display.innerHTML = `<video muted loop playsinline id="main-video" style="width:100%; height:100%; object-fit:cover;"><source src="https://archive.org/download/steamboat-willie-1928/SteamboatWillie1928.mp4" type="video/mp4"></video>`;
+            document.getElementById('main-video').play();
+            break;
+        
+        case 'reels':
+            display.innerHTML = `<div class="placeholder-universe">🎬 UNIVERSO REELS (EM BREVE)</div>`;
+            break;
+
+        case 'friends':
+            display.innerHTML = `<div class="placeholder-universe">👥 CONEXÕES EM REDE</div>`;
+            break;
+
+        case 'market':
+            display.innerHTML = `<div class="placeholder-universe">🛒 MERCADO OIO</div>`;
+            break;
+
+        case 'notify':
+            display.innerHTML = `<div class="placeholder-universe">🔔 ALERTAS DE SISTEMA</div>`;
+            break;
+
+        case 'profile':
+            display.innerHTML = `<div class="placeholder-universe">👤 IDENTIDADE DO AUTOR</div>`;
+            break;
+    }
+
+    console.log(`Universo alterado para: ${universeId}`);
+}
