@@ -3,32 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Vibe App</title>
+    <title>Vibe App | OIO ONE</title>
+    
+    <!-- Chamando a sua Decoração -->
     <link rel="stylesheet" href="styles/dna.css">
     <link rel="stylesheet" href="styles/premium.css">
 </head>
 <body>
 
-<header>
-    <svg class="icon active" onclick="tab(0,this)" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-    <svg class="icon" onclick="tab(1,this)" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-    <svg class="icon" onclick="tab(2,this)" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-    <svg class="icon" onclick="tab(3,this)" viewBox="0 0 24 24"><path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-1.99.9-1.99 2L3 20c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2l-1-12c0-1.1-.9-2-2-2z"/></svg>
-    <svg class="icon" onclick="tab(4,this)" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-    <svg class="icon" onclick="tab(5,this)" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-</header>
+    <!-- Camada de Entrada (Portal) -->
+    <div id="portal-layer">
+        <div class="login-box">
+            <h1 class="portal-label">VIBE</h1>
+            <input type="text" id="user-id" placeholder="ID de Acesso">
+            <button class="glass-btn" onclick="acessar()">ACESSAR</button>
+        </div>
+    </div>
 
-<main>
-    <section class="page active centered"><h2>Feed</h2><div class="card">Acompanhe as vibrações.</div></section>
-    <section class="page"><video id="vid" loop playsinline><source src="https://www.w3schools.com/html/mov_bbb.mp4"></video></section>
-    <section class="page" id="chat-view"><div id="msg-container"></div><div class="input-box"><input type="text" id="txt" placeholder="Diga algo..."><button class="btn-send" onclick="send()">ENVIAR</button></div></section>
-    <section class="page centered"><h2>Shop</h2><div class="card">Produtos em breve.</div></section>
-    <section class="page centered"><h2>Avisos</h2><p>Sem notificações.</p></section>
-    <section class="page centered"><h2>Perfil</h2><div class="card">Configurações da conta.</div></section>
-</main>
+    <!-- Camada do App (As 6 Janelas que você criou) -->
+    <div id="app-layer" class="hidden">
+        <header class="quantum-nav">
+            <button class="nav-item active" onclick="tab(0,this)">FEED</button>
+            <button class="nav-item" onclick="tab(1,this)">VIBE</button>
+            <button class="nav-item" onclick="tab(2,this)">CHAT</button>
+            <button class="nav-item" onclick="tab(3,this)">SHOP</button>
+            <button class="nav-item" onclick="tab(4,this)">AVISOS</button>
+            <button class="nav-item" onclick="tab(5,this)">PERFIL</button>
+        </header>
 
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-<script src="js/main.js"></script>
+        <main id="main-content">
+            <!-- As janelas serão preenchidas pelos seus arquivos na pasta js/modules -->
+            <section class="page active" id="feed-view">
+                <div class="card-vibe">Carregando Feed Orgânico...</div>
+            </section>
+        </main>
+
+        <!-- Botão do seu Hub de Luxo -->
+        <div class="floating-icons">
+            <button class="icon-btn" onclick="toggleHub()">HUB</button>
+        </div>
+    </div>
+
+    <!-- O Cérebro que comanda as pastas js/services e js/modules -->
+    <script src="js/main.js"></script>
 </body>
 </html>
