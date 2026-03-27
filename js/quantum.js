@@ -1,55 +1,110 @@
 /**
- * OIO ONE - SISTEMA QUANTUM (ORQUESTRADOR)
+ * OIO ONE - SISTEMA QUANTUM (ORQUESTRADOR DE NAVEGAÇÃO)
  * Gerencia a troca de camadas e a ativação de módulos dinâmicos.
+ * Regra: Processamento por IDs de Universo, sem nomes fixos.
  */
 
-// Importamos os controladores (O Core que criamos antes)
 import { OriginController } from './modules/origin/controller.js';
+import { Logger } from './services/Logger.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-    const btnHub = document.getElementById('btn-hub');
-    const hubLayer = document.getElementById('hub-layer');
-    const btnCloseHub = document.querySelector('.close-hub');
+const QuantumSystem = {
+    init() {
+        this.setupHub();
+        this.setupNavigation();
+        Logger.info("Sistema Quantum: Orquestrador Ativado.");
+    },
 
-    if (btnHub) btnHub.onclick = () => hubLayer.classList.remove('hub-hidden');
-    if (btnCloseHub) btnCloseHub.onclick = () => hubLayer.classList.add('hub-hidden');
-});
+    // Gerencia a abertura e fechamento do HUB de Luxo
+    setupHub() {
+        const btnHub = document.getElementById('btn-hub');
+        const hubLayer = document.getElementById('hub-layer');
+        const btnCloseHub = document.querySelector('.close-hub');
 
-// Tornamos a função global para o 'onclick' do HTML funcionar
-window.switchUniverse = function(universeId) {
-    const navItems = document.querySelectorAll('.nav-item');
-    const display = document.getElementById('universe-display');
-
-    // 1. Feedback Visual dos Ícones
-    navItems.forEach(item => {
-        item.classList.remove('active');
-        // Verifica se o atributo onclick contém o ID atual
-        if (item.getAttribute('onclick') && item.getAttribute('onclick').includes(universeId)) {
-            item.classList.add('active');
+        if (btnHub && hubLayer) {
+            btnHub.onclick = () => {
+                hubLayer.classList.remove('hub-hidden');
+                hubLayer.classList.add('hub-visible');
+            };
         }
-    });
 
-    // 2. Troca de Universo Dinâmica
-    switch(universeId) {
-        case 'home':
-            // Em vez de escrever o HTML aqui, chamamos o controlador
-            OriginController.init(); 
-            break;
+        if (btnCloseHub && hubLayer) {
+            btnCloseHub.onclick = () => {
+                hubLayer.classList.add('hub-hidden');
+                hubLayer.classList.remove('hub-visible');
+            };
+        }
+    },
+
+    // Configura os cliques na barra de navegação (Os ícones que você mandou na imagem)
+    setupNavigation() {
+        const navItems = document.querySelectorAll('.nav-item');
         
-        case 'friends':
-            // Aqui chamaremos o NexusController no futuro
-            display.innerHTML = `<div class="universe-empty"><span>CONEXÕES EM REDE</span></div>`;
-            break;
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                // Captura o destino pelo atributo data-universe ou pelo ID do elemento
+                const target = item.getAttribute('data-universe') || item.id.replace('nav-', '');
+                this.switchUniverse(target);
+            });
+        });
+    },
 
-        case 'reels': 
-        case 'market': 
-        case 'notify':
-        case 'profile':
-            // Placeholder para os outros módulos
-            display.innerHTML = `
-                <div class="module-loading">
-                    <span style="letter-spacing: 5px; opacity: 0.3;">CARREGANDO ${universeId.toUpperCase()}...</span>
-                </div>`;
-            break;
+    // A "Chave Mestra" que troca as telas (Universos)
+    switchUniverse(universeId) {
+        const navItems = document.querySelectorAll('.nav-item');
+        const display = document.getElementById('universe-display');
+
+        if (!display) {
+            Logger.error("Display de universo não encontrado.");
+            return;
+        }
+
+        // 1. Feedback Visual dos Ícones (Ativo/Inativo)
+        navItems.forEach(item => {
+            item.classList.remove('active');
+            if (item.getAttribute('data-universe') === universeId) {
+                item.classList.add('active');
+            }
+        });
+
+        // 2. Lógica de Troca Dinâmica
+        Logger.info(`Navegando para: ${universeId.toUpperCase()}`);
+
+        switch(universeId) {
+            case 'home':
+            case 'feed':
+                // Chama o controlador da Casinha (Origin)
+                OriginController.init(); 
+                break;
+            
+            case 'friends':
+                // Espaço para o NexusController (Lista de Diego, Michelle, etc.)
+                display.innerHTML = `<div class="universe-empty"><span>CONEXÕES EM REDE</span></div>`;
+                break;
+
+            case 'reels': 
+            case 'market': 
+            case 'notify':
+            case 'profile':
+                // Placeholder genérico para carregamento
+                display.innerHTML = `
+                    <div class="module-loading" style="display: flex; height: 100%; align-items: center; justify-content: center;">
+                        <span style="letter-spacing: 5px; opacity: 0.3; text-transform: uppercase;">
+                            CARREGANDO ${universeId}...
+                        </span>
+                    </div>`;
+                break;
+            
+            default:
+                Logger.info("Universo desconhecido. Retornando ao fluxo base.");
+                OriginController.init();
+        }
     }
-}
+};
+
+// Torna a função de troca acessível globalmente caso o HTML use 'onclick'
+window.switchUniverse = (id) => QuantumSystem.switchUniverse(id);
+
+// Inicia o orquestrador
+document.addEventListener('DOMContentLoaded', () => QuantumSystem.init());
+
+export { QuantumSystem };
