@@ -5,14 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VIBE - OIO ONE</title>
     
-    <!-- Forçando o caminho relativo correto para as pastas de estilo -->
+    <!-- CSS INTERNO PARA CURAR A TELA BRANCA IMEDIATAMENTE -->
+    <style>
+        :root { --vibe-gold: #d4af37; --vibe-dark: #000; }
+        body, html { margin: 0; padding: 0; background: var(--vibe-dark); color: #fff; font-family: sans-serif; overflow: hidden; height: 100%; }
+        .hidden { display: none !important; }
+        .vibe-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center; }
+        .vibe-logo { font-size: 40px; letter-spacing: 8px; margin-bottom: 30px; }
+        .login-box { display: flex; flex-direction: column; gap: 15px; width: 80%; max-width: 300px; }
+        .vibe-input { background: #111; border: 1px solid #333; padding: 15px; color: #fff; border-radius: 8px; outline: none; }
+        .vibe-button { background: #fff; color: #000; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        
+        /* Layout do App Real */
+        .app-header { padding: 20px; text-align: center; border-bottom: 1px solid #222; font-size: 12px; letter-spacing: 2px; }
+        #universe-display { height: calc(100vh - 140px); overflow-y: auto; }
+        .vibe-nav { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: #000; padding: 20px 0; border-top: 1px solid #222; }
+        .nav-item { opacity: 0.4; font-size: 20px; cursor: pointer; }
+        .nav-item.active { opacity: 1; color: var(--vibe-gold); }
+    </style>
+
+    <!-- Links para arquivos externos (Mantenha se as pastas existirem) -->
     <link rel="stylesheet" href="./css/dna.css">
     <link rel="stylesheet" href="./css/premium_clean.css">
 </head>
-<body class="dark-theme">
+<body>
 
     <!-- CAMADA 0: PORTAL DE ACESSO -->
-    <div id="portal-layer" class="layer-visible">
+    <div id="portal-layer">
         <div class="vibe-container">
             <h1 class="vibe-logo">VIBE</h1>
             <div class="login-box">
@@ -23,7 +42,7 @@
         </div>
     </div>
 
-    <!-- CAMADA 1: APP REAL (Escondido via CSS) -->
+    <!-- CAMADA 1: ESTRUTURA DO APP (Michel Detilli / Feed) -->
     <div id="app-layer" class="hidden">
         <header class="app-header">
             <span id="user-display-name">USUÁRIO</span>
@@ -31,28 +50,16 @@
 
         <main id="universe-display"></main>
 
-        <!-- BARRA DE NAVEGAÇÃO COM ÍCONES PROFISSIONAIS GEMINI -->
         <nav class="vibe-nav">
-            <div class="nav-item active" data-universe="home"><i class="icon-home"></i></div>
-            <div class="nav-item" data-universe="reels"><i class="icon-reels"></i></div>
-            <div id="btn-hub" class="nav-item hub-trigger"><i class="icon-hub"></i></div>
-            <div class="nav-item" data-universe="friends"><i class="icon-friends"></i></div>
-            <div class="nav-item" data-universe="profile"><i class="icon-profile"></i></div>
+            <div class="nav-item active" data-universe="home">H</div>
+            <div class="nav-item" data-universe="reels">R</div>
+            <div id="btn-hub" class="nav-item">O</div>
+            <div class="nav-item" data-universe="friends">F</div>
+            <div class="nav-item" data-universe="profile">P</div>
         </nav>
     </div>
 
-    <!-- CAMADA 2: HUB DE LUXO -->
-    <div id="hub-layer" class="hub-hidden">
-        <div class="hub-content">
-            <button class="close-hub">FECHAR</button>
-            <div class="hub-grid">
-                <div class="hub-option" onclick="switchUniverse('drawing')">CANVAS</div>
-                <div class="hub-option" onclick="switchUniverse('audio')">VOICE</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- SCRIPTS - CARREGAMENTO EM MÓDULO -->
+    <!-- SCRIPTS - MOTORES EM MÓDULOS -->
     <script type="module" src="./js/core.js"></script>
     <script type="module" src="./js/quantum.js"></script>
 
