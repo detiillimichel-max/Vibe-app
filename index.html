@@ -1,50 +1,76 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Vibe App | OIO ONE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VIBE - OIO ONE</title>
     
-    <!-- Chamando a sua Decoração -->
-    <link rel="stylesheet" href="styles/dna.css">
-    <link rel="stylesheet" href="styles/premium.css">
+    <!-- Arquivos de Estilo (DNA e Premium) -->
+    <link rel="stylesheet" href="css/dna.css">
+    <link rel="stylesheet" href="css/premium_clean.css">
 </head>
-<body>
+<body class="dark-theme">
 
-    <!-- Camada de Entrada (Portal) -->
-    <div id="portal-layer">
-        <div class="login-box">
-            <h1 class="portal-label">VIBE</h1>
-            <input type="text" id="user-id" placeholder="ID de Acesso">
-            <button class="glass-btn" onclick="acessar()">ACESSAR</button>
+    <!-- CAMADA 0: PORTAL DE ACESSO (LOGIN) -->
+    <div id="portal-layer" class="layer-visible">
+        <div class="vibe-container">
+            <h1 class="vibe-logo">VIBE</h1>
+            <div class="login-box">
+                <input type="email" id="user-email" placeholder="ID de Acesso" class="vibe-input">
+                <input type="password" id="user-pass" placeholder="Senha" class="vibe-input">
+                <button id="btn-entrar" class="vibe-button">ACESSAR</button>
+            </div>
         </div>
     </div>
 
-    <!-- Camada do App (As 6 Janelas que você criou) -->
+    <!-- CAMADA 1: ESTRUTURA DO APLICATIVO (OCULTA POR PADRÃO) -->
     <div id="app-layer" class="hidden">
-        <header class="quantum-nav">
-            <button class="nav-item active" onclick="tab(0,this)">FEED</button>
-            <button class="nav-item" onclick="tab(1,this)">VIBE</button>
-            <button class="nav-item" onclick="tab(2,this)">CHAT</button>
-            <button class="nav-item" onclick="tab(3,this)">SHOP</button>
-            <button class="nav-item" onclick="tab(4,this)">AVISOS</button>
-            <button class="nav-item" onclick="tab(5,this)">PERFIL</button>
+        
+        <!-- HEADER DINÂMICO -->
+        <header class="app-header">
+            <span id="user-display-name">USUÁRIO</span>
         </header>
 
-        <main id="main-content">
-            <!-- As janelas serão preenchidas pelos seus arquivos na pasta js/modules -->
-            <section class="page active" id="feed-view">
-                <div class="card-vibe">Carregando Feed Orgânico...</div>
-            </section>
-        </main>
+        <!-- DISPLAY DE UNIVERSO (ONDE O FEED E OS POSTS APARECEM) -->
+        <main id="universe-display"></main>
 
-        <!-- Botão do seu Hub de Luxo -->
-        <div class="floating-icons">
-            <button class="icon-btn" onclick="toggleHub()">HUB</button>
+        <!-- BARRA DE NAVEGAÇÃO PROFISSIONAL -->
+        <nav class="vibe-nav">
+            <div class="nav-item active" data-universe="home">
+                <div class="icon-home"></div>
+            </div>
+            <div class="nav-item" data-universe="reels">
+                <div class="icon-reels"></div>
+            </div>
+            <div id="btn-hub" class="nav-item hub-trigger">
+                <div class="icon-hub"></div>
+            </div>
+            <div class="nav-item" data-universe="friends">
+                <div class="icon-friends"></div>
+            </div>
+            <div class="nav-item" data-universe="profile">
+                <div class="icon-profile"></div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- CAMADA 2: HUB DE LUXO (MENU DE FERRAMENTAS) -->
+    <div id="hub-layer" class="hub-hidden">
+        <div class="hub-overlay"></div>
+        <div class="hub-content">
+            <div class="hub-header">
+                <button class="close-hub">FECHAR</button>
+            </div>
+            <div class="hub-grid">
+                <div class="hub-option" onclick="switchUniverse('drawing')">CANVAS</div>
+                <div class="hub-option" onclick="switchUniverse('audio')">VOICE</div>
+            </div>
         </div>
     </div>
 
-    <!-- O Cérebro que comanda as pastas js/services e js/modules -->
-    <script src="js/main.js"></script>
+    <!-- CARREGAMENTO DOS MOTORES EM MÓDULOS -->
+    <script type="module" src="js/core.js"></script>
+    <script type="module" src="js/quantum.js"></script>
+
 </body>
 </html>
