@@ -1,10 +1,11 @@
 /**
  * OIO ONE - SISTEMA QUANTUM (ORQUESTRADOR DE NAVEGAÇÃO)
  * Gerencia a troca de camadas e a ativação de módulos dinâmicos.
- * Regra: Processamento por IDs de Universo, sem nomes fixos.
+ * Regra: Integração total sem costura. Processamento por IDs.
  */
 
 import { OriginController } from './modules/origin/controller.js';
+import { ProfileController } from './modules/profile/controller.js';
 import { Logger } from './services/Logger.js';
 
 const QuantumSystem = {
@@ -35,20 +36,19 @@ const QuantumSystem = {
         }
     },
 
-    // Configura os cliques na barra de navegação (Os ícones que você mandou na imagem)
+    // Configura os cliques na barra de navegação profissional
     setupNavigation() {
         const navItems = document.querySelectorAll('.nav-item');
         
         navItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                // Captura o destino pelo atributo data-universe ou pelo ID do elemento
+            item.addEventListener('click', () => {
                 const target = item.getAttribute('data-universe') || item.id.replace('nav-', '');
                 this.switchUniverse(target);
             });
         });
     },
 
-    // A "Chave Mestra" que troca as telas (Universos)
+    // Orquestrador de Telas (Universos)
     switchUniverse(universeId) {
         const navItems = document.querySelectorAll('.nav-item');
         const display = document.getElementById('universe-display');
@@ -58,7 +58,7 @@ const QuantumSystem = {
             return;
         }
 
-        // 1. Feedback Visual dos Ícones (Ativo/Inativo)
+        // 1. Feedback Visual dos Ícones
         navItems.forEach(item => {
             item.classList.remove('active');
             if (item.getAttribute('data-universe') === universeId) {
@@ -66,45 +66,46 @@ const QuantumSystem = {
             }
         });
 
-        // 2. Lógica de Troca Dinâmica
-        Logger.info(`Navegando para: ${universeId.toUpperCase()}`);
+        // 2. Lógica de Execução de Módulos
+        Logger.info(`Transição Quantum: ${universeId.toUpperCase()}`);
 
         switch(universeId) {
             case 'home':
             case 'feed':
-                // Chama o controlador da Casinha (Origin)
+                // Carrega a Casinha (Origin)
                 OriginController.init(); 
                 break;
             
+            case 'profile':
+                // Carrega o Perfil Real (Michel Detilli / Atividades)
+                ProfileController.init();
+                break;
+
             case 'friends':
-                // Espaço para o NexusController (Lista de Diego, Michelle, etc.)
-                display.innerHTML = `<div class="universe-empty"><span>CONEXÕES EM REDE</span></div>`;
+                display.innerHTML = `<div class="vibe-module-placeholder">REDE DE CONEXÕES</div>`;
                 break;
 
             case 'reels': 
             case 'market': 
             case 'notify':
-            case 'profile':
-                // Placeholder genérico para carregamento
                 display.innerHTML = `
                     <div class="module-loading" style="display: flex; height: 100%; align-items: center; justify-content: center;">
                         <span style="letter-spacing: 5px; opacity: 0.3; text-transform: uppercase;">
-                            CARREGANDO ${universeId}...
+                            ACESSO AO MÓDULO ${universeId}
                         </span>
                     </div>`;
                 break;
             
             default:
-                Logger.info("Universo desconhecido. Retornando ao fluxo base.");
                 OriginController.init();
         }
     }
 };
 
-// Torna a função de troca acessível globalmente caso o HTML use 'onclick'
+// Exposição global para chamadas via HTML
 window.switchUniverse = (id) => QuantumSystem.switchUniverse(id);
 
-// Inicia o orquestrador
+// Inicialização automática
 document.addEventListener('DOMContentLoaded', () => QuantumSystem.init());
 
 export { QuantumSystem };
