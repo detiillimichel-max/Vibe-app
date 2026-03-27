@@ -11,85 +11,90 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { 
-            background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif;
             height: 100vh; display: flex; flex-direction: column; overflow: hidden;
         }
 
-        /* NAVEGAÇÃO SUPERIOR (ÍCONES FINOS) */
+        /* HEADER PROFISSIONAL - ÍCONES ORIGINAIS */
         header {
             display: flex; justify-content: space-around; align-items: center;
-            height: 60px; border-bottom: 1px solid var(--border); background: var(--bg);
+            min-height: 60px; border-bottom: 1px solid var(--border); background: var(--bg);
             padding-top: env(safe-area-inset-top);
         }
         .nav-icon { width: 24px; height: 24px; fill: var(--muted); cursor: pointer; transition: 0.2s; }
         .nav-icon.active { fill: var(--text); }
 
-        /* ÁREA DE CONTEÚDO */
-        main { flex: 1; position: relative; overflow: hidden; }
-        .gaveta { display: none; height: 100%; width: 100%; flex-direction: column; animation: fadeIn 0.2s; }
+        /* CONTEÚDO */
+        main { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+        .gaveta { display: none; height: 100%; width: 100%; flex-direction: column; animation: fadeIn 0.3s ease; }
         .gaveta.ativa { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* CHAT ESTILO PROFISSIONAL */
-        #chat-container { display: flex; flex-direction: column; height: 100%; background: var(--bg); }
-        #messages { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* GAVETA 3: CHAT BLINDADO (ESTILO VERCEL) */
+        #chat-section { display: flex; flex-direction: column; height: 100%; justify-content: space-between; }
+        #messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        
         .bubble { 
-            max-width: 75%; padding: 10px 16px; border-radius: 18px; font-size: 14px; line-height: 1.4;
-            word-wrap: break-word; position: relative;
+            max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 15px; line-height: 1.4;
+            background: var(--card); border: 1px solid var(--border); align-self: flex-start;
         }
-        .msg-me { align-self: flex-end; background: var(--accent); color: white; border-bottom-right-radius: 2px; }
-        .msg-them { align-self: flex-start; background: var(--border); color: white; border-bottom-left-radius: 2px; }
+        .msg-me { align-self: flex-end; background: var(--accent); border: none; }
 
-        /* BARRA DE MENSAGEM (FIXA NO RODAPÉ) */
-        .input-wrapper {
-            padding: 10px 15px; border-top: 1px solid var(--border);
-            background: var(--bg); display: flex; align-items: center; gap: 10px;
-            padding-bottom: calc(10px + env(safe-area-inset-bottom));
+        .input-area { 
+            padding: 15px; border-top: 1px solid var(--border); background: var(--bg);
+            display: flex; align-items: center; gap: 10px;
+            padding-bottom: calc(15px + env(safe-area-inset-bottom));
         }
-        .input-field {
-            flex: 1; background: #121212; border: 1px solid var(--border);
-            padding: 10px 18px; border-radius: 25px; color: white; outline: none; font-size: 15px;
+        .input-area input { 
+            flex: 1; background: #1a1a1a; border: none; padding: 12px 20px; 
+            border-radius: 25px; color: white; outline: none; font-size: 16px;
         }
-        .send-btn { background: none; border: none; color: var(--accent); font-weight: 600; font-size: 14px; cursor: pointer; }
+        .send-btn { color: var(--accent); font-weight: 600; background: none; border: none; cursor: pointer; }
 
-        /* MURAL E OUTROS */
-        .placeholder-text { flex: 1; display: flex; align-items: center; justify-content: center; color: var(--muted); }
-        .video-player { width: 100%; height: 100%; object-fit: cover; }
+        /* VÍDEO E OUTROS */
+        .video-full { width: 100%; height: 100%; object-fit: cover; }
+        .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
+        .empty-state h2 { font-weight: 300; letter-spacing: 2px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
     <header>
-        <svg class="nav-icon active" onclick="tab(0, this)" viewBox="0 0 24 24"><path d="M12 5.69L17 10.19V18H15V12H9V18H7V10.19L12 5.69ZM12 3L2 12H5V20H11V14H13V20H19V12H22L12 3Z"/></svg>
-        <svg class="nav-icon" onclick="tab(1, this)" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-        <svg class="nav-icon" onclick="tab(2, this)" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.54.36 2.98.97 4.29L1 23l6.89-1.91A11.94 11.94 0 0012 22c6.48 0 12-4.48 12-10S18.52 2 12 2z"/></svg>
-        <svg class="nav-icon" onclick="tab(3, this)" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-8-2h4v2h-4V4z"/></svg>
-        <svg class="nav-icon" onclick="tab(4, this)" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-        <svg class="nav-icon" onclick="tab(5, this)" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        <svg class="nav-icon active" onclick="nav(0, this)" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <svg class="nav-icon" onclick="nav(1, this)" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        <svg class="nav-icon" onclick="nav(2, this)" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        <svg class="nav-icon" onclick="nav(3, this)" viewBox="0 0 24 24"><path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-1.99.9-1.99 2L3 20c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2l-1-12c0-1.1-.9-2-2-2z"/></svg>
+        <svg class="nav-icon" onclick="nav(4, this)" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+        <svg class="nav-icon" onclick="nav(5, this)" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
     </header>
 
     <main>
-        <section class="gaveta ativa"><div class="placeholder-text">Feed Orgânico</div></section>
+        <!-- G1: FEED -->
+        <section class="gaveta ativa"><div class="empty-state"><h2>VIBE</h2><p style="color:var(--muted)">Sua rede orgânica.</p></div></section>
         
+        <!-- G2: VÍDEO -->
         <section class="gaveta">
-            <video id="v" class="video-player" loop playsinline onclick="this.paused?this.play():this.pause()">
+            <video id="v" class="video-full" loop playsinline onclick="this.paused?this.play():this.pause()">
                 <source src="https://www.w3schools.com/html/mov_bbb.mp4">
             </video>
         </section>
 
+        <!-- G3: CHAT (O CORAÇÃO DO APP) -->
         <section class="gaveta">
-            <div id="chat-container">
+            <div id="chat-section">
                 <div id="messages"></div>
-                <div class="input-wrapper">
-                    <input type="text" id="msgIn" class="input-field" placeholder="Enviar mensagem...">
+                <div class="input-area">
+                    <input type="text" id="mIn" placeholder="Digite uma mensagem...">
                     <button class="send-btn" onclick="send()">Enviar</button>
                 </div>
             </div>
         </section>
 
-        <section class="gaveta"><div class="placeholder-text">Marketplace</div></section>
-        <section class="gaveta"><div class="placeholder-text">Atividade</div></section>
-        <section class="gaveta"><div class="placeholder-text">Perfil do Usuário</div></section>
+        <!-- G4, G5, G6: PLACEHOLDERS -->
+        <section class="gaveta"><div class="empty-state"><h2>SHOP</h2><p>Marketplace em breve.</p></div></section>
+        <section class="gaveta"><div class="empty-state"><h2>ALERTS</h2><p>Nenhuma novidade.</p></div></section>
+        <section class="gaveta"><div class="empty-state"><h2>CONTA</h2><p>Configurações de privacidade.</p></div></section>
     </main>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
@@ -105,32 +110,32 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        function tab(index, el) {
-            document.querySelectorAll('.gaveta').forEach((g, i) => g.classList.toggle('ativa', i === index));
+        function nav(idx, el) {
+            document.querySelectorAll('.gaveta').forEach((g, i) => g.classList.toggle('ativa', i === idx));
             document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active'));
             el.classList.add('active');
-            if(index !== 1) document.getElementById('v').pause();
+            if(idx !== 1) document.getElementById('v').pause();
         }
 
         function send() {
-            const i = document.getElementById('msgIn');
+            const i = document.getElementById('mIn');
             if(i.value.trim()){
                 db.collection("chats").add({
-                    t: i.value,
-                    u: "usuario_local", // ID para sua bolha ser azul
-                    time: firebase.firestore.FieldValue.serverTimestamp()
+                    msg: i.value,
+                    user: "local",
+                    ts: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 i.value = "";
             }
         }
 
-        db.collection("chats").orderBy("time", "asc").onSnapshot(s => {
+        db.collection("chats").orderBy("ts", "asc").onSnapshot(snap => {
             const b = document.getElementById('messages');
             b.innerHTML = "";
-            s.forEach(d => {
-                const data = d.data();
-                const me = data.u === "usuario_local";
-                b.innerHTML += `<div class="bubble ${me?'msg-me':'msg-them'}">${data.t}</div>`;
+            snap.forEach(doc => {
+                const d = doc.data();
+                const me = d.user === "local";
+                b.innerHTML += `<div class="bubble ${me?'msg-me':''}">${d.msg}</div>`;
             });
             b.scrollTop = b.scrollHeight;
         });
