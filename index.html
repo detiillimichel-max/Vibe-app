@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VIBE - OIO ONE</title>
     
-    <!-- Arquivos de Estilo (DNA e Premium) -->
-    <link rel="stylesheet" href="css/dna.css">
-    <link rel="stylesheet" href="css/premium_clean.css">
+    <!-- Forçando o caminho relativo correto para as pastas de estilo -->
+    <link rel="stylesheet" href="./css/dna.css">
+    <link rel="stylesheet" href="./css/premium_clean.css">
 </head>
 <body class="dark-theme">
 
-    <!-- CAMADA 0: PORTAL DE ACESSO (LOGIN) -->
+    <!-- CAMADA 0: PORTAL DE ACESSO -->
     <div id="portal-layer" class="layer-visible">
         <div class="vibe-container">
             <h1 class="vibe-logo">VIBE</h1>
@@ -23,44 +23,28 @@
         </div>
     </div>
 
-    <!-- CAMADA 1: ESTRUTURA DO APLICATIVO (OCULTA POR PADRÃO) -->
+    <!-- CAMADA 1: APP REAL (Escondido via CSS) -->
     <div id="app-layer" class="hidden">
-        
-        <!-- HEADER DINÂMICO -->
         <header class="app-header">
             <span id="user-display-name">USUÁRIO</span>
         </header>
 
-        <!-- DISPLAY DE UNIVERSO (ONDE O FEED E OS POSTS APARECEM) -->
         <main id="universe-display"></main>
 
-        <!-- BARRA DE NAVEGAÇÃO PROFISSIONAL -->
+        <!-- BARRA DE NAVEGAÇÃO COM ÍCONES PROFISSIONAIS GEMINI -->
         <nav class="vibe-nav">
-            <div class="nav-item active" data-universe="home">
-                <div class="icon-home"></div>
-            </div>
-            <div class="nav-item" data-universe="reels">
-                <div class="icon-reels"></div>
-            </div>
-            <div id="btn-hub" class="nav-item hub-trigger">
-                <div class="icon-hub"></div>
-            </div>
-            <div class="nav-item" data-universe="friends">
-                <div class="icon-friends"></div>
-            </div>
-            <div class="nav-item" data-universe="profile">
-                <div class="icon-profile"></div>
-            </div>
+            <div class="nav-item active" data-universe="home"><i class="icon-home"></i></div>
+            <div class="nav-item" data-universe="reels"><i class="icon-reels"></i></div>
+            <div id="btn-hub" class="nav-item hub-trigger"><i class="icon-hub"></i></div>
+            <div class="nav-item" data-universe="friends"><i class="icon-friends"></i></div>
+            <div class="nav-item" data-universe="profile"><i class="icon-profile"></i></div>
         </nav>
     </div>
 
-    <!-- CAMADA 2: HUB DE LUXO (MENU DE FERRAMENTAS) -->
+    <!-- CAMADA 2: HUB DE LUXO -->
     <div id="hub-layer" class="hub-hidden">
-        <div class="hub-overlay"></div>
         <div class="hub-content">
-            <div class="hub-header">
-                <button class="close-hub">FECHAR</button>
-            </div>
+            <button class="close-hub">FECHAR</button>
             <div class="hub-grid">
                 <div class="hub-option" onclick="switchUniverse('drawing')">CANVAS</div>
                 <div class="hub-option" onclick="switchUniverse('audio')">VOICE</div>
@@ -68,9 +52,9 @@
         </div>
     </div>
 
-    <!-- CARREGAMENTO DOS MOTORES EM MÓDULOS -->
-    <script type="module" src="js/core.js"></script>
-    <script type="module" src="js/quantum.js"></script>
+    <!-- SCRIPTS - CARREGAMENTO EM MÓDULO -->
+    <script type="module" src="./js/core.js"></script>
+    <script type="module" src="./js/quantum.js"></script>
 
 </body>
 </html>
