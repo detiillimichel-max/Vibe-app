@@ -5,56 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VIBE - OIO ONE</title>
     
-    <!-- Apontamento corrigido para a sua pasta real: styles/ -->
+    <!-- CAMINHOS BASEADOS NA IMAGEM 2 -->
+    <link rel="stylesheet" href="./styles/global.css">
     <link rel="stylesheet" href="./styles/dna.css">
     <link rel="stylesheet" href="./styles/premium_clean.css">
-    <link rel="stylesheet" href="./styles/global.css">
 </head>
 <body class="dark-theme">
 
-    <!-- CAMADA 0: PORTAL DE ACESSO -->
-    <div id="portal-layer" class="layer-visible">
+    <div id="portal-layer">
         <div class="vibe-container">
             <h1 class="vibe-logo">VIBE</h1>
             <div class="login-box">
                 <input type="email" id="user-email" placeholder="ID de Acesso" class="vibe-input">
                 <input type="password" id="user-pass" placeholder="Senha" class="vibe-input">
-                <button id="btn-entrar" class="glass-btn">ACESSAR</button>
+                <!-- Injeção direta de função para não depender de arquivo externo travar -->
+                <button id="btn-entrar" class="glass-btn" onclick="document.getElementById('portal-layer').style.display='none'; document.getElementById('app-layer').style.display='block';">ACESSAR</button>
             </div>
         </div>
     </div>
 
-    <!-- CAMADA 1: APP REAL -->
-    <div id="app-layer" class="hidden">
-        <header class="app-header" style="padding: 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1);">
-            <span id="user-display-name" style="font-size: 12px; letter-spacing: 2px;">USUÁRIO</span>
-        </header>
-
-        <main id="universe-display" style="height: calc(100vh - 140px); overflow-y: auto;"></main>
-
-        <nav class="quantum-nav">
-            <div class="nav-item active" data-universe="home">HOME</div>
-            <div class="nav-item" data-universe="reels">REELS</div>
-            <div id="btn-hub" class="nav-item hub-trigger">HUB</div>
-            <div class="nav-item" data-universe="friends">REDE</div>
-            <div class="nav-item" data-universe="profile">PERFIL</div>
-        </nav>
+    <div id="app-layer" style="display:none;">
+        <main id="universe-display">
+            <div style="color:white; text-align:center; margin-top:50vh;">CONECTADO AO UNIVERSO</div>
+        </main>
     </div>
 
-    <!-- CAMADA 2: HUB DE LUXO -->
-    <div id="hub-layer" class="hub-hidden">
-        <div class="hub-content" style="padding: 30px; text-align: center;">
-            <button class="close-hub" style="margin-bottom: 20px; padding: 10px;">FECHAR HUB</button>
-            <div class="hub-grid">
-                <div class="hub-option">CANVAS</div>
-                <div class="hub-option">VOICE</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Apontamento corrigido para a sua pasta real: JS/ -->
-    <script type="module" src="./JS/core.js"></script>
-    <script type="module" src="./JS/quantum.js"></script>
-
+    <!-- CAMINHOS BASEADOS NA IMAGEM 1 -->
+    <script type="module" src="./js/core.js"></script>
+    <script type="module" src="./js/quantum.js"></script>
 </body>
 </html>
