@@ -1,83 +1,50 @@
 /**
  * OIO ONE - PROFILE CONTROLLER
- * Gerencia a tela de perfil, estatísticas e atividades do usuário.
- * Regra: Dados dinâmicos e funcionalidade real de Logoff.
+ * Gerencia a exibição do perfil e menu de usuário.
  */
 
-import { Logger } from '../../services/Logger.js';
-
 export const ProfileController = {
-    async init() {
+    async init(userName) {
         const display = document.getElementById('universe-display');
         if (!display) return;
 
-        // Renderiza a estrutura baseada no layout da sua imagem
         display.innerHTML = `
-            <div class="profile-container" style="padding: 20px; color: #fff; text-align: center;">
+            <div style="max-width: 600px; margin: 0 auto; color: #e4e6eb; font-family: sans-serif; padding: 15px;">
                 
-                <!-- Cabeçalho do Perfil -->
-                <div class="profile-header" style="margin-top: 30px;">
-                    <div class="profile-avatar" style="width: 100px; height: 100px; background: #333; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
-                        <div class="icon-user-large"></div>
+                <h2 style="margin: 0 0 20px 0; font-size: 24px; font-weight: bold;">Menu</h2>
+
+                <!-- CARD DE PERFIL -->
+                <div style="background: #242526; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 15px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                    <div style="width: 60px; height: 60px; border-radius: 50%; overflow: hidden; border: 2px solid #3e4042;">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
-                    <h2 id="profile-name" style="margin: 15px 0 5px 0; font-size: 22px;">Michel Detilli</h2>
-                    <p id="profile-location" style="opacity: 0.5; font-size: 14px;">Bom Jesus dos Perdões, SP</p>
-                </div>
-
-                <!-- Estatísticas Reais -->
-                <div class="profile-stats" style="display: flex; justify-content: space-around; margin: 40px 0; border-top: 1px solid #222; border-bottom: 1px solid #222; padding: 20px 0;">
-                    <div><strong style="display: block; font-size: 18px;">12</strong><span style="font-size: 11px; opacity: 0.6; text-transform: uppercase;">Posts</span></div>
-                    <div><strong style="display: block; font-size: 18px;">45</strong><span style="font-size: 11px; opacity: 0.6; text-transform: uppercase;">Amigos</span></div>
-                    <div><strong style="display: block; font-size: 18px;">3</strong><span style="font-size: 11px; opacity: 0.6; text-transform: uppercase;">Vendas</span></div>
-                </div>
-
-                <!-- Minha Atividade -->
-                <div class="profile-activity" style="text-align: left;">
-                    <p style="font-size: 12px; opacity: 0.4; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;">Minha Atividade</p>
-                    
-                    <div class="activity-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 10px;">
-                        <p style="margin: 0; font-size: 15px;">Você postou: "Preciso de um frete..."</p>
-                        <small style="opacity: 0.4;">Gaveta 1 • Hoje</small>
-                    </div>
-
-                    <div class="activity-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 30px;">
-                        <p style="margin: 0; font-size: 15px;">Você comentou no post de Maria.</p>
-                        <small style="opacity: 0.4;">Gaveta 3 • Ontem</small>
+                    <div>
+                        <div style="font-weight: 600; font-size: 18px;">${userName}</div>
+                        <div style="font-size: 14px; color: #b0b3b8;">Ver seu perfil</div>
                     </div>
                 </div>
 
-                <!-- Botão de Sair -->
-                <button id="btn-logout" style="width: 100%; padding: 15px; background: transparent; border: 1px solid #333; color: #ff4d4d; border-radius: 12px; cursor: pointer; font-weight: bold;">
-                    Sair da Conta
+                <!-- LISTA DE OPÇÕES (ESTILO PREMIUM) -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div style="background: #242526; padding: 15px; border-radius: 8px; font-weight: 600;">
+                        <i class="fas fa-bookmark" style="color: #9360f7; margin-right: 10px;"></i> Salvos
+                    </div>
+                    <div style="background: #242526; padding: 15px; border-radius: 8px; font-weight: 600;">
+                        <i class="fas fa-history" style="color: #1877f2; margin-right: 10px;"></i> Recordações
+                    </div>
+                    <div style="background: #242526; padding: 15px; border-radius: 8px; font-weight: 600;">
+                        <i class="fas fa-users-cog" style="color: #2abba7; margin-right: 10px;"></i> Grupos
+                    </div>
+                    <div style="background: #242526; padding: 15px; border-radius: 8px; font-weight: 600;">
+                        <i class="fas fa-cog" style="color: #b0b3b8; margin-right: 10px;"></i> Definições
+                    </div>
+                </div>
+
+                <button style="width: 100%; background: #3a3b3c; color: #e4e6eb; border: none; padding: 12px; border-radius: 6px; font-weight: 600; margin-top: 20px; cursor: pointer;">
+                    Sair da conta
                 </button>
 
             </div>
         `;
-
-        this.setupListeners();
-    },
-
-    setupListeners() {
-        const btnLogout = document.getElementById('btn-logout');
-        if (btnLogout) {
-            btnLogout.onclick = () => this.handleLogout();
-        }
-    },
-
-    handleLogout() {
-        Logger.info("OIO ONE: Encerrando sessão do usuário.");
-        
-        // Retorna visualmente para o Portal de Acesso
-        const portal = document.getElementById('portal-layer');
-        const app = document.getElementById('app-layer');
-
-        if (portal && app) {
-            app.classList.add('hidden');
-            portal.classList.remove('hidden');
-            
-            // Limpa campos de entrada para segurança
-            document.getElementById('user-email').value = '';
-            document.getElementById('user-pass').value = '';
-        }
     }
 };
