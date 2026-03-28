@@ -1,6 +1,6 @@
-import { LikeSystem } from './likes.js';
-import { CommentSystem } from './comments.js';
-
+/**
+ * OIO ONE - WATCH CONTROLLER (BLINDADO 🛡️)
+ */
 export const WatchController = {
     async init() {
         const display = document.getElementById('universe-display');
@@ -13,7 +13,6 @@ export const WatchController = {
                     <h2 style="margin: 0; font-size: 24px;">Vídeos OIO</h2>
                 </div>
 
-                <!-- ÁREA DE UPLOAD -->
                 <div style="background: #242526; padding: 20px; border-radius: 15px; border: 1px dashed #3a3b3c; margin-bottom: 25px; text-align: center;">
                     <input type="text" id="video-title" placeholder="Título do vídeo..." style="width: 90%; padding: 10px; background: #3a3b3c; border: none; border-radius: 8px; color: white; margin-bottom: 15px;">
                     <br>
@@ -36,9 +35,9 @@ export const WatchController = {
             if (file) {
                 const fileURL = URL.createObjectURL(file);
                 const titulo = titleInput.value || "OIO feito para você";
-                const videoId = "v_" + Date.now(); // ID único para o comentário saber qual vídeo é
+                const videoId = "v_" + Date.now();
                 
-                const novoVideoHtml = `
+                const cardHtml = `
                     <div id="${videoId}" class="video-card" style="background: #1c1e21; border-radius: 12px; overflow: hidden; border: 1px solid #333; margin-bottom:20px;">
                         <div style="padding: 12px; display: flex; align-items: center; gap: 10px;">
                             <div style="width: 40px; height: 40px; background: #e67e22; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">OIO</div>
@@ -47,33 +46,18 @@ export const WatchController = {
                         <video controls style="width: 100%; display: block; background: #000;">
                             <source src="${fileURL}" type="video/mp4">
                         </video>
-                        
                         <div style="padding: 15px; display: flex; gap: 20px; border-top: 1px solid #333;">
-                            <button class="btn-like" style="background:none; border:none; color:white; cursor:pointer; display:flex; align-items:center; gap:8px;">
+                            <button onclick="window.LikeSystem.toggleLike(this)" style="background:none; border:none; color:white; cursor:pointer; display:flex; align-items:center; gap:8px;">
                                 <i class="far fa-heart"></i> <span class="like-count">0</span>
                             </button>
-                            <button class="btn-comment" style="background:none; border:none; color:white; cursor:pointer; display:flex; align-items:center; gap:8px;">
+                            <button onclick="window.CommentSystem.openComments('${videoId}')" style="background:none; border:none; color:white; cursor:pointer; display:flex; align-items:center; gap:8px;">
                                 <i class="far fa-comment"></i> Comentar
                             </button>
                         </div>
                     </div>
                 `;
 
-                feed.insertAdjacentHTML('afterbegin', novoVideoHtml);
-                
-                // --- ATIVANDO AS FUNÇÕES DOS ARQUIVOS SEPARADOS ---
-                const ultimoCard = feed.firstElementChild;
-                
-                // Botão Curtir chamando o likes.js
-                ultimoCard.querySelector('.btn-like').onclick = function() {
-                    LikeSystem.toggleLike(this);
-                };
-
-                // Botão Comentar chamando o comments.js
-                ultimoCard.querySelector('.btn-comment').onclick = function() {
-                    CommentSystem.openComments(videoId);
-                };
-
+                feed.insertAdjacentHTML('afterbegin', cardHtml);
                 titleInput.value = "";
             }
         };
