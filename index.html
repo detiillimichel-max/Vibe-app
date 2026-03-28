@@ -3,35 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VIBE - OIO ONE</title>
-    
-    <!-- CAMINHOS BASEADOS NA IMAGEM 2 -->
-    <link rel="stylesheet" href="./styles/global.css">
-    <link rel="stylesheet" href="./styles/dna.css">
-    <link rel="stylesheet" href="./styles/premium_clean.css">
-</head>
-<body class="dark-theme">
+    <title>OIO ONE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body, html { margin: 0; padding: 0; background: #111; color: white; font-family: sans-serif; overflow-x: hidden; }
+        .hidden { display: none !important; }
+        
+        /* BARRA SUPERIOR - OS 6 MÓDULOS */
+        .main-nav {
+            position: sticky;
+            top: 0;
+            background: #242526;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-bottom: 1px solid #3a3b3c;
+            z-index: 1000;
+        }
+        .nav-item { color: #b0b3b8; font-size: 22px; cursor: pointer; position: relative; flex: 1; text-align: center; }
+        .nav-item.active { color: #1877f2; }
+        .nav-item.active::after {
+            content: ''; position: absolute; bottom: -10px; left: 0; width: 100%; height: 3px; background: #1877f2;
+        }
 
+        /* CONTAINER DO CONTEÚDO */
+        #universe-display { padding: 10px; }
+
+        /* PORTAL DE LOGIN */
+        #portal-layer { 
+            height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            background: linear-gradient(180deg, #000 0%, #111 100%);
+        }
+        .login-btn { 
+            background: #1877f2; color: white; border: none; padding: 12px 40px; 
+            border-radius: 6px; font-weight: bold; font-size: 16px; margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CAMADA 1: LOGIN -->
     <div id="portal-layer">
-        <div class="vibe-container">
-            <h1 class="vibe-logo">VIBE</h1>
-            <div class="login-box">
-                <input type="email" id="user-email" placeholder="ID de Acesso" class="vibe-input">
-                <input type="password" id="user-pass" placeholder="Senha" class="vibe-input">
-                <!-- Injeção direta de função para não depender de arquivo externo travar -->
-                <button id="btn-entrar" class="glass-btn" onclick="document.getElementById('portal-layer').style.display='none'; document.getElementById('app-layer').style.display='block';">ACESSAR</button>
-            </div>
+        <h1 style="color: #1877f2; font-size: 40px; margin-bottom: 10px;">OIO</h1>
+        <button id="btn-entrar" class="login-btn">ACESSAR</button>
+    </div>
+
+    <!-- CAMADA 2: O APP (6 MÓDULOS) -->
+    <div id="app-layer" class="hidden">
+        <nav class="main-nav">
+            <div class="nav-item active" title="Home"><i class="fas fa-home"></i></div>
+            <div class="nav-item" title="Vídeos"><i class="fas fa-play-circle"></i></div>
+            <div class="nav-item" title="Amigos"><i class="fas fa-users"></i></div>
+            <div class="nav-item" title="Marketplace"><i class="fas fa-store"></i></div>
+            <div class="nav-item" title="Notificações"><i class="fas fa-bell"></i></div>
+            <div class="nav-item" title="Perfil"><div style="width:24px; height:24px; background:#d4af37; border-radius:50%; margin:auto;"></div></div>
+        </nav>
+
+        <div id="universe-display">
+            <!-- Aqui entrará cada módulo, um por vez -->
         </div>
     </div>
 
-    <div id="app-layer" style="display:none;">
-        <main id="universe-display">
-            <div style="color:white; text-align:center; margin-top:50vh;">CONECTADO AO UNIVERSO</div>
-        </main>
-    </div>
-
-    <!-- CAMINHOS BASEADOS NA IMAGEM 1 -->
-    <script type="module" src="./js/core.js"></script>
-    <script type="module" src="./js/quantum.js"></script>
+    <script type="module" src="js/core.js"></script>
 </body>
 </html>
