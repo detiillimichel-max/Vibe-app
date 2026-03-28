@@ -1,6 +1,9 @@
 /**
- * OIO ONE - WATCH CONTROLLER (LISTA ACUMULATIVA 🎥)
+ * OIO ONE - WATCH CONTROLLER (MODULAR & ACUMULATIVO 🎥)
  */
+import { LikeSystem } from './likes.js';
+import { CommentSystem } from './comments.js';
+
 export const WatchController = {
     async init() {
         const display = document.getElementById('universe-display');
@@ -24,10 +27,7 @@ export const WatchController = {
                     </label>
                 </div>
 
-                <!-- FEED DE VÍDEOS (ONDE OS VÍDEOS VÃO SOMAR) -->
-                <div id="video-feed" style="display: flex; flex-direction: column; gap: 20px;">
-                    <!-- Vídeos entram aqui -->
-                </div>
+                <div id="video-feed" style="display: flex; flex-direction: column; gap: 20px;"></div>
             </div>
         `;
 
@@ -40,10 +40,10 @@ export const WatchController = {
             if (file) {
                 const fileURL = URL.createObjectURL(file);
                 const titulo = titleInput.value || "OIO feito para você";
+                const videoId = "vid_" + Date.now(); // ID único para o comentário saber qual vídeo é
 
-                // CRIANDO UM NOVO CARD (SEM APAGAR O ANTERIOR)
-                const novoVideo = `
-                    <div class="video-card" style="background: #1c1e21; border-radius: 12px; overflow: hidden; border: 1px solid #333;">
+                const cardHtml = `
+                    <div id="${videoId}" class="video-card" style="background: #1c1e21; border-radius: 12px; overflow: hidden; border: 1px solid #333;">
                         <div style="padding: 12px; display: flex; align-items: center; gap: 10px;">
                             <div style="width: 40px; height: 40px; background: #e67e22; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">OIO</div>
                             <strong>${titulo}</strong>
@@ -51,13 +51,32 @@ export const WatchController = {
                         <video controls style="width: 100%; display: block; background: #000;">
                             <source src="${fileURL}" type="video/mp4">
                         </video>
+                        
+                        <div style="padding: 12px; display: flex; gap: 20px; border-top: 1px solid #333;">
+                            <button class="btn-like" style="background:none; border:none; color:white; cursor:pointer; display:flex; align-items:center; gap:5px;">
+                                <i class="far fa-heart"></i> <span class="like-count">0</span>
+                            </button>
+                            <button class="btn-comment" style="background:none; border:none; color:white; cursor:pointer; display:flex; align-items:center; gap:5px;">
+                                <i class="far fa-comment"></i> Comentar
+                            </button>
+                        </div>
                     </div>
                 `;
 
-                // INSERE NO TOPO DO FEED
-                feed.insertAdjacentHTML('afterbegin', novoVideo);
+                // Adiciona ao topo
+                feed.insertAdjacentHTML('afterbegin', cardHtml);
                 
-                // Limpa o campo de título para o próximo
+                // Conecta os eventos dos botões recém-criados
+                const novoCard = feed.firstElementChild;
+                
+                novoCard.querySelector('.btn-like').onclick = function() {
+                    LikeSystem.toggleLike(this);
+                };
+                
+                novoCard.querySelector('.btn-comment').onclick = function() {
+                    CommentSystem.openComments(videoId);
+                };
+
                 titleInput.value = "";
             }
         };
