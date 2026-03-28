@@ -1,93 +1,87 @@
 /**
- * OIO ONE - ORIGIN CONTROLLER (A CASINHA)
- * Este é o cérebro que organiza o Feed, as Sugestões e o Marketing.
+ * OIO ONE - ORIGIN CONTROLLER (O FACEBOOK)
+ * Este cérebro desenha o Feed profissional com ícones customizados.
  */
-
-import { OriginTemplates } from './template.js';
 
 export const OriginController = {
     async init() {
         const display = document.getElementById('universe-display');
-        
-        if (!display) {
-            console.error("OIO-ERROR: Elemento 'universe-display' não encontrado.");
-            return;
+        if (!display) return;
+
+        // Injeta os ícones profissionais (FontAwesome)
+        if (!document.getElementById('fa-icons')) {
+            const link = document.createElement('link');
+            link.id = 'fa-icons';
+            link.rel = 'stylesheet';
+            link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css';
+            document.head.appendChild(link);
         }
 
-        // Monta a estrutura visual das seções
+        // Layout de Facebook Dark Profissional
         display.innerHTML = `
-            <div class="origin-wrapper" style="padding: 20px; padding-bottom: 100px;">
-                <!-- Área de Marketing -->
-                <section id="marketing-area" class="section-vibe"></section>
+            <div class="fb-container" style="max-width: 680px; margin: 0 auto; padding: 10px; background:#111; color: #e4e6eb;">
                 
-                <div class="discovery-header" style="margin: 20px 0; opacity: 0.6; font-size: 12px; letter-spacing: 2px;">
-                    <span>CONEXÕES SUGERIDAS</span>
+                <!-- Barra de Postagem: No que você está pensando? -->
+                <div class="fb-card" style="background:#242526; padding:12px 16px; border-radius:8px; margin-bottom:16px; border: 1px solid #3a3b3c;">
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <div style="width:40px; height:40px; border-radius:50%; background:#4e4f50; border: 1px solid #d4af37;"></div>
+                        <input type="text" placeholder="No que você está pensando?" style="flex:1; background:#3a3b3c; border:none; border-radius:20px; padding:10px 15px; color:#b0b3b8; font-size:15px;">
+                    </div>
                 </div>
-                
-                <!-- Área de Sugestões -->
-                <section id="suggestions-area" class="horizontal-scroll" style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px;"></section>
-                
-                <div class="discovery-header" style="margin: 20px 0; opacity: 0.6; font-size: 12px; letter-spacing: 2px;">
-                    <span>FLUXO DE IDEIAS</span>
-                </div>
-                
-                <!-- Área de Postagens e Pensamentos -->
-                <section id="ideas-feed" style="display: flex; flex-direction: column; gap: 15px;"></section>
+
+                <div id="fb-feed"></div>
             </div>
         `;
 
-        try {
-            // Busca o JSON (Caminho ajustado para compatibilidade com GitHub Pages)
-            const response = await fetch('data/origin-feed.json');
-            
-            if (!response.ok) throw new Error("Falha ao carregar origin-feed.json");
-            
-            const data = await response.json();
-            
-            // Renderiza o conteúdo
-            this.renderContent(data);
-            
-            console.log("OIO-INFO: Ecossistema VIBE carregado.");
-        } catch (error) {
-            console.error("OIO-ERROR:", error);
-            display.innerHTML = `<div style="padding: 50px; text-align: center; opacity: 0.3;">SISTEMA OFFLINE</div>`;
-        }
+        this.loadFeed();
     },
 
-    renderContent(data) {
-        const mktArea = document.getElementById('marketing-area');
-        const suggestArea = document.getElementById('suggestions-area');
-        const ideasArea = document.getElementById('ideas-feed');
+    async loadFeed() {
+        const feedArea = document.getElementById('fb-feed');
+        if (!feedArea) return;
 
-        // Limpa as áreas antes de injetar conteúdo (Prevenção de bugs)
-        if(mktArea) mktArea.innerHTML = '';
-        if(suggestArea) suggestArea.innerHTML = '';
-        if(ideasArea) ideasArea.innerHTML = '';
+        try {
+            const response = await fetch('data/origin-feed.json');
+            if (!response.ok) throw new Error("Erro ao carregar o feed.");
+            const data = await response.json();
 
-        // 1. Marketing
-        if (data.marketing) {
-            data.marketing.forEach(item => {
-                mktArea.innerHTML += OriginTemplates.marketingCard(item);
-            });
-        }
-
-        // 2. Sugestões
-        if (data.suggestions) {
-            data.suggestions.forEach(user => {
-                suggestArea.innerHTML += OriginTemplates.connectionSuggest(user);
-            });
-        }
-
-        // 3. Ideias
-        if (data.ideas) {
-            data.ideas.forEach(post => {
-                ideasArea.innerHTML += `
-                    <div class="glass-card thought-card" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px;">
-                        <p style="font-size: 16px; line-height: 1.6; margin-bottom: 10px; font-style: italic;">"${post.content}"</p>
-                        <small style="color: #d4af37; text-transform: uppercase; letter-spacing: 1px;">— ${post.author}</small>
+            // Transforma seus dados em Posts de Facebook
+            feedArea.innerHTML = data.ideas.map(post => `
+                <div class="fb-post-card" style="background:#242526; border-radius:8px; margin-bottom:16px; border: 1px solid #3a3b3c; overflow:hidden;">
+                    
+                    <div style="padding:12px 16px; display:flex; align-items:center; gap:12px;">
+                        <div style="width:40px; height:40px; border-radius:50%; background:#d4af37; color:#111; display:flex; align-items:center; justify-content:center; font-weight:bold;">${post.author[0]}</div>
+                        <div>
+                            <div style="font-weight:600; color:#e4e6eb;">${post.author}</div>
+                            <div style="font-size:13px; color:#b0b3b8;">Agora mesmo • <i class="fas fa-globe-americas"></i></div>
+                        </div>
                     </div>
-                `;
-            });
+
+                    <div style="padding:4px 16px 16px 16px; color:#e4e6eb; font-size:15px; line-height:1.5;">
+                        ${post.content}
+                    </div>
+
+                    <!-- Botões de Ação Profissionais -->
+                    <div style="padding:4px 12px; border-top: 1px solid #3a3b3c; display:flex; justify-content:space-around; color:#b0b3b8; font-weight:600; font-size:14px; background:#1c1d1e;">
+                        
+                        <div style="cursor:pointer; display:flex; align-items:center; gap:8px; padding:10px; flex:1; justify-content:center;">
+                            <i class="far fa-thumbs-up"></i> Curtir
+                        </div>
+                        
+                        <div style="cursor:pointer; display:flex; align-items:center; gap:8px; padding:10px; flex:1; justify-content:center;">
+                            <i class="far fa-comment-alt"></i> Comentar
+                        </div>
+                        
+                        <div style="cursor:pointer; display:flex; align-items:center; gap:8px; padding:10px; flex:1; justify-content:center;">
+                            <i class="fas fa-share"></i> Partilhar
+                        </div>
+                        
+                    </div>
+                </div>
+            `).join('');
+
+        } catch (error) {
+            feedArea.innerHTML = "<p style='text-align:center; color:gray; padding:20px;'>Erro ao carregar.</p>";
         }
     }
 };
