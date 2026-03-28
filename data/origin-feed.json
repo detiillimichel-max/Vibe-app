@@ -1,42 +1,20 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-import { OriginController } from './modules/origin/controller.js';
-
-const firebaseConfig = {
-    apiKey: "AIzaSyAkJLFtmzPdvJBmPJKwVQz_VRC7A3SsAQ",
-    authDomain: "vibe-app-bbba2.firebaseapp.com",
-    databaseURL: "https://vibe-app-bbba2-default-rtdb.firebaseio.com",
-    projectId: "vibe-app-bbba2",
-    appId: "1:329513213082:web:ca896a67b1dc7a58a5323"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-document.addEventListener('click', async (e) => {
-    if (e.target.id === 'btn-entrar') {
-        const portal = document.getElementById('portal-layer');
-        const appLayer = document.getElementById('app-layer');
-
-        // BUSCA NOME NO FIREBASE (Simulação de User ID 'admin')
-        let nomeUsuario = "Usuário OIO";
-        try {
-            const userRef = ref(db, 'users/admin/name');
-            const snapshot = await get(userRef);
-            if (snapshot.exists()) {
-                nomeUsuario = snapshot.val();
-            }
-        } catch (error) {
-            console.error("Erro ao buscar usuário:", error);
-        }
-
-        if (portal) portal.style.display = 'none';
-        if (appLayer) {
-            appLayer.classList.remove('hidden');
-            appLayer.style.display = 'block';
-        }
-
-        // Inicia o Módulo 1 com o nome vindo do Banco!
-        OriginController.init(nomeUsuario);
+{
+  "ideas": [
+    {
+      "id": 1,
+      "author": "Michel Detilli",
+      "content": "Trabalhando no novo layout do OIO ONE! O protocolo de construção está a todo vapor. 🚀",
+      "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+      "likes": 12,
+      "time": "Agora mesmo"
+    },
+    {
+      "id": 2,
+      "author": "Sistema OIO",
+      "content": "A parte mais solitária de envelhecer não é estar sozinho, mas perceber quem realmente faz o esforço de estar presente.",
+      "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3",
+      "likes": 85,
+      "time": "2 h"
     }
-});
+  ]
+}
