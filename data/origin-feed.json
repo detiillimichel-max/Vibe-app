@@ -1,47 +1,42 @@
-{
-  "marketing": [
-    {
-      "id": "mkt_01",
-      "type": "luxury_ad",
-      "title": "OIO ARCHITECTURE",
-      "description": "Espaços que respiram minimalismo e luz.",
-      "image": "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=600",
-      "link": "#"
-    }
-  ],
-  "suggestions": [
-    {
-      "id": "user_01",
-      "name": "Diego Soati",
-      "avatar": "https://i.pravatar.cc/150?u=diego",
-      "mutual_friends": 5
-    },
-    {
-      "id": "user_02",
-      "name": "Claudia Detilio",
-      "avatar": "https://i.pravatar.cc/150?u=claudia",
-      "mutual_friends": 3
-    },
-    {
-      "id": "user_03",
-      "name": "Michelle Amaro",
-      "avatar": "https://i.pravatar.cc/150?u=michelle",
-      "mutual_friends": 12
-    },
-    {
-      "id": "user_04",
-      "name": "Douglas José",
-      "avatar": "https://i.pravatar.cc/150?u=douglas",
-      "mutual_friends": 2
-    }
-  ],
-  "ideas": [
-    {
-      "id": "post_01",
-      "author": "Sistema OIO",
-      "content": "A parte mais solitária de envelhecer não é estar sozinho, mas perceber quem realmente faz o esforço de estar presente.",
-      "type": "thought"
-    }
-  ]
-}
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { OriginController } from './modules/origin/controller.js';
 
+const firebaseConfig = {
+    apiKey: "AIzaSyAkJLFtmzPdvJBmPJKwVQz_VRC7A3SsAQ",
+    authDomain: "vibe-app-bbba2.firebaseapp.com",
+    databaseURL: "https://vibe-app-bbba2-default-rtdb.firebaseio.com",
+    projectId: "vibe-app-bbba2",
+    appId: "1:329513213082:web:ca896a67b1dc7a58a5323"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+document.addEventListener('click', async (e) => {
+    if (e.target.id === 'btn-entrar') {
+        const portal = document.getElementById('portal-layer');
+        const appLayer = document.getElementById('app-layer');
+
+        // BUSCA NOME NO FIREBASE (Simulação de User ID 'admin')
+        let nomeUsuario = "Usuário OIO";
+        try {
+            const userRef = ref(db, 'users/admin/name');
+            const snapshot = await get(userRef);
+            if (snapshot.exists()) {
+                nomeUsuario = snapshot.val();
+            }
+        } catch (error) {
+            console.error("Erro ao buscar usuário:", error);
+        }
+
+        if (portal) portal.style.display = 'none';
+        if (appLayer) {
+            appLayer.classList.remove('hidden');
+            appLayer.style.display = 'block';
+        }
+
+        // Inicia o Módulo 1 com o nome vindo do Banco!
+        OriginController.init(nomeUsuario);
+    }
+});
