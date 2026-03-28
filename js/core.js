@@ -2,7 +2,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { OriginController } from './modules/origin/controller.js';
 
-// Sua configuração original do Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyAkJLFtmzPdvJBmPJKwVQz_VRC7A3SsAQ",
     authDomain: "vibe-app-bbba2.firebaseapp.com",
@@ -14,36 +13,19 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Escuta o evento de clique no botão ACESSAR
 document.addEventListener('click', async (e) => {
     if (e.target.id === 'btn-entrar') {
-        
-        // 1. Transição de Telas (Portal -> App)
+        // Simulação de Login (Pode ser expandida para Auth real depois)
+        console.log("OIO-INFO: Validando Acesso...");
+
         const portal = document.getElementById('portal-layer');
         const appLayer = document.getElementById('app-layer');
 
-        if (portal) {
-            portal.classList.remove('layer-visible');
-            portal.style.display = 'none';
-        }
+        // Troca as telas
+        if (portal) portal.style.display = 'none';
+        if (appLayer) appLayer.style.display = 'block';
 
-        if (appLayer) {
-            appLayer.classList.remove('hidden');
-            appLayer.style.display = 'block';
-        }
-
-        // 2. Dispara a Arquitetura Modular (OriginController)
-        // Isso vai carregar o Marketing, Sugestões e Ideias do origin-feed.json
+        // Inicializa o visual do Facebook
         OriginController.init();
-
-        // 3. Opcional: Busca algo específico no Firebase se necessário
-        try {
-            const snapshot = await get(ref(db, 'origin-feed'));
-            if (snapshot.exists()) {
-                console.log("OIO-INFO: Dados extras do Firebase carregados.");
-            }
-        } catch (error) {
-            console.warn("OIO-WARN: Firebase não respondeu, usando dados locais.");
-        }
     }
 });
