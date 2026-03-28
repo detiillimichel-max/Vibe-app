@@ -1,12 +1,13 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// IMPORTANDO OS 5 MÓDULOS QUE JÁ TEMOS NAS PASTAS
+// IMPORTANDO OS 6 MÓDULOS ORGANIZADOS EM PASTAS
 import { OriginController } from './modules/origin/controller.js';
 import { WatchController } from './modules/watch/controller.js';
 import { FriendsController } from './modules/friends/controller.js';
 import { MarketplaceController } from './modules/marketplace/controller.js';
 import { NotificationsController } from './modules/notifications/controller.js';
+import { ProfileController } from './modules/profile/controller.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyAkJLFtmzPdvJBmPJKwVQz_VRC7A3SsAQ",
@@ -32,7 +33,7 @@ document.addEventListener('click', async (e) => {
             const userRef = ref(db, 'users/admin/name');
             const snapshot = await get(userRef);
             if (snapshot.exists()) usuarioLogado = snapshot.val();
-        } catch (error) { console.error("Firebase:", error); }
+        } catch (error) { console.error("Firebase Error:", error); }
 
         if (portal) portal.style.display = 'none';
         if (appLayer) {
@@ -43,7 +44,7 @@ document.addEventListener('click', async (e) => {
         OriginController.init(usuarioLogado);
     }
 
-    // 2. INTERRUPTOR DA BARRA SUPERIOR (NAV BAR)
+    // 2. CONTROLE DA BARRA SUPERIOR (NAV BAR)
     const navItem = e.target.closest('.nav-item');
     if (navItem) {
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -51,7 +52,7 @@ document.addEventListener('click', async (e) => {
 
         const titulo = navItem.getAttribute('title');
 
-        // Lógica de Troca de Módulos
+        // Seleção de Módulos (Caminhos Exatos)
         if (titulo === 'Home') {
             OriginController.init(usuarioLogado);
         } 
@@ -65,8 +66,11 @@ document.addEventListener('click', async (e) => {
             MarketplaceController.init();
         }
         else if (titulo === 'Notificações') {
-            // ATIVA O MÓDULO 5!
             NotificationsController.init();
+        }
+        else if (titulo === 'Perfil') {
+            // ATIVA O MÓDULO 6 (PASSANDO O NOME DO USUÁRIO)
+            ProfileController.init(usuarioLogado);
         }
     }
 });
