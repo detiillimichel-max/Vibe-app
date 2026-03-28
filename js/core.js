@@ -1,9 +1,10 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// 1. IMPORTANDO OS DOIS MÓDULOS QUE JÁ TEMOS NAS PASTAS
+// IMPORTANDO OS 3 MÓDULOS QUE JÁ TEMOS NAS PASTAS
 import { OriginController } from './modules/origin/controller.js';
 import { WatchController } from './modules/watch/controller.js';
+import { FriendsController } from './modules/friends/controller.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyAkJLFtmzPdvJBmPJKwVQz_VRC7A3SsAQ",
@@ -20,7 +21,7 @@ let usuarioLogado = "Usuário OIO";
 
 document.addEventListener('click', async (e) => {
     
-    // BOTÃO ENTRAR (LOGIN)
+    // 1. LOGIN
     if (e.target.id === 'btn-entrar') {
         const portal = document.getElementById('portal-layer');
         const appLayer = document.getElementById('app-layer');
@@ -37,25 +38,27 @@ document.addEventListener('click', async (e) => {
             appLayer.style.display = 'block';
         }
 
-        // Começa sempre pela Home
         OriginController.init(usuarioLogado);
     }
 
-    // INTERRUPTOR DOS ÍCONES (NAV BAR)
+    // 2. INTERRUPTOR DA BARRA SUPERIOR
     const navItem = e.target.closest('.nav-item');
     if (navItem) {
-        // Troca a cor azul do ícone selecionado
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         navItem.classList.add('active');
 
         const titulo = navItem.getAttribute('title');
 
+        // Lógica de Troca de Ecrã
         if (titulo === 'Home') {
             OriginController.init(usuarioLogado);
         } 
         else if (titulo === 'Vídeos') {
-            // AQUI É ONDE O MÓDULO 2 É ATIVADO!
             WatchController.init(); 
+        }
+        else if (titulo === 'Amigos') {
+            // ATIVA O MÓDULO 3!
+            FriendsController.init();
         }
     }
 });
