@@ -1,19 +1,16 @@
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { supabase } from '../../core.js';
 
 export const WatchController = {
     async init() {
         const display = document.getElementById('universe-display');
         if (!display) return;
 
+        // Título da seção
         display.innerHTML = `
-            <div id="watch-wrapper" style="max-width: 600px; margin: 0 auto; color: #e4e6eb; font-family: sans-serif; padding-bottom: 80px;">
-                <div style="padding: 15px; display: flex; justify-content: space-between; align-items: center;">
-                    <h2 style="margin: 0; font-size: 24px; font-weight: bold;">Vídeos</h2>
-                    <i class="fas fa-search" style="background: #3a3b3c; padding: 10px; border-radius: 50%;"></i>
-                </div>
-                
-                <div id="video-feed">
-                    <p style="text-align: center; color: #b0b3b8; padding: 20px;">Buscando vídeos no servidor...</p>
+            <div style="padding: 15px; max-width: 800px; margin: 0 auto;">
+                <h2 style="color: #fff; margin-bottom: 20px;">Vídeos</h2>
+                <div id="video-feed" style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                    <p style="color: #b0b3b8;">Carregando vídeos...</p>
                 </div>
             </div>
         `;
@@ -21,51 +18,43 @@ export const WatchController = {
         this.loadVideos();
     },
 
-    loadVideos() {
-        const db = getDatabase();
-        const videoRef = ref(db, 'videos');
-        const feed = document.getElementById('video-feed');
+    async loadVideos() {
+        const videoFeed = document.getElementById('video-feed');
 
-        onValue(videoRef, (snapshot) => {
-            if (!snapshot.exists()) {
-                // Caso não tenha vídeos no Firebase, mostramos um padrão para não ficar vazio
-                this.renderEmptyNotice(feed);
-                return;
-            }
+        // BUSCA OS VÍDEOS NA TABELA QUE VOCÊ CRIOU
+        const { data: videos, error } = await supabase
+            .from('videos')
+            .select('*')
+            .order('created_at', { ascending: false });
 
-            let html = "";
-            const data = snapshot.val();
-            
-            Object.values(data).reverse().forEach(video => {
-                html += `
-                    <div style="background: #242526; margin-bottom: 15px; border-top: 1px solid #3e4042; border-bottom: 1px solid #3e4042;">
-                        <div style="padding: 12px; display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 40px; height: 40px; border-radius: 50%; background: #1877f2; display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-video" style="color: white; font-size: 14px;"></i>
-                            </div>
-                            <div>
-                                <div style="font-weight: 600; color: #fff;">${video.title || 'OIO Video'}</div>
-                                <div style="font-size: 12px; color: #b0b3b8;">${video.category || 'Destaque'}</div>
-                            </div>
+        if (error || !videos || videos.length === 0) {
+            videoFeed.innerHTML = '<p style="color: #b0b3b8; text-align: center;">Nenhum vídeo disponível ainda.</p>';
+            return;
+        }
+
+        // Gera o visual dos vídeos
+        let html = "";
+        videos.forEach(vid => {
+            html += `
+                <div style="background: #242526; border-radius: 8px; overflow: hidden; border: 1px solid #3e4042;">
+                    <div style="padding: 12px; display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 32px; height: 32px; background: #1877f2; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white;">
+                            O
                         </div>
-                        <div style="width: 100%; background: #000; aspect-ratio: 16/9;">
-                            <video controls style="width: 100%; height: 100%;">
-                                <source src="${video.url}" type="video/mp4">
-                            </video>
-                        </div>
+                        <span style="color: white; font-weight: 600;">OIO ONE Video</span>
                     </div>
-                `;
-            });
-            feed.innerHTML = html;
-        });
-    },
+                    
+                    <video controls poster="${vid.thumbnail || ''}" style="width: 100%; aspect-ratio: 16/9; background: #000;">
+                        <source src="${vid.video_url}" type="video/mp4">
+                        Seu navegador não suporta vídeos.
+                    </video>
 
-    renderEmptyNotice(container) {
-        container.innerHTML = `
-            <div style="text-align: center; padding: 40px 20px;">
-                <i class="fas fa-clapperboard" style="font-size: 40px; color: #3a3b3c; margin-bottom: 15px;"></i>
-                <p style="color: #b0b3b8;">Nenhum vídeo disponível no momento.</p>
-            </div>
-        `;
+                    <div style="padding: 12px;">
+                        <h3 style="color: white; font-size: 16px; margin: 0;">${vid.title}</h3>
+                    </div>
+                </div>
+            `;
+        });
+        videoFeed.innerHTML = html;
     }
 };
