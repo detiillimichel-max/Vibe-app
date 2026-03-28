@@ -1,11 +1,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// IMPORTANDO OS 4 MÓDULOS QUE JÁ TEMOS NAS PASTAS
+// IMPORTANDO OS 5 MÓDULOS QUE JÁ TEMOS NAS PASTAS
 import { OriginController } from './modules/origin/controller.js';
 import { WatchController } from './modules/watch/controller.js';
 import { FriendsController } from './modules/friends/controller.js';
 import { MarketplaceController } from './modules/marketplace/controller.js';
+import { NotificationsController } from './modules/notifications/controller.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyAkJLFtmzPdvJBmPJKwVQz_VRC7A3SsAQ",
@@ -42,7 +43,7 @@ document.addEventListener('click', async (e) => {
         OriginController.init(usuarioLogado);
     }
 
-    // 2. INTERRUPTOR DA BARRA SUPERIOR
+    // 2. INTERRUPTOR DA BARRA SUPERIOR (NAV BAR)
     const navItem = e.target.closest('.nav-item');
     if (navItem) {
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -61,8 +62,11 @@ document.addEventListener('click', async (e) => {
             FriendsController.init();
         }
         else if (titulo === 'Marketplace') {
-            // ATIVA O MÓDULO 4!
             MarketplaceController.init();
+        }
+        else if (titulo === 'Notificações') {
+            // ATIVA O MÓDULO 5!
+            NotificationsController.init();
         }
     }
 });
