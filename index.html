@@ -9,7 +9,7 @@
         body, html { margin: 0; padding: 0; background: #111; color: white; font-family: sans-serif; overflow-x: hidden; }
         .hidden { display: none !important; }
         
-        /* BARRA SUPERIOR - OS 6 MÓDULOS */
+        /* BARRA SUPERIOR */
         .main-nav {
             position: sticky;
             top: 0;
@@ -38,6 +38,19 @@
             background: #1877f2; color: white; border: none; padding: 12px 40px; 
             border-radius: 6px; font-weight: bold; font-size: 16px; margin-top: 20px;
         }
+
+        /* CARD DE AMIGO (ESTILO PREMIUM) */
+        .friend-card {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #242526;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #3a3b3c;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -60,10 +73,24 @@
         </nav>
 
         <div id="universe-display">
-            <!-- Aqui entrará cada módulo, um por vez -->
+            <!-- A lista dinâmica aparecerá aqui -->
         </div>
     </div>
 
+    <!-- 1. MOTOR DO SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+      // 2. CONFIGURAÇÃO INTEGRADA (Suas chaves já estão aqui!)
+      const supabaseUrl = 'https://uqdwtzlkqaosnweyoyit.supabase.co'; 
+      const supabaseKey = 'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA';
+      
+      // Cria o cliente e deixa pronto para o seu app.js usar
+      window.supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    </script>
+
+    <!-- 3. LÓGICA DO APP -->
     <script type="module" src="js/core.js"></script>
+
 </body>
 </html>
