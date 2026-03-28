@@ -1,6 +1,5 @@
 /**
- * OIO ONE - WATCH CONTROLLER 🎬
- * Gerencia a exibição de vídeos e conteúdos.
+ * OIO ONE - WATCH CONTROLLER (Módulo de Vídeos) 🎬
  */
 
 export const WatchController = {
@@ -8,6 +7,7 @@ export const WatchController = {
         const display = document.getElementById('universe-display');
         if (!display) return;
 
+        // O SEU DESIGN PREMIUM DE VÍDEOS
         display.innerHTML = `
             <div style="max-width: 600px; margin: 0 auto; color: #e4e6eb; font-family: sans-serif; padding: 15px;">
                 <div style="margin-bottom: 20px;">
@@ -15,7 +15,7 @@ export const WatchController = {
                     <p style="color: #b0b3b8; font-size: 14px;">Conteúdo Exclusivo OIO ONE</p>
                 </div>
 
-                <!-- PLAYER DE VÍDEO PREMIUM -->
+                <!-- PLAYER DE VÍDEO -->
                 <div style="background: #242526; border-radius: 12px; overflow: hidden; border: 1px solid #3a3b3c; margin-bottom: 20px;">
                     <video controls style="width: 100%; display: block; background: #000;">
                         <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
@@ -32,7 +32,7 @@ export const WatchController = {
                     </div>
                 </div>
 
-                <p style="text-align: center; color: #b0b3b8; font-size: 14px; margin-top: 30px;">Novos conteúdos sendo processados...</p>
+                <p style="text-align: center; color: #b0b3b8; font-size: 14px; margin-top: 30px;">Novos conteúdos em breve...</p>
             </div>
         `;
     }
