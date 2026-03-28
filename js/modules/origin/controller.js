@@ -1,6 +1,6 @@
 /**
  * OIO ONE - ORIGIN CONTROLLER (HOME) 💎
- * Sem imports externos para evitar erro de conexão.
+ * Versão com correção de imagens e feed inteligente.
  */
 
 const Identity = {
@@ -17,18 +17,15 @@ export const OriginController = {
         const display = document.getElementById('universe-display');
         if (!display) return;
 
-        // LIMPEZA TOTAL: Garante que o layout de "Amigos" suma da tela
         display.innerHTML = ''; 
-
         const user = Identity.get();
 
-        // 1. CONSTRUÇÃO DO LAYOUT (Identity + Status + Feed)
         display.innerHTML = `
             <div id="origin-container" style="max-width: 600px; margin: 0 auto; padding: 15px; font-family: sans-serif;">
                 
-                <!-- IDENTIDADE -->
+                <!-- HEADER DE IDENTIDADE -->
                 <div style="display: flex; align-items: center; gap: 12px; padding: 15px; background: #242526; border-radius: 15px; margin-bottom: 20px; border: 1px solid #333;">
-                    <img src="${user.avatar}" style="width: 45px; height: 45px; border-radius: 12px; object-fit: cover; border: 1px solid #e67e22;">
+                    <img src="${user.avatar}" style="width: 45px; height: 45px; border-radius: 12px; object-fit: cover; border: 1px solid #e67e22;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
                     <div>
                         <div style="color: white; font-weight: bold; font-size: 16px;">${user.name}</div>
                         <div style="color: #e67e22; font-size: 10px; font-weight: 800; letter-spacing: 1px;">OIO VERIFIED</div>
@@ -58,13 +55,11 @@ export const OriginController = {
 
                 <!-- FEED DINÂMICO -->
                 <div id="origin-feed" style="display: flex; flex-direction: column; gap: 15px;">
-                    <p style="color: #666; text-align: center; font-size: 13px;">Buscando pulsações no Universo...</p>
+                    <p style="color: #666; text-align: center; font-size: 13px;">Buscando pulsações...</p>
                 </div>
-
             </div>
         `;
 
-        // 2. ATIVAÇÃO DAS FUNÇÕES
         this.bindEvents();
         await this.loadPosts();
     },
@@ -79,7 +74,6 @@ export const OriginController = {
             if (!text) return;
 
             btn.disabled = true;
-            // Usando window.supabase igual ao módulo de amigos
             const { error } = await window.supabase.from('posts').insert([{
                 author: user.name,
                 avatar_url: user.avatar,
@@ -96,18 +90,20 @@ export const OriginController = {
 
     async loadPosts() {
         const container = document.getElementById('origin-feed');
-        // Usando window.supabase para garantir a conexão
         const { data: posts } = await window.supabase.from('posts').select('*').order('created_at', { ascending: false });
 
         if (!posts || posts.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:#555;">Nenhum sinal detectado ainda.</p>';
+            container.innerHTML = '<p style="text-align:center; color:#555;">Nenhum sinal detectado.</p>';
             return;
         }
 
         container.innerHTML = posts.map(post => `
-            <div style="background: #1c1e21; border-radius: 15px; border: 1px solid #333; overflow: hidden;">
+            <div style="background: #1c1e21; border-radius: 15px; border: 1px solid #333; overflow: hidden; margin-bottom: 5px;">
                 <div style="padding: 12px; display: flex; align-items: center; gap: 10px;">
-                    <img src="${post.avatar_url}" style="width: 38px; height: 38px; border-radius: 10px; object-fit: cover; border: 1px solid #444;">
+                    <!-- Fallback para imagem quebrada -->
+                    <img src="${post.avatar_url}" 
+                         onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'"
+                         style="width: 38px; height: 38px; border-radius: 10px; object-fit: cover; border: 1px solid #444;">
                     <div>
                         <div style="font-weight: bold; color: white; font-size: 14px;">${post.author}</div>
                         <div style="font-size: 9px; color: #e67e22; font-weight: 800;">OIO VERIFIED</div>
@@ -118,9 +114,10 @@ export const OriginController = {
                     ${post.content}
                 </div>
                 
-                <!-- COMENTÁRIO COM FOTO DIMINUTA (Seu pedido!) -->
                 <div style="padding: 10px 12px; background: #242526; border-top: 1px solid #222; display: flex; align-items: center; gap: 10px;">
-                    <img src="${Identity.get().avatar}" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover; border: 1px solid #444; opacity: 0.8;">
+                    <img src="${Identity.get().avatar}" 
+                         onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'"
+                         style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover; border: 1px solid #444; opacity: 0.8;">
                     <div style="color: #666; font-size: 12px; font-style: italic;">Adicionar comentário...</div>
                 </div>
             </div>
