@@ -1,111 +1,62 @@
 /**
- * OIO ONE - SISTEMA QUANTUM (ORQUESTRADOR DE NAVEGAÇÃO)
- * Gerencia a troca de camadas e a ativação de módulos dinâmicos.
- * Regra: Integração total sem costura. Processamento por IDs.
+ * OIO ONE - SISTEMA QUANTUM (MOTOR DE EMERGÊNCIA)
+ * Simplificado para garantir o visual no celular.
  */
-
-import { OriginController } from './modules/origin/controller.js';
-import { ProfileController } from './modules/profile/controller.js';
-import { Logger } from './services/Logger.js';
 
 const QuantumSystem = {
     init() {
-        this.setupHub();
+        console.log("Sistema Quantum: Iniciado.");
         this.setupNavigation();
-        Logger.info("Sistema Quantum: Orquestrador Ativado.");
+        this.renderHome(); // Força a primeira tela
     },
 
-    // Gerencia a abertura e fechamento do HUB de Luxo
-    setupHub() {
-        const btnHub = document.getElementById('btn-hub');
-        const hubLayer = document.getElementById('hub-layer');
-        const btnCloseHub = document.querySelector('.close-hub');
-
-        if (btnHub && hubLayer) {
-            btnHub.onclick = () => {
-                hubLayer.classList.remove('hub-hidden');
-                hubLayer.classList.add('hub-visible');
-            };
-        }
-
-        if (btnCloseHub && hubLayer) {
-            btnCloseHub.onclick = () => {
-                hubLayer.classList.add('hub-hidden');
-                hubLayer.classList.remove('hub-visible');
-            };
+    // Desenha a tela inicial manualmente para garantir que não fique preto
+    renderHome() {
+        const display = document.getElementById('universe-display');
+        if (display) {
+            display.innerHTML = `
+                <div style="padding: 20px; text-align: center;">
+                    <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 40px 20px;">
+                        <h2 style="letter-spacing: 3px; color: #fff;">VIBE CONNECT</h2>
+                        <p style="opacity: 0.5; font-size: 12px; margin-top: 10px;">SINCRONIZANDO UNIVERSOS...</p>
+                    </div>
+                </div>
+            `;
         }
     },
 
-    // Configura os cliques na barra de navegação profissional
     setupNavigation() {
         const navItems = document.querySelectorAll('.nav-item');
-        
         navItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const target = item.getAttribute('data-universe') || item.id.replace('nav-', '');
+            item.onclick = () => {
+                const target = item.innerText.toLowerCase();
                 this.switchUniverse(target);
-            });
+            };
         });
     },
 
-    // Orquestrador de Telas (Universos)
-    switchUniverse(universeId) {
-        const navItems = document.querySelectorAll('.nav-item');
+    switchUniverse(id) {
         const display = document.getElementById('universe-display');
+        const navItems = document.querySelectorAll('.nav-item');
 
-        if (!display) {
-            Logger.error("Display de universo não encontrado.");
-            return;
-        }
-
-        // 1. Feedback Visual dos Ícones
+        // Feedback visual
         navItems.forEach(item => {
             item.classList.remove('active');
-            if (item.getAttribute('data-universe') === universeId) {
-                item.classList.add('active');
-            }
+            if(item.innerText.toLowerCase() === id) item.classList.add('active');
         });
 
-        // 2. Lógica de Execução de Módulos
-        Logger.info(`Transição Quantum: ${universeId.toUpperCase()}`);
-
-        switch(universeId) {
-            case 'home':
-            case 'feed':
-                // Carrega a Casinha (Origin)
-                OriginController.init(); 
-                break;
-            
-            case 'profile':
-                // Carrega o Perfil Real (Michel Detilli / Atividades)
-                ProfileController.init();
-                break;
-
-            case 'friends':
-                display.innerHTML = `<div class="vibe-module-placeholder">REDE DE CONEXÕES</div>`;
-                break;
-
-            case 'reels': 
-            case 'market': 
-            case 'notify':
-                display.innerHTML = `
-                    <div class="module-loading" style="display: flex; height: 100%; align-items: center; justify-content: center;">
-                        <span style="letter-spacing: 5px; opacity: 0.3; text-transform: uppercase;">
-                            ACESSO AO MÓDULO ${universeId}
-                        </span>
-                    </div>`;
-                break;
-            
-            default:
-                OriginController.init();
-        }
+        // Troca de conteúdo simples
+        display.innerHTML = `
+            <div style="display: flex; height: 100%; align-items: center; justify-content: center; color: white; opacity: 0.5;">
+                <span style="letter-spacing: 5px;">MÓDULO ${id.toUpperCase()} ATIVO</span>
+            </div>`;
+        
+        console.log("Mudando para:", id);
     }
 };
 
-// Exposição global para chamadas via HTML
-window.switchUniverse = (id) => QuantumSystem.switchUniverse(id);
-
-// Inicialização automática
+// Inicializa sem precisar de export/import complexo
 document.addEventListener('DOMContentLoaded', () => QuantumSystem.init());
 
-export { QuantumSystem };
+// Torna global para o HTML alcançar
+window.switchUniverse = (id) => QuantumSystem.switchUniverse(id);
