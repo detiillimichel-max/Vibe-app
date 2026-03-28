@@ -1,10 +1,11 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// IMPORTANDO OS 3 MÓDULOS QUE JÁ TEMOS NAS PASTAS
+// IMPORTANDO OS 4 MÓDULOS QUE JÁ TEMOS NAS PASTAS
 import { OriginController } from './modules/origin/controller.js';
 import { WatchController } from './modules/watch/controller.js';
 import { FriendsController } from './modules/friends/controller.js';
+import { MarketplaceController } from './modules/marketplace/controller.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyAkJLFtmzPdvJBmPJKwVQz_VRC7A3SsAQ",
@@ -49,7 +50,7 @@ document.addEventListener('click', async (e) => {
 
         const titulo = navItem.getAttribute('title');
 
-        // Lógica de Troca de Ecrã
+        // Lógica de Troca de Módulos
         if (titulo === 'Home') {
             OriginController.init(usuarioLogado);
         } 
@@ -57,8 +58,11 @@ document.addEventListener('click', async (e) => {
             WatchController.init(); 
         }
         else if (titulo === 'Amigos') {
-            // ATIVA O MÓDULO 3!
             FriendsController.init();
+        }
+        else if (titulo === 'Marketplace') {
+            // ATIVA O MÓDULO 4!
+            MarketplaceController.init();
         }
     }
 });
