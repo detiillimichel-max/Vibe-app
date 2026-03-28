@@ -1,15 +1,13 @@
-import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { supabase } from '../../core.js';
 
 export const OriginController = {
-    init(userName) {
+    async init(userName) {
         const display = document.getElementById('universe-display');
         if (!display) return;
 
-        // Renderiza a estrutura da Home com o Campo de Post
+        // Monta a interface da Home (Campo de postar + container do Feed)
         display.innerHTML = `
             <div style="max-width: 600px; margin: 0 auto; padding-bottom: 80px;">
-                
-                <!-- ÁREA DE CRIAÇÃO DE POST -->
                 <div style="background: #242526; padding: 15px; margin-bottom: 15px; border-bottom: 1px solid #3e4042;">
                     <div style="display: flex; gap: 10px; align-items: center;">
                         <div style="width: 40px; height: 40px; border-radius: 50%; background: #3a3b3c; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff;">
@@ -22,11 +20,7 @@ export const OriginController = {
                         </button>
                     </div>
                 </div>
-
-                <!-- CONTAINER ONDE OS POSTS VÃO APARECER -->
-                <div id="feed-container">
-                    <p style="text-align: center; color: #b0b3b8;">Carregando feed...</p>
-                </div>
+                <div id="feed-container"></div>
             </div>
         `;
 
@@ -37,58 +31,58 @@ export const OriginController = {
     setupEventListeners(userName) {
         const btn = document.getElementById('btn-postar');
         const input = document.getElementById('post-input');
-        const db = getDatabase();
 
         btn.onclick = async () => {
-            if (input.value.trim() === "") return;
+            const texto = input.value.trim();
+            if (texto === "") return;
 
-            const postsRef = ref(db, 'posts');
-            const newPostRef = push(postsRef);
-            
-            await set(newPostRef, {
-                author: userName,
-                content: input.value,
-                timestamp: Date.now()
-            });
+            // SALVANDO NO SUPABASE (Naquela tabela 'posts' que criamos)
+            const { error } = await supabase
+                .from('posts')
+                .insert([{ author: userName, content: texto }]);
 
-            input.value = ""; // Limpa o campo após postar
+            if (error) {
+                console.error("Erro ao postar:", error);
+                alert("Erro ao enviar post: " + error.message);
+            } else {
+                input.value = "";
+                this.loadPosts(); // Atualiza a lista para mostrar o novo post
+            }
         };
     },
 
-    loadPosts() {
-        const db = getDatabase();
-        const postsRef = ref(db, 'posts');
+    async loadPosts() {
         const feedContainer = document.getElementById('feed-container');
 
-        // Escuta o Firebase em tempo real
-        onValue(postsRef, (snapshot) => {
-            if (!snapshot.exists()) {
-                feedContainer.innerHTML = '<p style="text-align: center; color: #b0b3b8;">Nenhum post ainda. Seja o primeiro!</p>';
-                return;
-            }
+        // BUSCANDO OS POSTS DO SUPABASE
+        const { data: posts, error } = await supabase
+            .from('posts')
+            .select('*')
+            .order('created_at', { ascending: false });
 
-            let html = "";
-            const data = snapshot.val();
-            // Inverter para mostrar os mais novos primeiro
-            const sortedPosts = Object.values(data).reverse();
+        if (error) {
+            feedContainer.innerHTML = '<p style="text-align: center; color: #b0b3b8;">Erro ao carregar posts.</p>';
+            return;
+        }
 
-            sortedPosts.forEach(post => {
-                html += `
-                    <div style="background: #242526; margin-bottom: 10px; padding: 12px; border-radius: 8px; border: 1px solid #3e4042;">
-                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
-                            <div style="width: 35px; height: 35px; border-radius: 50%; background: #fb3958; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">
-                                ${post.author.charAt(0)}
-                            </div>
-                            <div>
-                                <div style="font-weight: 600; font-size: 14px; color: #fff;">${post.author}</div>
-                                <div style="font-size: 11px; color: #b0b3b8;">Agora mesmo • <i class="fas fa-globe-americas"></i></div>
-                            </div>
+        // Gera o HTML para cada post encontrado
+        let html = "";
+        posts.forEach(post => {
+            html += `
+                <div style="background: #242526; margin-bottom: 10px; padding: 12px; border-radius: 8px; border: 1px solid #3e4042;">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #fb3958; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">
+                            ${post.author.charAt(0)}
                         </div>
-                        <div style="color: #e4e6eb; font-size: 15px;">${post.content}</div>
+                        <div>
+                            <div style="font-weight: 600; font-size: 14px; color: #fff;">${post.author}</div>
+                            <div style="font-size: 11px; color: #b0b3b8;">Postado via OIO ONE</div>
+                        </div>
                     </div>
-                `;
-            });
-            feedContainer.innerHTML = html;
+                    <div style="color: #e4e6eb; font-size: 15px; word-break: break-word;">${post.content}</div>
+                </div>
+            `;
         });
+        feedContainer.innerHTML = html || '<p style="text-align: center; color: #b0b3b8;">Nenhum post ainda. Seja o primeiro!</p>';
     }
 };
