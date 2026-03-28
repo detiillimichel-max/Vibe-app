@@ -1,7 +1,17 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+// 1. IMPORTAÇÃO DO SUPABASE VIA CDN
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-// IMPORTANDO OS 6 MÓDULOS ORGANIZADOS EM PASTAS
+// 2. CONFIGURAÇÃO DO SEU PROJETO (OIO-TOC-CORE)
+const SUPABASE_URL = 'https://uqdwtzlkqaosnweyoyit.supabase.co'
+const SUPABASE_KEY = 'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA'
+
+// 3. INICIALIZAÇÃO DO CLIENTE
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+// Exportamos o supabase para que os outros módulos (Home, Perfil, etc) possam usá-lo
+export { supabase };
+
+// 4. IMPORTAÇÃO DOS CONTROLADORES DO APP
 import { OriginController } from './modules/origin/controller.js';
 import { WatchController } from './modules/watch/controller.js';
 import { FriendsController } from './modules/friends/controller.js';
@@ -9,31 +19,16 @@ import { MarketplaceController } from './modules/marketplace/controller.js';
 import { NotificationsController } from './modules/notifications/controller.js';
 import { ProfileController } from './modules/profile/controller.js';
 
-const firebaseConfig = {
-    apiKey: "AIzaSyAkJLFtmzPdvJBmPJKwVQz_VRC7A3SsAQ",
-    authDomain: "vibe-app-bbba2.firebaseapp.com",
-    databaseURL: "https://vibe-app-bbba2-default-rtdb.firebaseio.com",
-    projectId: "vibe-app-bbba2",
-    appId: "1:329513213082:web:ca896a67b1dc7a58a5323"
-};
+// Nome de exibição temporário (depois faremos o sistema de login real)
+let usuarioLogado = "Michel OIO";
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-let usuarioLogado = "Usuário OIO";
-
+// 5. ESCUTADOR DE CLIQUES GLOBAL (NAVEGAÇÃO)
 document.addEventListener('click', async (e) => {
     
-    // 1. LOGIN
+    // BOTÃO ENTRAR (PORTAL)
     if (e.target.id === 'btn-entrar') {
         const portal = document.getElementById('portal-layer');
         const appLayer = document.getElementById('app-layer');
-
-        try {
-            const userRef = ref(db, 'users/admin/name');
-            const snapshot = await get(userRef);
-            if (snapshot.exists()) usuarioLogado = snapshot.val();
-        } catch (error) { console.error("Firebase Error:", error); }
 
         if (portal) portal.style.display = 'none';
         if (appLayer) {
@@ -41,36 +36,34 @@ document.addEventListener('click', async (e) => {
             appLayer.style.display = 'block';
         }
 
+        // Inicia a Home (Origin) carregando os posts do Supabase
         OriginController.init(usuarioLogado);
     }
 
-    // 2. CONTROLE DA BARRA SUPERIOR (NAV BAR)
+    // NAVEGAÇÃO ENTRE AS ABAS (MENU SUPERIOR)
     const navItem = e.target.closest('.nav-item');
     if (navItem) {
+        // Remove a classe ativa de todos e coloca no clicado
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         navItem.classList.add('active');
-
+        
         const titulo = navItem.getAttribute('title');
 
-        // Seleção de Módulos (Caminhos Exatos)
+        // Lógica para carregar cada seção
         if (titulo === 'Home') {
             OriginController.init(usuarioLogado);
-        } 
-        else if (titulo === 'Vídeos') {
+        } else if (titulo === 'Vídeos') {
             WatchController.init(); 
-        }
-        else if (titulo === 'Amigos') {
+        } else if (titulo === 'Amigos') {
             FriendsController.init();
-        }
-        else if (titulo === 'Marketplace') {
+        } else if (titulo === 'Marketplace') {
             MarketplaceController.init();
-        }
-        else if (titulo === 'Notificações') {
+        } else if (titulo === 'Notificações') {
             NotificationsController.init();
-        }
-        else if (titulo === 'Perfil') {
-            // ATIVA O MÓDULO 6 (PASSANDO O NOME DO USUÁRIO)
+        } else if (titulo === 'Perfil') {
             ProfileController.init(usuarioLogado);
         }
     }
 });
+
+console.log("OIO ONE: Supabase conectado e pronto!");
