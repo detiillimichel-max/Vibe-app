@@ -1,8 +1,6 @@
-/**
- * OIO ONE - INTELLIGENT FEED 💎
- * Posts Automáticos + Foto Diminuta nos Comentários + Detecção de Market
- */
-import { supabase } from '../../../core.js';
+// OIO ONE - INTELLIGENT FEED 💎
+// ✅ BUG 3 - Removido import quebrado, usando global
+const supabase = window.supabase;
 import { Identity } from './identity.js';
 
 export const Feed = {
@@ -10,7 +8,6 @@ export const Feed = {
         const user = Identity.get();
         return `
             <div id="oio-feed-box">
-                <!-- ÁREA DE POSTAGEM RÁPIDA -->
                 <div style="background: #242526; padding: 15px; border-radius: 15px; margin-bottom: 25px; border: 1px solid #333;">
                     <div style="display: flex; gap: 10px; align-items: center;">
                         <img src="${user.avatar}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
@@ -21,8 +18,6 @@ export const Feed = {
                         </button>
                     </div>
                 </div>
-
-                <!-- LISTA DE POSTS -->
                 <div id="posts-container" style="display: flex; flex-direction: column; gap: 20px;">
                     <p style="text-align: center; color: #666;">Carregando o Universo...</p>
                 </div>
@@ -32,17 +27,17 @@ export const Feed = {
 
     async loadPosts() {
         const container = document.getElementById('posts-container');
-        const { data: posts, error } = await supabase.from('posts').select('*').order('created_at', { ascending: false });
+        const { data: posts, error } = await supabase
+            .from('posts')
+            .select('*')
+            .order('created_at', { ascending: false });
 
         if (error || !posts) return;
 
         container.innerHTML = posts.map(post => {
-            // Lógica Inteligente: Se tiver "market" no texto, vira um Card de Venda
             const isMarket = post.content.toLowerCase().includes('venda') || post.content.toLowerCase().includes('r$');
-            
             return `
                 <div style="background: #1c1e21; border-radius: 20px; border: 1px solid ${isMarket ? '#2ecc71' : '#333'}; overflow: hidden;">
-                    <!-- HEADER DO POST -->
                     <div style="padding: 15px; display: flex; align-items: center; gap: 12px;">
                         <img src="${post.avatar_url}" style="width: 38px; height: 38px; border-radius: 12px; object-fit: cover; border: 1px solid #444;">
                         <div>
@@ -50,13 +45,9 @@ export const Feed = {
                             <div style="font-size: 10px; color: ${isMarket ? '#2ecc71' : '#e67e22'}; font-weight: 800;">${isMarket ? 'OIO MARKET' : 'OIO VERIFIED'}</div>
                         </div>
                     </div>
-
-                    <!-- CONTEÚDO -->
                     <div style="padding: 0 15px 15px 15px; color: #ccc; font-size: 15px; line-height: 1.5;">
                         ${post.content}
                     </div>
-
-                    <!-- ÁREA DE COMENTÁRIOS COM FOTO DIMINUTA (Seu pedido!) -->
                     <div style="padding: 10px 15px; background: #242526; border-top: 1px solid #333;">
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <img src="${Identity.get().avatar}" style="width: 22px; height: 22px; border-radius: 50%; object-fit: cover; opacity: 0.7;">
@@ -92,4 +83,3 @@ export const Feed = {
         };
     }
 };
-
