@@ -9,93 +9,105 @@
     <link rel="stylesheet" href="../styles/dna.css">
 
     <style>
-        body { background-color: var(--bg-principal); color: var(--texto-claro); margin: 0; }
-        .card-menu-oio { background: var(--bg-card); border: 1px solid #3a3b3c; border-radius: 12px; padding: 16px; margin: 15px; display: flex; align-items: center; gap: 15px; }
-        .perfil-foto { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--oio-blue); }
+        body { background-color: var(--bg-principal, #18191a); color: var(--texto-claro, #e4e6eb); margin: 0; font-family: sans-serif; }
+        #menu-hub-container { padding: 16px; padding-bottom: 80px; }
+        .card-menu-oio { background: var(--bg-card, #242526); border: 1px solid #3a3b3c; border-radius: 12px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px; cursor: pointer; }
+        .perfil-foto { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--oio-blue, #1877f2); object-fit: cover; }
+        .grid-atalhos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="oio-main-wrapper">
-        <h2 style="padding: 15px 15px 0 15px;">Menu</h2>
+<div id="menu-hub-container">
+    <h2 style="margin-bottom: 20px;">Menu</h2>
 
-        <!-- Card de Perfil -->
-        <div class="card-menu-oio">
-            <img src="../assets/michel.png" class="perfil-foto" id="img-user-oio"
-                onerror="this.src='https://ui-avatars.com/api/?name=OIO'">
-            <div>
-                <strong id="nome-user-oio">Carregando...</strong><br>
-                <small style="color: var(--oio-blue)">OIO Verified</small>
-            </div>
-        </div>
-
-        <!-- Botão Salvos -->
-        <div class="card-menu-oio" onclick="window.funcaoAbrirSalvos()" style="cursor:pointer">
-            <i class="fas fa-bookmark" style="color: var(--oio-purple); font-size: 20px;"></i>
-            <span>Itens Salvos</span>
+    <!-- Card de Perfil -->
+    <div class="card-menu-oio">
+        <img src="../assets/michel.png" class="perfil-foto" id="img-user-oio"
+            onerror="this.src='https://ui-avatars.com/api/?name=OIO'">
+        <div>
+            <strong id="nome-user-oio">Carregando...</strong><br>
+            <small style="color: var(--oio-blue, #1877f2)">OIO Verified</small>
         </div>
     </div>
 
-    <!-- ⚙️ Motor -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../js/core.js"></script>
-    <script src="./salvos.js"></script>
+    <!-- Grade de Atalhos -->
+    <div class="grid-atalhos">
+        <div class="card-menu-oio" onclick="window.funcaoAbrirSalvos()" style="flex-direction: column; align-items: flex-start;">
+            <i class="fas fa-bookmark" style="color: #9333ea;"></i>
+            <span>Salvos</span>
+        </div>
+        <div class="card-menu-oio" style="flex-direction: column; align-items: flex-start;">
+            <i class="fas fa-history" style="color: #1877f2;"></i>
+            <span>Recordações</span>
+        </div>
+    </div>
+</div>
 
-    <script>
-        // ✅ PLANO B IMEDIATO — localStorage evita "undefined" enquanto banco carrega
-        const nomeLocal = localStorage.getItem('oio_user_name');
-        const avatarLocal = localStorage.getItem('oio_user_avatar');
+<!-- ⚙️ Motor -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/core.js"></script>
+<script src="./salvos.js"></script>
 
-        if (nomeLocal) {
-            document.getElementById('nome-user-oio').innerText = nomeLocal;
+<script>
+    // ✅ PLANO B — localStorage imediato (evita "undefined" enquanto banco carrega)
+    const cacheNome = localStorage.getItem('oio_user_name');
+    const cacheFoto = localStorage.getItem('oio_user_avatar');
+
+    if (cacheNome && cacheNome !== 'undefined' && cacheNome !== 'null') {
+        document.getElementById('nome-user-oio').innerText = cacheNome;
+    } else {
+        localStorage.removeItem('oio_user_name'); // limpa lixo antigo
+    }
+
+    if (cacheFoto && cacheFoto !== 'undefined' && cacheFoto !== 'null') {
+        document.getElementById('img-user-oio').src = cacheFoto;
+    } else {
+        localStorage.removeItem('oio_user_avatar');
+    }
+
+    // ✅ PLANO A — Espera window.supabase e busca dados reais do banco
+    function esperarSupabase(tentativas = 10) {
+        if (typeof window.supabase !== 'undefined') {
+            vincularDinamismo();
+        } else if (tentativas > 0) {
+            setTimeout(() => esperarSupabase(tentativas - 1), 300);
+        } else {
+            console.warn('OIO: core.js não respondeu. Usando dados locais.');
         }
-        if (avatarLocal) {
-            document.getElementById('img-user-oio').src = avatarLocal;
-        }
+    }
 
-        // ✅ PLANO A — Espera o window.supabase estar pronto, depois busca no banco
-        function esperarSupabase(tentativas = 10) {
-            if (typeof window.supabase !== 'undefined') {
-                vincularDinamismo();
-            } else if (tentativas > 0) {
-                setTimeout(() => esperarSupabase(tentativas - 1), 300);
-            } else {
-                // Supabase não carregou — Plano B já está na tela, não faz nada
-                console.warn('OIO: core.js não respondeu. Usando dados locais.');
-            }
-        }
+    async function vincularDinamismo() {
+        try {
+            const { data: { session } } = await window.supabase.auth.getSession();
 
-        async function vincularDinamismo() {
-            try {
-                const { data: { session } } = await window.supabase.auth.getSession();
+            if (session) {
+                // ✅ Coluna correta: 'username' (não 'name')
+                const { data: perfil } = await window.supabase
+                    .from('profiles')
+                    .select('username, avatar_url')
+                    .eq('id', session.user.id)
+                    .single();
 
-                if (session) {
-                    const { data: perfil } = await window.supabase
-                        .from('profiles')
-                        .select('name, avatar_url')
-                        .eq('id', session.user.id)
-                        .single();
-
-                    if (perfil) {
-                        // Atualiza tela com dados reais do banco
-                        document.getElementById('nome-user-oio').innerText = perfil.name || nomeLocal || 'OIO User';
-                        if (perfil.avatar_url) {
-                            document.getElementById('img-user-oio').src = perfil.avatar_url;
-                        }
-
-                        // Atualiza localStorage para próxima vez
-                        localStorage.setItem('oio_user_name', perfil.name);
-                        localStorage.setItem('oio_user_avatar', perfil.avatar_url);
+                if (perfil) {
+                    const nomeReal = perfil.username || cacheNome || 'OIO User';
+                    document.getElementById('nome-user-oio').innerText = nomeReal;
+                    if (perfil.avatar_url) {
+                        document.getElementById('img-user-oio').src = perfil.avatar_url;
                     }
-                }
-            } catch (err) {
-                console.warn('OIO: Erro ao buscar perfil.', err);
-                // Plano B já está na tela — silencia o erro
-            }
-        }
 
-        esperarSupabase();
-    </script>
+                    // Atualiza localStorage com dados limpos
+                    localStorage.setItem('oio_user_name', nomeReal);
+                    localStorage.setItem('oio_user_avatar', perfil.avatar_url || '');
+                }
+            }
+        } catch (err) {
+            console.warn('OIO: Erro ao buscar perfil.', err);
+        }
+    }
+
+    esperarSupabase();
+</script>
 
 </body>
 </html>
