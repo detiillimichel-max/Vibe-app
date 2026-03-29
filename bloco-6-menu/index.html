@@ -9,6 +9,7 @@
     <style>
         /* =========================================
            ESTILO PREMIUM DARK (Vibe Facebook/OIO)
+           Sustenta o visual de todas as funções
            ========================================= */
         :root {
             --bg-principal: #18191a;
@@ -34,15 +35,17 @@
 
         #menu-hub-container {
             padding: 16px;
-            padding-bottom: 80px;
+            padding-bottom: 80px; /* Espaço para o menu inferior do app principal */
         }
 
         h1.menu-titulo {
             font-size: 24px;
             font-weight: 700;
             margin-bottom: 20px;
+            color: var(--texto-claro);
         }
 
+        /* 1️⃣ SEÇÃO PERFIL */
         .perfil-completo-card {
             background-color: var(--bg-card);
             border-radius: 12px;
@@ -56,7 +59,13 @@
             margin-bottom: 24px;
         }
 
-        .perfil-completo-card:hover { background-color: var(--bg-hover); }
+        .perfil-completo-card:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .wrapper-foto {
+            position: relative;
+        }
 
         .foto-perfil-lua {
             width: 60px;
@@ -65,8 +74,6 @@
             object-fit: cover;
             border: 2px solid var(--oio-blue);
         }
-
-        .wrapper-foto { position: relative; }
 
         .badget-verified {
             position: absolute;
@@ -84,12 +91,17 @@
             border: 2px solid var(--bg-card);
         }
 
-        .info-user-bloco { flex-grow: 1; }
+        .info-user-bloco {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
 
         .nome-real-oio {
             margin: 0;
             font-size: 18px;
             font-weight: 600;
+            color: var(--texto-claro);
         }
 
         .status-oio {
@@ -97,8 +109,14 @@
             color: var(--oio-blue);
             font-weight: bold;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
+        .seta-ir {
+            color: var(--texto-cinza);
+        }
+
+        /* 2️⃣ GRADE DE FUNÇÕES */
         .grid-atalhos {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -115,10 +133,29 @@
             gap: 8px;
             border: 1px solid #3a3b3c;
             cursor: pointer;
-            transition: transform 0.1s;
+            transition: transform 0.1s, background 0.2s;
         }
 
-        .botao-atalho:active { transform: scale(0.97); }
+        .botao-atalho:active {
+            transform: scale(0.97);
+            background-color: var(--bg-hover);
+        }
+
+        .botao-atalho i {
+            font-size: 20px;
+        }
+
+        .botao-atalho span {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--texto-claro);
+        }
+
+        /* 3️⃣ SEÇÃO DE CONFIGURAÇÕES E SAÍDA */
+        .lista-config {
+            border-top: 1px solid #3a3b3c;
+            padding-top: 16px;
+        }
 
         .item-config {
             display: flex;
@@ -127,6 +164,19 @@
             padding: 12px;
             border-radius: 8px;
             cursor: pointer;
+            color: var(--texto-claro);
+            transition: background 0.2s;
+        }
+
+        .item-config:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .item-config i.icon-principal {
+            width: 30px;
+            text-align: center;
+            font-size: 18px;
+            color: var(--texto-cinza);
         }
 
         .btn-logout-final {
@@ -138,8 +188,15 @@
             border: none;
             border-radius: 8px;
             font-weight: bold;
+            font-size: 16px;
             cursor: pointer;
+            transition: background 0.2s;
         }
+
+        .btn-logout-final:hover {
+            background-color: #4e4f50;
+        }
+
     </style>
 </head>
 <body>
@@ -147,7 +204,7 @@
 <div id="menu-hub-container">
     <h1 class="menu-titulo">Menu</h1>
 
-    <!-- Perfil -->
+    <!-- Card de Perfil -->
     <div class="perfil-completo-card" onclick="funcaoAbrirPerfilDetalhado()">
         <div class="wrapper-foto">
             <img src="assets/michel.png" id="oio-foto-perfil" class="foto-perfil-lua" onerror="this.src='https://ui-avatars.com/api/?name=OIO&background=242526&color=fff'">
@@ -157,11 +214,12 @@
             <h3 class="nome-real-oio" id="oio-nome-real">Buscando...</h3>
             <span class="status-oio">OIO Verified</span>
         </div>
-        <i class="fas fa-chevron-right" style="color: var(--texto-cinza);"></i>
+        <i class="fas fa-chevron-right seta-ir"></i>
     </div>
 
-    <!-- Grade de Atalhos -->
+    <!-- Grade de Funções -->
     <div class="grid-atalhos">
+        <!-- O botão Salvos agora chama a função que está no salvos.js -->
         <div class="botao-atalho" onclick="funcaoAbrirSalvos()">
             <i class="fas fa-bookmark" style="color: var(--oio-purple);"></i>
             <span>Salvos</span>
@@ -183,16 +241,18 @@
         </div>
     </div>
 
-    <!-- Configurações -->
-    <div style="border-top: 1px solid #3a3b3c; padding-top: 16px;">
+    <!-- Configurações e Ajuda -->
+    <div class="lista-config">
         <div class="item-config" onclick="funcaoAbrirDefinicoes()">
-            <i class="fas fa-cog" style="width:30px; color: var(--texto-cinza);"></i>
+            <i class="fas fa-cog icon-principal"></i>
             <span>Definições e privacidade</span>
+            <i class="fas fa-chevron-down" style="margin-left: auto; font-size: 12px; color: var(--texto-cinza);"></i>
         </div>
         
         <div class="item-config" onclick="funcaoAbrirAjuda()">
-            <i class="fas fa-question-circle" style="width:30px; color: var(--texto-cinza);"></i>
+            <i class="fas fa-question-circle icon-principal"></i>
             <span>Ajuda e suporte</span>
+            <i class="fas fa-chevron-down" style="margin-left: auto; font-size: 12px; color: var(--texto-cinza);"></i>
         </div>
     </div>
 
@@ -200,25 +260,37 @@
 </div>
 
 <script>
-    /* ✅ 1. Motor de Busca de Perfil */
+    /* ✅ 1. Auto-Executável: Motor do Perfil */
     (async function inicializarMotorMenu() {
-        if (typeof supabase === 'undefined') return;
+        console.log("🧩 Bloco 6: Motor ligado.");
+
+        if (typeof supabase === 'undefined') {
+            console.error("❌ Erro: Supabase não detectado.");
+            document.getElementById('oio-nome-real').innerText = "Erro de Conexão";
+            return;
+        }
+
         try {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
-                const { data: perfil } = await supabase.from('profiles')
+                const { data: perfil, error } = await supabase.from('profiles')
                     .select('name, avatar_url')
                     .eq('id', session.user.id)
                     .single();
+
                 if (perfil) {
                     document.getElementById('oio-nome-real').innerText = perfil.name || "Usuário OIO";
-                    if (perfil.avatar_url) document.getElementById('oio-foto-perfil').src = perfil.avatar_url;
+                    if (perfil.avatar_url) {
+                        document.getElementById('oio-foto-perfil').src = perfil.avatar_url;
+                    }
                 }
             }
-        } catch (err) { console.error(err); }
+        } catch (err) {
+            console.error("Erro perfil:", err.message);
+        }
     })();
 
-    /* ✅ 2. Logoff */
+    /* ✅ 2. Função de Logoff */
     window.executarLogoffOIO = async () => {
         if (confirm("Deseja realmente sair?")) {
             await supabase.auth.signOut();
@@ -226,17 +298,21 @@
         }
     };
 
-    /* ✅ 3. Ganchos (O Salvos agora está no arquivo externo) */
+    /* ✅ 3. Ganchos de Navegação */
     window.funcaoAbrirPerfilDetalhado = () => { alert("Perfil em breve..."); };
+    
+    // IMPORTANTE: Removi o alert de "Salvos" daqui. 
+    // Agora o botão vai esperar a função definida no salvos.js carregar.
+
     window.funcaoAbrirRecordacoes = () => { alert("Recordações em breve..."); };
     window.funcaoAbrirGrupos = () => { alert("Grupos em breve..."); };
-    window.funcaoAbrirVideosHub = () => { alert("Vídeos em breve..."); };
-    window.funcaoAbrirDefinicoes = () => { alert("Configurações em breve..."); };
-    window.funcaoAbrirAjuda = () => { alert("Ajuda em breve..."); };
+    window.funcaoAbrirVideosHub = () => { alert("Hub de Vídeos em breve..."); };
+    window.funcaoAbrirDefinicoes = () => { alert("Definições em breve..."); };
+    window.funcaoAbrirAjuda = () => { alert("Suporte em breve..."); };
 
 </script>
 
-<!-- Importante: salvos.js deve estar na mesma pasta -->
+<!-- ✅ IMPORTAÇÃO DA LÓGICA EXTERNA (Mesma pasta) -->
 <script src="salvos.js"></script>
     
 </body>
