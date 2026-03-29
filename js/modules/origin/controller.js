@@ -1,18 +1,24 @@
-// OIO ORIGIN - FEED DINÂMICO 💎
+// OIO ORIGIN - FEED DINÂMICO COM UPLOAD DE FOTO 💎📸
 export const OriginController = {
     init: async () => {
         const display = document.getElementById('universe-display');
         
-        // Pega os dados do usuário que salvamos no login
+        // Pega os dados do usuário
         const userName = localStorage.getItem('oio_user_name') || 'Explorador';
         const userAvatar = localStorage.getItem('oio_user_avatar') || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+        const userEmail = localStorage.getItem('oio_user_email'); // Precisamos disso para identificar no banco
 
         display.innerHTML = `
             <div style="padding: 15px; max-width: 600px; margin: 0 auto;">
                 
-                <!-- CARD DE PERFIL -->
+                <!-- INPUT ESCONDIDO PARA GALERIA -->
+                <input type="file" id="avatar-input" style="display: none;" accept="image/*">
+
+                <!-- CARD DE PERFIL COM GATILHO NA FOTO -->
                 <div style="background: #1c1e21; padding: 15px; border-radius: 15px; display: flex; align-items: center; margin-bottom: 20px; border: 1px solid #333;">
-                    <img src="${userAvatar}" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid #1877f2; margin-right: 15px;">
+                    <img id="btn-foto" src="${userAvatar}" 
+                        style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid #1877f2; margin-right: 15px; cursor: pointer; transition: 0.3s;" 
+                        title="Clique para mudar a foto">
                     <div>
                         <div style="font-weight: bold; font-size: 18px;">${userName}</div>
                         <div style="color: #1877f2; font-size: 10px; font-weight: bold; letter-spacing: 1px;">OIO VERIFIED</div>
@@ -33,7 +39,49 @@ export const OriginController = {
             </div>
         `;
 
-        // Lógica do Botão Postar
+        // --- LÓGICA DO CLIQUE NA FOTO (ABRIR GALERIA) ---
+        const btnFoto = document.getElementById('btn-foto');
+        const inputFoto = document.getElementById('avatar-input');
+
+        btnFoto.onclick = () => inputFoto.click();
+
+        inputFoto.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            btnFoto.style.opacity = "0.3"; // Efeito visual de carregando
+
+            // 1. Nome único para o arquivo
+            const fileName = `avatar_${Date.now()}_${userName.replace(/\s/g, '')}`;
+
+            // 2. Sobe para o Storage do Supabase (O Balde 'avatars' que você criou)
+            const { data, error: uploadError } = await window.supabase.storage
+                .from('avatars')
+                .upload(fileName, file);
+
+            if (uploadError) {
+                alert("Erro ao subir foto: " + uploadError.message);
+                btnFoto.style.opacity = "1";
+                return;
+            }
+
+            // 3. Pega o Link Público da foto
+            const { data: { publicUrl } } = window.supabase.storage
+                .from('avatars')
+                .getPublicUrl(fileName);
+
+            // 4. Salva o link na tabela 'profiles' do usuário atual
+            await window.supabase
+                .from('profiles')
+                .update({ avatar_url: publicUrl })
+                .eq('email', userEmail);
+
+            // 5. Atualiza o celular (LocalStorage) e recarrega
+            localStorage.setItem('oio_user_avatar', publicUrl);
+            location.reload(); 
+        };
+
+        // --- LÓGICA DO BOTÃO POSTAR ---
         const btn = document.getElementById('btn-postar');
         const text = document.getElementById('post-text');
 
@@ -44,12 +92,11 @@ export const OriginController = {
             btn.innerText = "...";
             btn.disabled = true;
 
-            // GRAVA NO SUPABASE
             const { error } = await window.supabase
                 .from('posts')
                 .insert([{ 
                     author_name: userName, 
-                    author_avatar: userAvatar, 
+                    author_avatar: localStorage.getItem('oio_user_avatar') || userAvatar, 
                     content: conteudo 
                 }]);
 
@@ -57,7 +104,7 @@ export const OriginController = {
                 text.value = "";
                 btn.innerText = "Postar";
                 btn.disabled = false;
-                OriginController.loadPosts(); // Recarrega o feed
+                OriginController.loadPosts(); 
             }
         };
 
@@ -66,8 +113,6 @@ export const OriginController = {
 
     loadPosts: async () => {
         const feed = document.getElementById('feed-container');
-        
-        // BUSCA OS POSTS NO BANCO
         const { data: posts, error } = await window.supabase
             .from('posts')
             .select('*')
