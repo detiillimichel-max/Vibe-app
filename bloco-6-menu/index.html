@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OIO Menu Hub</title>
 
-    <!-- 🎨 Puxando o DNA do seu Quarto de Design -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../styles/dna.css"> 
+    <link rel="stylesheet" href="../styles/dna.css">
 
     <style>
-        /* Estilos vitais que usam as variáveis do seu dna.css */
         body { background-color: var(--bg-principal); color: var(--texto-claro); margin: 0; }
         .card-menu-oio { background: var(--bg-card); border: 1px solid #3a3b3c; border-radius: 12px; padding: 16px; margin: 15px; display: flex; align-items: center; gap: 15px; }
         .perfil-foto { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--oio-blue); }
@@ -23,7 +21,8 @@
 
         <!-- Card de Perfil -->
         <div class="card-menu-oio">
-            <img src="../assets/michel.png" class="perfil-foto" id="img-user-oio" onerror="this.src='https://ui-avatars.com/api/?name=OIO'">
+            <img src="../assets/michel.png" class="perfil-foto" id="img-user-oio"
+                onerror="this.src='https://ui-avatars.com/api/?name=OIO'">
             <div>
                 <strong id="nome-user-oio">Carregando...</strong><br>
                 <small style="color: var(--oio-blue)">OIO Verified</small>
@@ -37,29 +36,66 @@
         </div>
     </div>
 
-    <!-- ⚙️ CONEXÃO COM A SALA DE MÁQUINAS (core.js) -->
+    <!-- ⚙️ Motor -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../js/core.js"></script> 
-    <script src="salvos.js"></script>
+    <script src="../js/core.js"></script>
+    <script src="./salvos.js"></script>
 
     <script>
-        // O Arquiteto garante: Se o core.js carregou, o 'supabase' está pronto.
-        async function vincularDinamismo() {
-            // Espera o motor do core.js estar disponível
-            if (typeof supabase !== 'undefined') {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (session) {
-                    const { data: perfil } = await supabase.from('profiles').select('name, avatar_url').eq('id', session.user.id).single();
-                    if (perfil) {
-                        document.getElementById('nome-user-oio').innerText = perfil.name;
-                        if (perfil.avatar_url) document.getElementById('img-user-oio').src = perfil.avatar_url;
-                    }
-                }
+        // ✅ PLANO B IMEDIATO — localStorage evita "undefined" enquanto banco carrega
+        const nomeLocal = localStorage.getItem('oio_user_name');
+        const avatarLocal = localStorage.getItem('oio_user_avatar');
+
+        if (nomeLocal) {
+            document.getElementById('nome-user-oio').innerText = nomeLocal;
+        }
+        if (avatarLocal) {
+            document.getElementById('img-user-oio').src = avatarLocal;
+        }
+
+        // ✅ PLANO A — Espera o window.supabase estar pronto, depois busca no banco
+        function esperarSupabase(tentativas = 10) {
+            if (typeof window.supabase !== 'undefined') {
+                vincularDinamismo();
+            } else if (tentativas > 0) {
+                setTimeout(() => esperarSupabase(tentativas - 1), 300);
             } else {
-                document.getElementById('nome-user-oio').innerText = "Erro de Motor";
+                // Supabase não carregou — Plano B já está na tela, não faz nada
+                console.warn('OIO: core.js não respondeu. Usando dados locais.');
             }
         }
-        vincularDinamismo();
+
+        async function vincularDinamismo() {
+            try {
+                const { data: { session } } = await window.supabase.auth.getSession();
+
+                if (session) {
+                    const { data: perfil } = await window.supabase
+                        .from('profiles')
+                        .select('name, avatar_url')
+                        .eq('id', session.user.id)
+                        .single();
+
+                    if (perfil) {
+                        // Atualiza tela com dados reais do banco
+                        document.getElementById('nome-user-oio').innerText = perfil.name || nomeLocal || 'OIO User';
+                        if (perfil.avatar_url) {
+                            document.getElementById('img-user-oio').src = perfil.avatar_url;
+                        }
+
+                        // Atualiza localStorage para próxima vez
+                        localStorage.setItem('oio_user_name', perfil.name);
+                        localStorage.setItem('oio_user_avatar', perfil.avatar_url);
+                    }
+                }
+            } catch (err) {
+                console.warn('OIO: Erro ao buscar perfil.', err);
+                // Plano B já está na tela — silencia o erro
+            }
+        }
+
+        esperarSupabase();
     </script>
+
 </body>
 </html>
