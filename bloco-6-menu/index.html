@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OIO Menu Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* =========================================
+           ESTILO PREMIUM DARK (Vibe Facebook/OIO)
+           Sustenta o visual de todas as funções
+           ========================================= */
+        :root {
+            --bg-principal: #18191a;
+            --bg-card: #242526;
+            --bg-hover: #3a3b3c;
+            --texto-claro: #e4e6eb;
+            --texto-cinza: #b0b3b8;
+            --oio-blue: #1877f2;
+            --oio-purple: #9333ea;
+            --oio-green: #10b981;
+            --oio-red: #f02849;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-principal);
+            color: var(--texto-claro);
+            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        #menu-hub-container {
+            padding: 16px;
+            padding-bottom: 80px; /* Espaço para o menu inferior do app principal */
+        }
+
+        h1.menu-titulo {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--texto-claro);
+        }
+
+        /* 1️⃣ SEÇÃO PERFIL (Sustenta image_5.png e image_11.png) */
+        .perfil-completo-card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border: 1px solid #3a3b3c;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 24px;
+        }
+
+        .perfil-completo-card:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .wrapper-foto {
+            position: relative;
+        }
+
+        .foto-perfil-lua {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--oio-blue);
+        }
+
+        .badget-verified {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: var(--oio-blue);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--bg-card);
+        }
+
+        .info-user-bloco {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .nome-real-oio {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--texto-claro);
+        }
+
+        .status-oio {
+            font-size: 12px;
+            color: var(--oio-blue);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .seta-ir {
+            color: var(--texto-cinza);
+        }
+
+        /* 2️⃣ GRADE DE FUNÇÕES (Sustenta Salvos, Grupos, Records) */
+        .grid-atalhos {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .botao-atalho {
+            background-color: var(--bg-card);
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border: 1px solid #3a3b3c;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
+        }
+
+        .botao-atalho:active {
+            transform: scale(0.97);
+            background-color: var(--bg-hover);
+        }
+
+        .botao-atalho i {
+            font-size: 20px;
+        }
+
+        .botao-atalho span {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--texto-claro);
+        }
+
+        /* 3️⃣ SEÇÃO DE CONFIGURAÇÕES E SAÍDA (Sustenta image_7.png) */
+        .lista-config {
+            border-top: 1px solid #3a3b3c;
+            padding-top: 16px;
+        }
+
+        .item-config {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--texto-claro);
+            transition: background 0.2s;
+        }
+
+        .item-config:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .item-config i.icon-principal {
+            width: 30px;
+            text-align: center;
+            font-size: 18px;
+            color: var(--texto-cinza);
+        }
+
+        .btn-logout-final {
+            width: 100%;
+            margin-top: 24px;
+            padding: 14px;
+            background-color: #3a3b3c;
+            color: var(--oio-red);
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-logout-final:hover {
+            background-color: #4e4f50;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="menu-hub-container">
+    <h1 class="menu-titulo">Menu</h1>
+
+    <div class="perfil-completo-card" onclick="funcaoAbrirPerfilDetalhado()">
+        <div class="wrapper-foto">
+            <img src="assets/michel.png" id="oio-foto-perfil" class="foto-perfil-lua" onerror="this.src='https://ui-avatars.com/api/?name=OIO&background=242526&color=fff'">
+            <div class="badget-verified"><i class="fas fa-check"></i></div>
+        </div>
+        <div class="info-user-bloco">
+            <h3 class="nome-real-oio" id="oio-nome-real">Buscando...</h3>
+            <span class="status-oio">OIO Verified</span>
+        </div>
+        <i class="fas fa-chevron-right seta-ir"></i>
+    </div>
+
+    <div class="grid-atalhos">
+        <div class="botao-atalho" onclick="funcaoAbrirSalvos()">
+            <i class="fas fa-bookmark" style="color: var(--oio-purple);"></i>
+            <span>Salvos</span>
+        </div>
+        
+        <div class="botao-atalho" onclick="funcaoAbrirRecordacoes()">
+            <i class="fas fa-history" style="color: var(--oio-blue);"></i>
+            <span>Recordações</span>
+        </div>
+        
+        <div class="botao-atalho" onclick="funcaoAbrirGrupos()">
+            <i class="fas fa-users" style="color: var(--oio-green);"></i>
+            <span>Grupos</span>
+        </div>
+        
+        <div class="botao-atalho" onclick="funcaoAbrirVideosHub()">
+            <i class="fas fa-play-circle" style="color: #f97316;"></i>
+            <span>Vídeos OIO</span>
+        </div>
+    </div>
+
+    <div class="lista-config">
+        <div class="item-config" onclick="funcaoAbrirDefinicoes()">
+            <i class="fas fa-cog icon-principal"></i>
+            <span>Definições e privacidade</span>
+            <i class="fas fa-chevron-down" style="margin-left: auto; font-size: 12px; color: var(--texto-cinza);"></i>
+        </div>
+        
+        <div class="item-config" onclick="funcaoAbrirAjuda()">
+            <i class="fas fa-question-circle icon-principal"></i>
+            <span>Ajuda e suporte</span>
+            <i class="fas fa-chevron-down" style="margin-left: auto; font-size: 12px; color: var(--texto-cinza);"></i>
+        </div>
+    </div>
+
+    <button class="btn-logout-final" onclick="executarLogoffOIO()">Sair da conta</button>
+</div>
+
+<script>
+    /* ✅ 1. Auto-Executável: Roda assim que o bloco entra no display */
+    (async function inicializarMotorMenu() {
+        console.log("🧩 Bloco 6 (Menu Hub): Motor ligado.");
+
+        // Verifica se a variável 'supabase' existe globalmente
+        if (typeof supabase === 'undefined') {
+            console.error("❌ Erro fatal: O Supabase não foi carregado no App principal. O Menu não consegue buscar dados.");
+            document.getElementById('oio-nome-real').innerText = "Erro de Conexão";
+            return;
+        }
+
+        try {
+            // A. Pega a sessão ativa
+            const { data: { session } } = await supabase.auth.getSession();
+
+            if (session) {
+                // B. Busca NOME e FOTO na tabela 'profiles' (image_11.png real)
+                const { data: perfil, error } = await supabase.from('profiles')
+                    .select('name, avatar_url') // avatar_url para sustentar a foto real futuramente
+                    .eq('id', session.user.id)
+                    .single();
+
+                if (error) throw error;
+
+                if (perfil) {
+                    // C. Atualiza o Nome Real (Tchau undefined!)
+                    if(perfil.name) {
+                        document.getElementById('oio-nome-real').innerText = perfil.name;
+                    } else {
+                        document.getElementById('oio-nome-real').innerText = "Usuário sem Nome";
+                    }
+
+                    // D. Atualiza a Foto se houver na tabela profiles
+                    if (perfil.avatar_url) {
+                        document.getElementById('oio-foto-perfil').src = perfil.avatar_url;
+                    }
+                }
+            } else {
+                console.warn("⚠️ Menu carregado sem sessão ativa.");
+                document.getElementById('oio-nome-real').innerText = "Não logado";
+            }
+
+        } catch (err) {
+            console.error("❌ Erro ao buscar dados do perfil:", err.message);
+            document.getElementById('oio-nome-real').innerText = "Erro ao carregar";
+        }
+    })();
+
+    /* ✅ 2. Função de Logoff (Blindada) */
+    window.executarLogoffOIO = async () => {
+        if (confirm("Deseja realmente sair do Vibe App?")) {
+            await supabase.auth.signOut();
+            window.location.reload(); // Recarrega para voltar para a tela de login
+        }
+    };
+
+    /* ✅ 3. "Ganchos" para funcionalidades futuras (Sustentação)
+       Aqui é onde você vai colocar o código para abrir cada sub-gaveta futuramente.
+       Por enquanto, elas dão um alerta para mostrar que o clique funciona. */
+
+    window.funcaoAbrirPerfilDetalhado = () => { alert("Abrindo Perfil (Dados de image_11.png)..."); };
+    window.funcaoAbrirSalvos = () => { alert("Abrindo itens Salvos..."); };
+    window.funcaoAbrirRecordacoes = () => { alert("Abrindo Recordações..."); };
+    window.funcaoAbrirGrupos = () => { alert("Abrindo Grupos..."); };
+    window.funcaoAbrirVideosHub = () => { alert("Abrindo Hub de Vídeos (image_2.png)..."); };
+    window.funcaoAbrirDefinicoes = () => { alert("Abrindo Configurações..."); };
+    window.funcaoAbrirAjuda = () => { alert("Abrindo Suporte..."); };
+
+</script>
+
+</body>
+</html>
+
