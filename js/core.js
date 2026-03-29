@@ -1,4 +1,4 @@
-// OIO ONE - CORE SYSTEM (AUTO-REGISTRO) 💎
+// OIO ONE - CORE SYSTEM 💎
 const display = document.getElementById('universe-display');
 const portal = document.getElementById('portal-layer');
 const app = document.getElementById('app-layer');
@@ -9,36 +9,33 @@ if (btnEntrar) {
         const email = document.getElementById('login-email').value.trim();
         const pass = document.getElementById('login-pass').value.trim();
 
-        if (!email || !pass) return alert("Preencha os campos!");
+        if (!email || !pass) return alert("Preencha todos os campos!");
 
         btnEntrar.innerText = "Sincronizando...";
 
-        // TENTA BUSCAR O PERFIL
         let { data: user, error } = await window.supabase
             .from('profiles')
             .select('*')
             .eq('email', email)
             .maybeSingle();
 
-        // SE NÃO EXISTE, GRAVA NO BANCO NA HORA (AUTOCADASTRO)
         if (!user) {
-            const { data: newUser, error: createError } = await window.supabase
+            const { data: newUser } = await window.supabase
                 .from('profiles')
                 .insert([{ 
                     email: email, 
                     password: pass, 
                     username: email.split('@')[0],
-                    avatar_url: "https://cdn-icons-png.flaticon.com/512/149/149071.png" 
+                    avatar_url: "https://ui-avatars.com/api/?name=" + email 
                 }])
-                .select()
-                .single();
+                .select().single();
             user = newUser;
         }
 
-        // VALIDA A SENHA E ENTRA NO APP
         if (user && user.password === pass) {
             localStorage.setItem('oio_user_name', user.username);
             localStorage.setItem('oio_user_avatar', user.avatar_url);
+            localStorage.setItem('oio_user_email', email); // ✅ BUG 1
             portal.classList.add('hidden');
             app.classList.remove('hidden');
             carregarModulo('origin');
@@ -50,19 +47,20 @@ if (btnEntrar) {
 }
 
 async function carregarModulo(nomeModulo) {
-    display.innerHTML = '<div style="padding:50px; text-align:center;"><i class="fas fa-circle-notch fa-spin"></i></div>';
+    display.innerHTML = '<div style="padding:50px; text-align:center; color:#1877f2;"><i class="fas fa-circle-notch fa-spin fa-2x"></i></div>';
     try {
-        const caminho = `./modules/${nomeModulo}/controller.js`;
+        const caminho = `./modules/${nomeModulo}/controller.js`; // ✅ CAMINHO CORRETO
         const mod = await import(caminho);
         const controller = mod[Object.keys(mod)[0]] || mod.default;
-        if (controller) await controller.init();
+        if (controller && controller.init) await controller.init();
     } catch (e) {
+        console.error("Erro ao carregar módulo:", e);
         display.innerHTML = `<p style="text-align:center; padding:50px; color:#444;">Módulo ${nomeModulo} indisponível.</p>`;
     }
 }
 
 const navItems = document.querySelectorAll('.nav-item');
-const rotas = ['origin', 'watch', 'friends', 'market', 'notifications', 'profile'];
+const rotas = ['origin', 'watch', 'friends', 'marketplace', 'notifications', 'profile'];
 
 navItems.forEach((item, index) => {
     item.onclick = () => {
