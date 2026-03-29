@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OIO Menu Hub</title>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="../styles/dna.css">
-
     <style>
         body { background-color: var(--bg-principal, #18191a); color: var(--texto-claro, #e4e6eb); margin: 0; font-family: sans-serif; }
         #menu-hub-container { padding: 16px; padding-bottom: 80px; }
@@ -21,9 +19,9 @@
 <div id="menu-hub-container">
     <h2 style="margin-bottom: 20px;">Menu</h2>
 
-    <!-- Card de Perfil -->
     <div class="card-menu-oio">
-        <img src="../assets/michel.png" class="perfil-foto" id="img-user-oio"
+        <img class="perfil-foto" id="img-user-oio"
+            src="https://ui-avatars.com/api/?name=OIO"
             onerror="this.src='https://ui-avatars.com/api/?name=OIO'">
         <div>
             <strong id="nome-user-oio">Carregando...</strong><br>
@@ -31,9 +29,8 @@
         </div>
     </div>
 
-    <!-- Grade de Atalhos -->
     <div class="grid-atalhos">
-        <div class="card-menu-oio" onclick="window.funcaoAbrirSalvos()" style="flex-direction: column; align-items: flex-start;">
+        <div class="card-menu-oio" onclick="window.funcaoAbrirSalvos?.()" style="flex-direction: column; align-items: flex-start;">
             <i class="fas fa-bookmark" style="color: #9333ea;"></i>
             <span>Salvos</span>
         </div>
@@ -44,69 +41,62 @@
     </div>
 </div>
 
-<!-- ⚙️ Motor -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/core.js"></script>
 <script src="./salvos.js"></script>
 
 <script>
-    // ✅ PLANO B — localStorage imediato (evita "undefined" enquanto banco carrega)
-    const cacheNome = localStorage.getItem('oio_user_name');
-    const cacheFoto = localStorage.getItem('oio_user_avatar');
-
-    if (cacheNome && cacheNome !== 'undefined' && cacheNome !== 'null') {
-        document.getElementById('nome-user-oio').innerText = cacheNome;
-    } else {
-        localStorage.removeItem('oio_user_name'); // limpa lixo antigo
+    // ✅ AUTO-CURA — limpa lixo do localStorage
+    function limparSeInvalido(chave) {
+        const val = localStorage.getItem(chave);
+        if (!val || val === 'undefined' || val === 'null' || val === '') {
+            localStorage.removeItem(chave);
+            return null;
+        }
+        return val;
     }
 
-    if (cacheFoto && cacheFoto !== 'undefined' && cacheFoto !== 'null') {
-        document.getElementById('img-user-oio').src = cacheFoto;
-    } else {
-        localStorage.removeItem('oio_user_avatar');
-    }
+    const cacheNome = limparSeInvalido('oio_user_name');
+    const cacheFoto = limparSeInvalido('oio_user_avatar');
+    const cacheEmail = limparSeInvalido('oio_user_email');
 
-    // ✅ PLANO A — Espera window.supabase e busca dados reais do banco
-    function esperarSupabase(tentativas = 10) {
+    if (cacheNome) document.getElementById('nome-user-oio').innerText = cacheNome;
+    if (cacheFoto) document.getElementById('img-user-oio').src = cacheFoto;
+
+    // ✅ Busca pelo email (não usa Supabase Auth)
+    function esperarMotor(tentativas = 10) {
         if (typeof window.supabase !== 'undefined') {
-            vincularDinamismo();
+            buscarPerfil();
         } else if (tentativas > 0) {
-            setTimeout(() => esperarSupabase(tentativas - 1), 300);
-        } else {
-            console.warn('OIO: core.js não respondeu. Usando dados locais.');
+            setTimeout(() => esperarMotor(tentativas - 1), 300);
         }
     }
 
-    async function vincularDinamismo() {
+    async function buscarPerfil() {
         try {
-            const { data: { session } } = await window.supabase.auth.getSession();
+            if (!cacheEmail) return;
 
-            if (session) {
-                // ✅ Coluna correta: 'username' (não 'name')
-                const { data: perfil } = await window.supabase
-                    .from('profiles')
-                    .select('username, avatar_url')
-                    .eq('id', session.user.id)
-                    .single();
+            const { data: perfil } = await window.supabase
+                .from('profiles')
+                .select('username, avatar_url')
+                .eq('email', cacheEmail)
+                .single();
 
-                if (perfil) {
-                    const nomeReal = perfil.username || cacheNome || 'OIO User';
-                    document.getElementById('nome-user-oio').innerText = nomeReal;
-                    if (perfil.avatar_url) {
-                        document.getElementById('img-user-oio').src = perfil.avatar_url;
-                    }
+            if (perfil && perfil.username) {
+                document.getElementById('nome-user-oio').innerText = perfil.username;
+                localStorage.setItem('oio_user_name', perfil.username);
 
-                    // Atualiza localStorage com dados limpos
-                    localStorage.setItem('oio_user_name', nomeReal);
-                    localStorage.setItem('oio_user_avatar', perfil.avatar_url || '');
+                if (perfil.avatar_url) {
+                    document.getElementById('img-user-oio').src = perfil.avatar_url;
+                    localStorage.setItem('oio_user_avatar', perfil.avatar_url);
                 }
             }
         } catch (err) {
-            console.warn('OIO: Erro ao buscar perfil.', err);
+            console.warn('OIO Menu: erro ao buscar perfil', err);
         }
     }
 
-    esperarSupabase();
+    esperarMotor();
 </script>
 
 </body>
