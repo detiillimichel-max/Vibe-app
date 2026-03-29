@@ -4,71 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OIO Menu Hub</title>
-    
-    <!-- 🎨 O Quarto de Design (Buscando o seu DNA CSS) -->
+
+    <!-- 🎨 Puxando o DNA do seu Quarto de Design -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="../styles/dna.css"> 
 
     <style>
-        /* Apenas ajustes específicos de layout para este bloco */
-        body { background-color: var(--bg-principal); color: var(--texto-claro); font-family: 'Segoe UI', sans-serif; margin: 0; }
-        #menu-hub-container { padding: 16px; padding-bottom: 80px; }
-        .perfil-card-oio { background: var(--bg-card); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 15px; border: 1px solid #3a3b3c; margin-bottom: 20px; cursor: pointer; }
-        .foto-perfil-oio { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--oio-blue); object-fit: cover; }
-        .grid-atalhos-oio { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .item-atalho-oio { background: var(--bg-card); padding: 16px; border-radius: 10px; border: 1px solid #3a3b3c; display: flex; flex-direction: column; gap: 8px; cursor: pointer; }
+        /* Estilos vitais que usam as variáveis do seu dna.css */
+        body { background-color: var(--bg-principal); color: var(--texto-claro); margin: 0; }
+        .card-menu-oio { background: var(--bg-card); border: 1px solid #3a3b3c; border-radius: 12px; padding: 16px; margin: 15px; display: flex; align-items: center; gap: 15px; }
+        .perfil-foto { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--oio-blue); }
     </style>
 </head>
 <body>
 
-<div id="menu-hub-container">
-    <h1 style="font-size: 24px; margin-bottom: 20px;">Menu</h1>
+    <div id="oio-main-wrapper">
+        <h2 style="padding: 15px 15px 0 15px;">Menu</h2>
 
-    <!-- Card de Perfil (Conecta com perfil.js) -->
-    <div class="perfil-card-oio" id="card-perfil-usuario">
-        <img src="../assets/michel.png" id="oio-foto-perfil" class="foto-perfil-oio" onerror="this.src='https://ui-avatars.com/api/?name=OIO'">
-        <div>
-            <h3 style="margin:0;" id="oio-nome-real">Carregando...</h3>
-            <span style="font-size:12px; color:var(--oio-blue);">OIO Verified</span>
+        <!-- Card de Perfil -->
+        <div class="card-menu-oio">
+            <img src="../assets/michel.png" class="perfil-foto" id="img-user-oio" onerror="this.src='https://ui-avatars.com/api/?name=OIO'">
+            <div>
+                <strong id="nome-user-oio">Carregando...</strong><br>
+                <small style="color: var(--oio-blue)">OIO Verified</small>
+            </div>
+        </div>
+
+        <!-- Botão Salvos -->
+        <div class="card-menu-oio" onclick="window.funcaoAbrirSalvos()" style="cursor:pointer">
+            <i class="fas fa-bookmark" style="color: var(--oio-purple); font-size: 20px;"></i>
+            <span>Itens Salvos</span>
         </div>
     </div>
 
-    <!-- Grade de Funções (Conecta com salvos.js) -->
-    <div class="grid-atalhos-oio">
-        <div class="item-atalho-oio" onclick="window.funcaoAbrirSalvos()">
-            <i class="fas fa-bookmark" style="color: var(--oio-purple);"></i>
-            <span>Salvos</span>
-        </div>
-        <div class="item-atalho-oio">
-            <i class="fas fa-history" style="color: var(--oio-blue);"></i>
-            <span>Recordações</span>
-        </div>
-    </div>
-</div>
+    <!-- ⚙️ CONEXÃO COM A SALA DE MÁQUINAS (core.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/core.js"></script> 
+    <script src="salvos.js"></script>
 
-<!-- ⚙️ A SALA DE MÁQUINAS (Importando sua inteligência central) -->
-<!-- Primeiro o motor do Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<!-- Depois o SEU core.js que já tem as chaves -->
-<script src="../js/core.js"></script>
-
-<!-- 🧩 MÓDULOS DO BLOCO 6 -->
-<script src="salvos.js"></script>
-
-<script>
-    // O Arquiteto garante: Se o core.js carregou, o 'supabase' existe aqui.
-    async function inicializarBloco6() {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-            const { data: perfil } = await supabase.from('profiles').select('name, avatar_url').eq('id', session.user.id).single();
-            if (perfil) {
-                document.getElementById('oio-nome-real').innerText = perfil.name;
-                if (perfil.avatar_url) document.getElementById('oio-foto-perfil').src = perfil.avatar_url;
+    <script>
+        // O Arquiteto garante: Se o core.js carregou, o 'supabase' está pronto.
+        async function vincularDinamismo() {
+            // Espera o motor do core.js estar disponível
+            if (typeof supabase !== 'undefined') {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    const { data: perfil } = await supabase.from('profiles').select('name, avatar_url').eq('id', session.user.id).single();
+                    if (perfil) {
+                        document.getElementById('nome-user-oio').innerText = perfil.name;
+                        if (perfil.avatar_url) document.getElementById('img-user-oio').src = perfil.avatar_url;
+                    }
+                }
+            } else {
+                document.getElementById('nome-user-oio').innerText = "Erro de Motor";
             }
         }
-    }
-    inicializarBloco6();
-</script>
-
+        vincularDinamismo();
+    </script>
 </body>
 </html>
