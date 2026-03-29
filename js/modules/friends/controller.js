@@ -1,56 +1,65 @@
-/**
- * OIO ONE - FRIENDS CONTROLLER (VIVO 🚀)
- * Gerencia a lista de amigos e conexões reais do Supabase.
- */
-
+// OIO FRIENDS - LISTA E MENSAGENS 💎
 export const FriendsController = {
-    async init() {
+    init: async () => {
         const display = document.getElementById('universe-display');
-        if (!display) return;
-
-        // 1. BUSCANDO OS DADOS REAIS
-        const { data: profiles, error } = await window.supabase
+        
+        // 1. Busca todos os perfis no banco (exceto o seu)
+        const myEmail = localStorage.getItem('oio_user_email');
+        const { data: perfis, error } = await window.supabase
             .from('profiles')
-            .select('*');
+            .select('*')
+            .neq('email', myEmail); // Não mostra você mesmo na lista
 
-        // 2. O SEU VISUAL DE LUXO (O CABEÇALHO)
-        let htmlContent = `
-            <div style="max-width: 600px; margin: 0 auto; color: #e4e6eb; font-family: sans-serif; padding: 15px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="margin: 0; font-size: 24px; font-weight: bold;">Amigos</h2>
-                    <i class="fas fa-search" style="color: #b0b3b8; font-size: 18px;"></i>
-                </div>
-
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <span style="font-weight: 600; font-size: 17px;">Conexões Reais</span>
-                    <span style="color: #1877f2; font-size: 14px; cursor: pointer;">Ver tudo</span>
-                </div>
-        `;
-
-        // 3. INJETANDO OS AMIGOS DO BANCO (Michel, Maria Gabriela, etc)
-        if (profiles && profiles.length > 0) {
-            profiles.forEach(amigo => {
-                htmlContent += `
-                    <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 20px;">
-                        <div style="width: 80px; height: 80px; border-radius: 50%; background: #3a3b3c; overflow: hidden; border: 2px solid #1877f2;">
-                            <img src="${amigo.avatar_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d'}" style="width: 100%; height: 100%; object-fit: cover;">
-                        </div>
-                        <div style="flex: 1; border-bottom: 1px solid #3e4042; padding-bottom: 15px;">
-                            <div style="font-weight: 600; font-size: 16px; margin-bottom: 4px;">${amigo.username}</div>
-                            <div style="color: #b0b3b8; font-size: 14px; margin-bottom: 8px;">📍 ${amigo.city || 'OIO ONE'}</div>
-                            <div style="display: flex; gap: 8px;">
-                                <button style="flex: 1; background: #1877f2; color: white; border: none; padding: 8px; border-radius: 6px; font-weight: 600; cursor: pointer;">Perfil</button>
-                                <button style="flex: 1; background: #3a3b3c; color: white; border: none; padding: 8px; border-radius: 6px; font-weight: 600; cursor: pointer;">Mensagem</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        } else {
-            htmlContent += `<p style="text-align: center; color: #b0b3b8;">Nenhum amigo encontrado no banco.</p>`;
+        if (error) {
+            display.innerHTML = `<p style="color: white; padding: 20px;">Erro ao carregar amigos.</p>`;
+            return;
         }
 
-        htmlContent += `</div>`;
-        display.innerHTML = htmlContent;
+        display.innerHTML = `
+            <div style="padding: 15px; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: white; margin-bottom: 20px;">Conexões Reais</h2>
+                <div id="friends-list">
+                    ${perfis.map(p => `
+                        <div style="background: #1c1e21; padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #333; display: flex; align-items: center;">
+                            <img src="${p.avatar_url || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" 
+                                 style="width: 60px; height: 60px; border-radius: 50%; margin-right: 15px;">
+                            <div style="flex: 1;">
+                                <div style="font-weight: bold; color: white;">${p.full_name || p.email}</div>
+                                <div style="color: #aaa; font-size: 12px; margin-bottom: 10px;">📍 OIO ONE</div>
+                                <div style="display: flex; gap: 10px;">
+                                    <button class="btn-perfil" style="flex: 1; background: #1877f2; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: bold;">Perfil</button>
+                                    <button onclick="enviarMensagem('${p.email}', '${p.full_name || p.email}')" 
+                                            style="flex: 1; background: #333; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: bold;">Mensagem</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+};
+
+// --- GATILHO DE MENSAGEM ---
+window.enviarMensagem = async (receiverEmail, receiverName) => {
+    const msg = prompt(`Enviar mensagem para ${receiverName}:`);
+    
+    if (!msg || msg.trim() === "") return;
+
+    const myEmail = localStorage.getItem('oio_user_email'); 
+
+    // Grava na tabela 'messages' que você criou no Supabase
+    const { error } = await window.supabase
+        .from('messages')
+        .insert([{ 
+            sender_id: myEmail, 
+            receiver_id: receiverEmail, 
+            content: msg 
+        }]);
+
+    if (!error) {
+        alert("Mensagem enviada com sucesso! 💎");
+    } else {
+        alert("Erro ao enviar: " + error.message);
     }
 };
