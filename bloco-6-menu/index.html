@@ -4,193 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OIO Menu Hub</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- 1. MOTOR DO SUPABASE (Obrigatório vir antes de tudo) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- 🎨 O Quarto de Design (Buscando o seu DNA CSS) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/dna.css"> 
 
     <style>
-        /* MANTIDO TODO O SEU DESIGN PREMIUM DARK */
-        :root {
-            --bg-principal: #18191a;
-            --bg-card: #242526;
-            --bg-hover: #3a3b3c;
-            --texto-claro: #e4e6eb;
-            --texto-cinza: #b0b3b8;
-            --oio-blue: #1877f2;
-            --oio-purple: #9333ea;
-            --oio-green: #10b981;
-            --oio-red: #f02849;
-        }
-
-        body, html {
-            margin: 0; padding: 0;
-            background-color: var(--bg-principal);
-            color: var(--texto-claro);
-            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
-            height: 100%; overflow-x: hidden;
-        }
-
+        /* Apenas ajustes específicos de layout para este bloco */
+        body { background-color: var(--bg-principal); color: var(--texto-claro); font-family: 'Segoe UI', sans-serif; margin: 0; }
         #menu-hub-container { padding: 16px; padding-bottom: 80px; }
-        h1.menu-titulo { font-size: 24px; font-weight: 700; margin-bottom: 20px; }
-
-        .perfil-completo-card {
-            background-color: var(--bg-card);
-            border-radius: 12px; padding: 16px;
-            display: flex; align-items: center; gap: 16px;
-            border: 1px solid #3a3b3c; cursor: pointer;
-            transition: background 0.2s; margin-bottom: 24px;
-        }
-
-        .perfil-completo-card:hover { background-color: var(--bg-hover); }
-
-        .foto-perfil-lua {
-            width: 60px; height: 60px;
-            border-radius: 50%; object-fit: cover;
-            border: 2px solid var(--oio-blue);
-        }
-
-        .wrapper-foto { position: relative; }
-        .badget-verified {
-            position: absolute; bottom: 0; right: 0;
-            background-color: var(--oio-blue); color: white;
-            border-radius: 50%; width: 18px; height: 18px;
-            font-size: 10px; display: flex; align-items: center;
-            justify-content: center; border: 2px solid var(--bg-card);
-        }
-
-        .info-user-bloco { display: flex; flex-direction: column; flex-grow: 1; }
-        .nome-real-oio { margin: 0; font-size: 18px; font-weight: 600; }
-        .status-oio { font-size: 12px; color: var(--oio-blue); font-weight: bold; text-transform: uppercase; }
-
-        .grid-atalhos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
-        .botao-atalho {
-            background-color: var(--bg-card); border-radius: 10px;
-            padding: 16px; display: flex; flex-direction: column; gap: 8px;
-            border: 1px solid #3a3b3c; cursor: pointer;
-            transition: transform 0.1s, background 0.2s;
-        }
-        .botao-atalho:active { transform: scale(0.97); background-color: var(--bg-hover); }
-        .botao-atalho i { font-size: 20px; }
-        .botao-atalho span { font-size: 15px; font-weight: 600; }
-
-        .lista-config { border-top: 1px solid #3a3b3c; padding-top: 16px; }
-        .item-config {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px; border-radius: 8px; cursor: pointer;
-            transition: background 0.2s;
-        }
-        .item-config:hover { background-color: var(--bg-hover); }
-        .btn-logout-final {
-            width: 100%; margin-top: 24px; padding: 14px;
-            background-color: #3a3b3c; color: var(--oio-red);
-            border: none; border-radius: 8px; font-weight: bold;
-            font-size: 16px; cursor: pointer;
-        }
+        .perfil-card-oio { background: var(--bg-card); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 15px; border: 1px solid #3a3b3c; margin-bottom: 20px; cursor: pointer; }
+        .foto-perfil-oio { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--oio-blue); object-fit: cover; }
+        .grid-atalhos-oio { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .item-atalho-oio { background: var(--bg-card); padding: 16px; border-radius: 10px; border: 1px solid #3a3b3c; display: flex; flex-direction: column; gap: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div id="menu-hub-container">
-    <h1 class="menu-titulo">Menu</h1>
+    <h1 style="font-size: 24px; margin-bottom: 20px;">Menu</h1>
 
-    <!-- Card de Perfil -->
-    <div class="perfil-completo-card" onclick="funcaoAbrirPerfilDetalhado()">
-        <div class="wrapper-foto">
-            <img src="assets/michel.png" id="oio-foto-perfil" class="foto-perfil-lua" onerror="this.src='https://ui-avatars.com/api/?name=OIO&background=242526&color=fff'">
-            <div class="badget-verified"><i class="fas fa-check"></i></div>
+    <!-- Card de Perfil (Conecta com perfil.js) -->
+    <div class="perfil-card-oio" id="card-perfil-usuario">
+        <img src="../assets/michel.png" id="oio-foto-perfil" class="foto-perfil-oio" onerror="this.src='https://ui-avatars.com/api/?name=OIO'">
+        <div>
+            <h3 style="margin:0;" id="oio-nome-real">Carregando...</h3>
+            <span style="font-size:12px; color:var(--oio-blue);">OIO Verified</span>
         </div>
-        <div class="info-user-bloco">
-            <h3 class="nome-real-oio" id="oio-nome-real">Buscando...</h3>
-            <span class="status-oio">OIO Verified</span>
-        </div>
-        <i class="fas fa-chevron-right" style="color:var(--texto-cinza)"></i>
     </div>
 
-    <!-- Grade de Atalhos -->
-    <div class="grid-atalhos">
-        <div class="botao-atalho" onclick="funcaoAbrirSalvos()">
+    <!-- Grade de Funções (Conecta com salvos.js) -->
+    <div class="grid-atalhos-oio">
+        <div class="item-atalho-oio" onclick="window.funcaoAbrirSalvos()">
             <i class="fas fa-bookmark" style="color: var(--oio-purple);"></i>
             <span>Salvos</span>
         </div>
-        <div class="botao-atalho" onclick="funcaoAbrirRecordacoes()">
+        <div class="item-atalho-oio">
             <i class="fas fa-history" style="color: var(--oio-blue);"></i>
             <span>Recordações</span>
         </div>
-        <div class="botao-atalho" onclick="funcaoAbrirGrupos()">
-            <i class="fas fa-users" style="color: var(--oio-green);"></i>
-            <span>Grupos</span>
-        </div>
-        <div class="botao-atalho" onclick="funcaoAbrirVideosHub()">
-            <i class="fas fa-play-circle" style="color: #f97316;"></i>
-            <span>Vídeos OIO</span>
-        </div>
     </div>
-
-    <!-- Configurações -->
-    <div class="lista-config">
-        <div class="item-config" onclick="funcaoAbrirDefinicoes()">
-            <i class="fas fa-cog" style="width:30px; text-align:center; color:var(--texto-cinza)"></i>
-            <span>Definições e privacidade</span>
-        </div>
-    </div>
-
-    <button class="btn-logout-final" onclick="executarLogoffOIO()">Sair da conta</button>
 </div>
 
-<!-- 2. LÓGICA DE CONEXÃO E NAVEGAÇÃO -->
-<script>
-    // Configuração da conexão única
-    const SUPABASE_URL = "SUA_URL_AQUI"; // COLOQUE SUA URL DO SUPABASE
-    const SUPABASE_KEY = "SUA_KEY_AQUI"; // COLOQUE SUA KEY ANON DO SUPABASE
+<!-- ⚙️ A SALA DE MÁQUINAS (Importando sua inteligência central) -->
+<!-- Primeiro o motor do Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Depois o SEU core.js que já tem as chaves -->
+<script src="../js/core.js"></script>
 
-    // Criar o cliente e tornar GLOBAL para que o salvos.js consiga ver
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    window.supabase = supabase; 
-
-    /* ✅ Motor do Perfil */
-    (async function inicializarMotorMenu() {
-        console.log("🧩 Bloco 6: Motor ligado.");
-        try {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                const { data: perfil } = await supabase.from('profiles')
-                    .select('name, avatar_url')
-                    .eq('id', session.user.id)
-                    .single();
-
-                if (perfil) {
-                    document.getElementById('oio-nome-real').innerText = perfil.name || "Usuário OIO";
-                    if (perfil.avatar_url) {
-                        document.getElementById('oio-foto-perfil').src = perfil.avatar_url;
-                    }
-                }
-            } else {
-                document.getElementById('oio-nome-real').innerText = "Não Logado";
-            }
-        } catch (err) {
-            console.error("Erro perfil:", err.message);
-        }
-    })();
-
-    window.executarLogoffOIO = async () => {
-        if (confirm("Deseja realmente sair?")) {
-            await supabase.auth.signOut();
-            window.location.reload();
-        }
-    };
-
-    // Ganchos de Navegação
-    window.funcaoAbrirPerfilDetalhado = () => { alert("Perfil em breve..."); };
-    window.funcaoAbrirRecordacoes = () => { alert("Recordações em breve..."); };
-    window.funcaoAbrirGrupos = () => { alert("Grupos em breve..."); };
-    window.funcaoAbrirVideosHub = () => { alert("Hub de Vídeos em breve..."); };
-    window.funcaoAbrirDefinicoes = () => { alert("Definições em breve..."); };
-    window.funcaoAbrirAjuda = () => { alert("Suporte em breve..."); };
-</script>
-
-<!-- 3. IMPORTAÇÃO DOS MÓDULOS (Respeitando suas pastas) -->
+<!-- 🧩 MÓDULOS DO BLOCO 6 -->
 <script src="salvos.js"></script>
+
+<script>
+    // O Arquiteto garante: Se o core.js carregou, o 'supabase' existe aqui.
+    async function inicializarBloco6() {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+            const { data: perfil } = await supabase.from('profiles').select('name, avatar_url').eq('id', session.user.id).single();
+            if (perfil) {
+                document.getElementById('oio-nome-real').innerText = perfil.name;
+                if (perfil.avatar_url) document.getElementById('oio-foto-perfil').src = perfil.avatar_url;
+            }
+        }
+    }
+    inicializarBloco6();
+</script>
 
 </body>
 </html>
