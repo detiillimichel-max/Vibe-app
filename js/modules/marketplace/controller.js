@@ -14,9 +14,16 @@ export const MarketplaceController = {
 
                 <!-- FORMULÁRIO DE ANÚNCIO -->
                 <div id="form-produto" style="display:none; background:#242526; padding:15px; border-radius:12px; margin-bottom:20px; border:1px solid #3a3b3c;">
+                    
+                    <!-- ✅ FOTO DA GALERIA -->
+                    <input type="file" id="input-foto-produto" accept="image/*" style="display:none;">
+                    <div id="preview-foto" onclick="document.getElementById('input-foto-produto').click()"
+                        style="width:100%; height:180px; background:#3a3b3c; border-radius:10px; display:flex; align-items:center; justify-content:center; cursor:pointer; margin-bottom:10px; overflow:hidden; border:2px dashed #555;">
+                        <span style="color:#b0b3b8; font-size:14px;">📷 Toque para escolher foto</span>
+                    </div>
+
                     <input id="prod-titulo" placeholder="Título do produto" style="width:100%; background:#3a3b3c; border:none; padding:12px; border-radius:8px; color:white; margin-bottom:10px; box-sizing:border-box;">
-                    <input id="prod-preco" placeholder="Preço (ex: R$ 150)" style="width:100%; background:#3a3b3c; border:none; padding:12px; border-radius:8px; color:white; margin-bottom:10px; box-sizing:border-box;">
-                    <input id="prod-imagem" placeholder="URL da imagem" style="width:100%; background:#3a3b3c; border:none; padding:12px; border-radius:8px; color:white; margin-bottom:10px; box-sizing:border-box;">
+                    <input id="prod-preco" placeholder="Preço (ex: 40 reais)" style="width:100%; background:#3a3b3c; border:none; padding:12px; border-radius:8px; color:white; margin-bottom:10px; box-sizing:border-box;">
                     <textarea id="prod-descricao" placeholder="Descrição do produto" style="width:100%; background:#3a3b3c; border:none; padding:12px; border-radius:8px; color:white; margin-bottom:10px; box-sizing:border-box; resize:none; height:80px;"></textarea>
                     <button id="btn-publicar" style="width:100%; background:#2ecc71; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">Publicar Anúncio</button>
                 </div>
@@ -28,16 +35,28 @@ export const MarketplaceController = {
             </div>
         `;
 
+        // Toggle formulário
         document.getElementById('btn-novo-produto').onclick = () => {
             const form = document.getElementById('form-produto');
             form.style.display = form.style.display === 'none' ? 'block' : 'none';
         };
 
+        // Preview da foto escolhida
+        document.getElementById('input-foto-produto').onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const url = URL.createObjectURL(file);
+            const preview = document.getElementById('preview-foto');
+            preview.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">`;
+        };
+
+        // Publicar produto
         document.getElementById('btn-publicar').onclick = async () => {
             const titulo = document.getElementById('prod-titulo').value.trim();
             const preco = document.getElementById('prod-preco').value.trim();
-            const imagem = document.getElementById('prod-imagem').value.trim();
             const descricao = document.getElementById('prod-descricao').value.trim();
+            const fileInput = document.getElementById('input-foto-produto');
+            const file = fileInput.files[0];
 
             if (!titulo || !preco) return alert('Título e preço são obrigatórios!');
 
@@ -45,7 +64,23 @@ export const MarketplaceController = {
             btn.innerText = 'Publicando...';
             btn.disabled = true;
 
-            // Salva o nome do vendedor junto com o produto
+            let imageUrl = null;
+
+            // ✅ Sobe foto para o Supabase Storage
+            if (file) {
+                const fileName = `produto_${Date.now()}`;
+                const { error: uploadError } = await window.supabase.storage
+                    .from('avatars') // usa o mesmo bucket que já existe
+                    .upload(fileName, file);
+
+                if (!uploadError) {
+                    const { data: { publicUrl } } = window.supabase.storage
+                        .from('avatars')
+                        .getPublicUrl(fileName);
+                    imageUrl = publicUrl;
+                }
+            }
+
             const nomeVendedor = localStorage.getItem('oio_user_name') || 'Vendedor OIO';
 
             const { error } = await window.supabase
@@ -53,15 +88,18 @@ export const MarketplaceController = {
                 .insert([{
                     title: titulo,
                     price: preco,
-                    image_url: imagem || null,
+                    image_url: imageUrl,
                     description: descricao || null,
-                    seller_name: nomeVendedor // ✅ salva o nome para contato
+                    seller_name: nomeVendedor
                 }]);
 
             if (!error) {
                 document.getElementById('form-produto').style.display = 'none';
-                ['prod-titulo','prod-preco','prod-imagem','prod-descricao']
-                    .forEach(id => document.getElementById(id).value = '');
+                document.getElementById('prod-titulo').value = '';
+                document.getElementById('prod-preco').value = '';
+                document.getElementById('prod-descricao').value = '';
+                fileInput.value = '';
+                document.getElementById('preview-foto').innerHTML = `<span style="color:#b0b3b8; font-size:14px;">📷 Toque para escolher foto</span>`;
                 await MarketplaceController.loadProdutos();
             } else {
                 alert('Erro ao publicar: ' + error.message);
@@ -97,8 +135,6 @@ export const MarketplaceController = {
                     <div style="font-weight:bold; font-size:15px; color:#e4e6eb;">${p.price}</div>
                     <div style="font-size:13px; color:#b0b3b8; margin-top:2px;">${p.title}</div>
                     ${p.description ? `<div style="font-size:11px; color:#666; margin-top:4px;">${p.description}</div>` : ''}
-                    
-                    <!-- ✅ BOTÃO DE CONTATO COM VENDEDOR -->
                     ${p.seller_name ? `
                     <button onclick="window.contatarVendedor('${p.seller_name}', '${p.title}')"
                         style="width:100%; margin-top:10px; background:#1877f2; color:white; border:none; padding:8px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px;">
@@ -110,7 +146,7 @@ export const MarketplaceController = {
     }
 };
 
-// ✅ FUNÇÃO DE CONTATO — envia mensagem direto pela tabela messages
+// ✅ Contato direto com o vendedor via messages
 window.contatarVendedor = async (nomeVendedor, tituloProduto) => {
     const meuNome = localStorage.getItem('oio_user_name');
 
@@ -119,7 +155,7 @@ window.contatarVendedor = async (nomeVendedor, tituloProduto) => {
         return;
     }
 
-    const msg = prompt(`Enviar mensagem para ${nomeVendedor} sobre "${tituloProduto}":`);
+    const msg = prompt(`Mensagem para ${nomeVendedor} sobre "${tituloProduto}":`);
     if (!msg || msg.trim() === '') return;
 
     const { error } = await window.supabase
