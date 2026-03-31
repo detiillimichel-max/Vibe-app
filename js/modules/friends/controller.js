@@ -9,7 +9,7 @@ export const FriendsController = {
             .select('*')
             .neq('email', myEmail);
 
-        // Guarda os contatos globalmente para o chat acessar
+        // Guarda contatos globalmente para evitar bug de aspas
         window._contatos = perfis || [];
 
         display.innerHTML = `
@@ -99,7 +99,7 @@ window.abrirChat = async (index) => {
         if (!texto) return;
         input.value = '';
 
-        // ✅ Som ao enviar (ativado pelo toque do usuário)
+        // ✅ Som ao enviar
         window.tocarSomMensagem();
 
         await window.supabase.from('messages').insert([{
@@ -183,7 +183,6 @@ window.carregarMensagens = async (myName, nomeContato) => {
         `;
     }).join('');
 
-    // Só rola para o fundo se já estava no fundo
     if (eraNoFundo) box.scrollTop = box.scrollHeight;
 };
 
