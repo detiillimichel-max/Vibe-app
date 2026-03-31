@@ -1,7 +1,9 @@
-// ✅ Carrega o sistema de som global
-import('./sounds.js').catch(() => {});
-
 // OIO ONE - CORE SYSTEM 💎
+// ✅ Carrega som sem travar o app
+setTimeout(() => {
+    import('../sounds.js').catch(() => {});
+}, 1000);
+
 const display = document.getElementById('universe-display');
 const portal = document.getElementById('portal-layer');
 const app = document.getElementById('app-layer');
@@ -16,7 +18,7 @@ if (btnEntrar) {
 
         btnEntrar.innerText = "Sincronizando...";
 
-        let { data: user, error } = await window.supabase
+        let { data: user } = await window.supabase
             .from('profiles')
             .select('*')
             .eq('email', email)
@@ -41,10 +43,7 @@ if (btnEntrar) {
             localStorage.setItem('oio_user_email', email);
             portal.classList.add('hidden');
             app.classList.remove('hidden');
-
-            // ✅ Som ao entrar no app
             window.OioSound?.post();
-
             carregarModulo('origin');
         } else {
             alert("Senha incorreta!");
@@ -56,7 +55,7 @@ if (btnEntrar) {
 async function carregarModulo(nomeModulo) {
     display.innerHTML = '<div style="padding:50px; text-align:center; color:#1877f2;"><i class="fas fa-circle-notch fa-spin fa-2x"></i></div>';
     try {
-        const caminho = `./modules/${nomeModulo}/controller.js`;
+        const caminho = `../modules/${nomeModulo}/controller.js`;
         const mod = await import(caminho);
         const controller = mod[Object.keys(mod)[0]] || mod.default;
         if (controller && controller.init) await controller.init();
@@ -73,10 +72,7 @@ navItems.forEach((item, index) => {
     item.onclick = () => {
         navItems.forEach(i => i.classList.remove('active'));
         item.classList.add('active');
-
-        // ✅ Som ao trocar de aba
         window.OioSound?.like();
-
         carregarModulo(rotas[index]);
     };
 });
