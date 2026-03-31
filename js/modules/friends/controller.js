@@ -1,4 +1,4 @@
-FriendsController = {
+export const FriendsController = {
     async init() {
         const display = document.getElementById('universe-display');
         const myName = localStorage.getItem('oio_user_name');
@@ -9,11 +9,14 @@ FriendsController = {
             .select('*')
             .neq('email', myEmail);
 
+        // Guarda os contatos globalmente para o chat acessar
+        window._contatos = perfis || [];
+
         display.innerHTML = `
             <div id="tela-conexoes" style="padding:15px; max-width:600px; margin:0 auto;">
                 <h2 style="color:white; margin-bottom:20px;">Conexões Reais</h2>
                 <div id="lista-amigos">
-                    ${perfis && perfis.length > 0 ? perfis.map(p => `
+                    ${perfis && perfis.length > 0 ? perfis.map((p, i) => `
                         <div style="background:#1c1e21; padding:15px; border-radius:15px; margin-bottom:12px; border:1px solid #333; display:flex; align-items:center;">
                             <img src="${p.avatar_url || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" 
                                 style="width:55px; height:55px; border-radius:50%; margin-right:15px; object-fit:cover; border:2px solid #1877f2;"
@@ -25,7 +28,7 @@ FriendsController = {
                                     <button style="flex:1; background:#1877f2; color:white; border:none; padding:8px; border-radius:8px; font-weight:bold; cursor:pointer;">
                                         Perfil
                                     </button>
-                                    <button onclick="window.abrirChat('${p.username || p.email}', '${p.avatar_url || ''}')"
+                                    <button onclick="window.abrirChat(${i})"
                                         style="flex:1; background:#333; color:white; border:none; padding:8px; border-radius:8px; font-weight:bold; cursor:pointer;">
                                         💬 Mensagem
                                     </button>
@@ -42,7 +45,8 @@ FriendsController = {
                 <!-- HEADER -->
                 <div style="background:#242526; padding:12px 15px; display:flex; align-items:center; gap:12px; border-bottom:1px solid #3a3b3c; position:sticky; top:0; z-index:10;">
                     <button onclick="window.fecharChat()" style="background:none; border:none; color:white; font-size:22px; cursor:pointer; padding:0 8px 0 0;">←</button>
-                    <img id="chat-avatar" src="" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid #1877f2;">
+                    <img id="chat-avatar" src="" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid #1877f2;"
+                        onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
                     <div>
                         <div id="chat-nome" style="font-weight:bold; color:white; font-size:16px;"></div>
                         <div style="color:#1877f2; font-size:11px;">OIO ONE</div>
@@ -67,31 +71,36 @@ FriendsController = {
     }
 };
 
-// ✅ Abre o chat estilo WhatsApp
-window.abrirChat = async (nomeContato, avatarContato) => {
+// ✅ Abre o chat pelo índice (evita bug de aspas)
+window.abrirChat = async (index) => {
+    const p = window._contatos[index];
+    if (!p) return;
+
+    const nomeContato = p.username || p.email;
+    const avatarContato = p.avatar_url || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
     const myName = localStorage.getItem('oio_user_name');
 
     document.getElementById('tela-conexoes').style.display = 'none';
     const telaChat = document.getElementById('tela-chat');
     telaChat.style.display = 'flex';
     document.getElementById('chat-nome').innerText = nomeContato;
-    document.getElementById('chat-avatar').src = avatarContato || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+    document.getElementById('chat-avatar').src = avatarContato;
 
     await window.carregarMensagens(myName, nomeContato);
 
     const input = document.getElementById('chat-input');
 
-    // Envia com Enter
     input.onkeypress = (e) => {
         if (e.key === 'Enter') document.getElementById('chat-enviar').click();
     };
 
-    // Envia com botão
     document.getElementById('chat-enviar').onclick = async () => {
         const texto = input.value.trim();
         if (!texto) return;
-
         input.value = '';
+
+        // ✅ Som ao enviar (ativado pelo toque do usuário)
+        window.tocarSomMensagem();
 
         await window.supabase.from('messages').insert([{
             sender_id: myName,
@@ -103,11 +112,33 @@ window.abrirChat = async (nomeContato, avatarContato) => {
         await window.carregarMensagens(myName, nomeContato);
     };
 
-    // Atualiza a cada 5 segundos
     if (window._chatInterval) clearInterval(window._chatInterval);
-    window._chatInterval = setInterval(() => {
-        window.carregarMensagens(myName, nomeContato);
+    window._chatInterval = setInterval(async () => {
+        const anterior = document.getElementById('chat-mensagens')?.children.length;
+        await window.carregarMensagens(myName, nomeContato);
+        const atual = document.getElementById('chat-mensagens')?.children.length;
+
+        // ✅ Som ao receber mensagem nova
+        if (atual > anterior) window.tocarSomMensagem();
     }, 5000);
+};
+
+// ✅ Som de mensagem
+window.tocarSomMensagem = () => {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.3);
+    } catch (e) {}
 };
 
 // ✅ Carrega mensagens da conversa
@@ -125,6 +156,8 @@ window.carregarMensagens = async (myName, nomeContato) => {
         box.innerHTML = `<p style="text-align:center; color:#444; font-size:13px; margin-top:40px;">Nenhuma mensagem ainda. Diga olá! 👋</p>`;
         return;
     }
+
+    const eraNoFundo = box.scrollTop + box.clientHeight >= box.scrollHeight - 10;
 
     box.innerHTML = msgs.map(m => {
         const isMeu = m.sender_id === myName;
@@ -150,10 +183,11 @@ window.carregarMensagens = async (myName, nomeContato) => {
         `;
     }).join('');
 
-    box.scrollTop = box.scrollHeight;
+    // Só rola para o fundo se já estava no fundo
+    if (eraNoFundo) box.scrollTop = box.scrollHeight;
 };
 
-// ✅ Fecha o chat e volta para a lista
+// ✅ Fecha o chat
 window.fecharChat = () => {
     if (window._chatInterval) clearInterval(window._chatInterval);
     document.getElementById('tela-chat').style.display = 'none';
