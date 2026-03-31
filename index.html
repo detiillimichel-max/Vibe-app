@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1877f2">
+    <link rel="manifest" href="/manifest.json">
     <title>OIO ONE | SECURE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -50,6 +52,7 @@
         const supabaseKey = 'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA';
         window.supabase = supabase.createClient(supabaseUrl, supabaseKey);
     </script>
+    <script src="/js/push.js"></script>
     <script type="module" src="js/core/app-init.js"></script>
 </body>
 </html>
