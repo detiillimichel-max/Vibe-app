@@ -8,25 +8,12 @@
     <style>
         body, html { margin: 0; padding: 0; background: #000; color: white; font-family: sans-serif; height: 100%; overflow: hidden; }
         .hidden { display: none !important; }
-        
-        #portal-layer { 
-            height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            background: #000; padding: 20px; text-align: center;
-        }
+        #portal-layer { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; padding: 20px; text-align: center; }
         .login-box { width: 100%; max-width: 320px; }
         .oio-logo { color: #1877f2; font-size: 50px; font-weight: 900; margin-bottom: 30px; letter-spacing: -2px; }
-        
-        input { 
-            width: 100%; background: #1c1e21; border: 1px solid #333; padding: 15px; border-radius: 12px; 
-            color: white; margin-bottom: 12px; box-sizing: border-box; outline: none; font-size: 16px;
-        }
+        input { width: 100%; background: #1c1e21; border: 1px solid #333; padding: 15px; border-radius: 12px; color: white; margin-bottom: 12px; box-sizing: border-box; outline: none; font-size: 16px; }
         input:focus { border-color: #1877f2; }
-
-        .login-btn { 
-            width: 100%; background: #1877f2; color: white; border: none; padding: 15px; 
-            border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer;
-        }
-
+        .login-btn { width: 100%; background: #1877f2; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
         .main-nav { position: sticky; top: 0; background: #242526; display: flex; justify-content: space-around; padding: 10px 0; border-bottom: 1px solid #3a3b3c; z-index: 1000; }
         .nav-item { color: #b0b3b8; font-size: 22px; cursor: pointer; position: relative; flex: 1; text-align: center; }
         .nav-item.active { color: #1877f2; }
@@ -38,8 +25,8 @@
     <div id="portal-layer">
         <div class="login-box">
             <div class="oio-logo">OIO</div>
-            <input type="email" id="login-email" placeholder="E-mail">
-            <input type="password" id="login-pass" placeholder="Senha">
+            <input type="text" id="login-email" placeholder="Seu nome" autocomplete="off">
+            <input type="tel" id="login-pass" placeholder="Senha numérica" maxlength="6" pattern="[0-9]*">
             <button id="btn-entrar" class="login-btn">ACESSAR UNIVERSO</button>
             <p id="login-error" style="color: #ff3040; font-size: 12px; margin-top: 15px;" class="hidden">Dados incorretos.</p>
         </div>
@@ -59,10 +46,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-      const supabaseUrl = 'https://uqdwtzlkqaosnweyoyit.supabase.co'; 
-      const supabaseKey = 'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA';
-      window.supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        const supabaseUrl = 'https://uqdwtzlkqaosnweyoyit.supabase.co';
+        const supabaseKey = 'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA';
+        window.supabase = supabase.createClient(supabaseUrl, supabaseKey);
     </script>
-    <script type="module" src="js/core.js"></script>
+    <script type="module" src="js/core/app-init.js"></script>
 </body>
 </html>
