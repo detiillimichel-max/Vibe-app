@@ -1,4 +1,4 @@
-export const FriendsController = {
+FriendsController = {
     async init() {
         const display = document.getElementById('universe-display');
         const myName = localStorage.getItem('oio_user_name');
@@ -36,29 +36,29 @@ export const FriendsController = {
                 </div>
             </div>
 
-            <!-- TELA DE CHAT (oculta inicialmente) -->
+            <!-- TELA DE CHAT -->
             <div id="tela-chat" style="display:none; flex-direction:column; height:calc(100vh - 60px); max-width:600px; margin:0 auto;">
                 
-                <!-- HEADER DO CHAT -->
+                <!-- HEADER -->
                 <div style="background:#242526; padding:12px 15px; display:flex; align-items:center; gap:12px; border-bottom:1px solid #3a3b3c; position:sticky; top:0; z-index:10;">
-                    <button onclick="window.fecharChat()" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">←</button>
-                    <img id="chat-avatar" src="" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+                    <button onclick="window.fecharChat()" style="background:none; border:none; color:white; font-size:22px; cursor:pointer; padding:0 8px 0 0;">←</button>
+                    <img id="chat-avatar" src="" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid #1877f2;">
                     <div>
-                        <div id="chat-nome" style="font-weight:bold; color:white; font-size:15px;"></div>
+                        <div id="chat-nome" style="font-weight:bold; color:white; font-size:16px;"></div>
                         <div style="color:#1877f2; font-size:11px;">OIO ONE</div>
                     </div>
                 </div>
 
                 <!-- MENSAGENS -->
-                <div id="chat-mensagens" style="flex:1; overflow-y:auto; padding:15px; display:flex; flex-direction:column; gap:8px; background:#111;">
+                <div id="chat-mensagens" style="flex:1; overflow-y:auto; padding:15px 15px 80px 15px; display:flex; flex-direction:column; gap:10px; background:#111;">
                     <p style="text-align:center; color:#444; font-size:12px;">Carregando conversa...</p>
                 </div>
 
-                <!-- INPUT DE MENSAGEM -->
-                <div style="background:#242526; padding:10px 15px; display:flex; align-items:center; gap:10px; border-top:1px solid #3a3b3c;">
+                <!-- INPUT FIXO NO FUNDO -->
+                <div style="background:#242526; padding:10px 15px; display:flex; align-items:center; gap:10px; border-top:1px solid #3a3b3c; position:sticky; bottom:0;">
                     <input id="chat-input" type="text" placeholder="Digite uma mensagem..."
-                        style="flex:1; background:#3a3b3c; border:none; padding:12px 16px; border-radius:25px; color:white; outline:none; font-size:14px;">
-                    <button id="chat-enviar" style="background:#1877f2; border:none; width:44px; height:44px; border-radius:50%; color:white; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                        style="flex:1; background:#3a3b3c; border:none; padding:13px 18px; border-radius:25px; color:white; outline:none; font-size:15px;">
+                    <button id="chat-enviar" style="background:#1877f2; border:none; width:46px; height:46px; border-radius:50%; color:white; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
                         ➤
                     </button>
                 </div>
@@ -79,13 +79,14 @@ window.abrirChat = async (nomeContato, avatarContato) => {
 
     await window.carregarMensagens(myName, nomeContato);
 
-    // Envia mensagem ao apertar Enter
     const input = document.getElementById('chat-input');
+
+    // Envia com Enter
     input.onkeypress = (e) => {
         if (e.key === 'Enter') document.getElementById('chat-enviar').click();
     };
 
-    // Envia mensagem ao clicar no botão
+    // Envia com botão
     document.getElementById('chat-enviar').onclick = async () => {
         const texto = input.value.trim();
         if (!texto) return;
@@ -102,13 +103,14 @@ window.abrirChat = async (nomeContato, avatarContato) => {
         await window.carregarMensagens(myName, nomeContato);
     };
 
-    // Atualiza mensagens a cada 5 segundos
+    // Atualiza a cada 5 segundos
+    if (window._chatInterval) clearInterval(window._chatInterval);
     window._chatInterval = setInterval(() => {
         window.carregarMensagens(myName, nomeContato);
     }, 5000);
 };
 
-// ✅ Carrega e renderiza mensagens da conversa
+// ✅ Carrega mensagens da conversa
 window.carregarMensagens = async (myName, nomeContato) => {
     const box = document.getElementById('chat-mensagens');
     if (!box) return;
@@ -120,7 +122,7 @@ window.carregarMensagens = async (myName, nomeContato) => {
         .order('id', { ascending: true });
 
     if (!msgs || msgs.length === 0) {
-        box.innerHTML = `<p style="text-align:center; color:#444; font-size:12px; margin-top:40px;">Nenhuma mensagem ainda. Diga olá! 👋</p>`;
+        box.innerHTML = `<p style="text-align:center; color:#444; font-size:13px; margin-top:40px;">Nenhuma mensagem ainda. Diga olá! 👋</p>`;
         return;
     }
 
@@ -133,13 +135,14 @@ window.carregarMensagens = async (myName, nomeContato) => {
                     color:white;
                     padding:10px 14px;
                     border-radius:${isMeu ? '18px 18px 4px 18px' : '18px 18px 18px 4px'};
-                    max-width:75%;
-                    font-size:14px;
-                    line-height:1.4;
-                    border:1px solid ${isMeu ? '#1877f2' : '#3a3b3c'};
+                    max-width:85%;
+                    font-size:15px;
+                    line-height:1.5;
+                    border:1px solid ${isMeu ? '#1565c0' : '#3a3b3c'};
+                    word-break:break-word;
                 ">
                     ${m.content}
-                    <div style="font-size:10px; opacity:0.6; margin-top:4px; text-align:right;">
+                    <div style="font-size:10px; opacity:0.6; margin-top:5px; text-align:right;">
                         ${new Date(m.created_at).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}
                     </div>
                 </div>
@@ -147,7 +150,6 @@ window.carregarMensagens = async (myName, nomeContato) => {
         `;
     }).join('');
 
-    // Scroll para a última mensagem
     box.scrollTop = box.scrollHeight;
 };
 
