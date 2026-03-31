@@ -41,6 +41,10 @@ if (btnEntrar) {
             localStorage.setItem('oio_user_email', email);
             portal.classList.add('hidden');
             app.classList.remove('hidden');
+
+            // ✅ Som ao entrar no app
+            window.OioSound?.post();
+
             carregarModulo('origin');
         } else {
             alert("Senha incorreta!");
@@ -69,6 +73,10 @@ navItems.forEach((item, index) => {
     item.onclick = () => {
         navItems.forEach(i => i.classList.remove('active'));
         item.classList.add('active');
+
+        // ✅ Som ao trocar de aba
+        window.OioSound?.like();
+
         carregarModulo(rotas[index]);
     };
 });
