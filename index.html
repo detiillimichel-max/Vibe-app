@@ -9,17 +9,23 @@
         body, html { margin: 0; padding: 0; background: #000; color: white; font-family: sans-serif; height: 100%; overflow: hidden; }
         .hidden { display: none !important; }
         
-        /* TELA DE LOGIN */
+        /* LOGIN (A PORTA) */
         #portal-layer { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; padding: 20px; text-align: center; }
         .oio-logo { color: #1877f2; font-size: 50px; font-weight: 900; margin-bottom: 30px; letter-spacing: -2px; }
         input { width: 100%; max-width: 300px; background: #1c1e21; border: 1px solid #333; padding: 15px; border-radius: 12px; color: white; margin-bottom: 12px; outline: none; font-size: 16px; }
         .login-btn { width: 100%; max-width: 300px; background: #1877f2; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
 
-        /* ESTRUTURA DO APP (SÓ APARECE APÓS LOGIN) */
+        /* NAV SUPERIOR (QUANTUM) */
         .main-nav { position: fixed; top: 0; width: 100%; background: #080808; display: flex; padding: 12px 0; border-bottom: 1px solid #1a1a1a; z-index: 1000; }
         .nav-item { flex: 1; text-align: center; color: #555; font-size: 22px; cursor: pointer; }
         .nav-item.active { color: #1877f2; }
         #view-container { margin-top: 65px; height: calc(100vh - 65px); overflow-y: auto; padding: 15px; }
+
+        /* CARDS E GRIDS */
+        .card-oio { background: #111; border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid #222; }
+        .grid-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .menu-item { background: #111; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #222; }
+        .menu-item i { display: block; color: #1877f2; margin-bottom: 8px; font-size: 20px; }
     </style>
 </head>
 <body>
@@ -27,63 +33,83 @@
     <div id="portal-layer">
         <div class="oio-logo">OIO</div>
         <input type="text" id="user-name" placeholder="Seu nome">
-        <input type="tel" id="user-pass" placeholder="Senha numérica" maxlength="6">
-        <button onclick="tentarAcesso()" class="login-btn">ACESSAR UNIVERSO</button>
-        <p id="error-msg" class="hidden" style="color: #ff3040; margin-top: 10px;">Senha incorreta!</p>
+        <input type="tel" id="user-pass" placeholder="Senha de 6 dígitos" maxlength="6">
+        <button id="btn-entrar" class="login-btn">ACESSAR UNIVERSO</button>
+        <p id="error-msg" class="hidden" style="color: #ff3040; margin-top: 10px;">Acesso negado.</p>
     </div>
 
     <div id="app-layer" class="hidden">
         <nav class="main-nav">
-            <div class="nav-item active" onclick="carregarBloco(1, this)"><i class="fas fa-home"></i></div>
-            <div class="nav-item" onclick="carregarBloco(2, this)"><i class="fas fa-play-circle"></i></div>
-            <div class="nav-item" onclick="carregarBloco(3, this)"><i class="fas fa-user-circle"></i></div>
-            <div class="nav-item" onclick="carregarBloco(4, this)"><i class="fas fa-store"></i></div>
-            <div class="nav-item" onclick="carregarBloco(5, this)"><i class="fas fa-bell"></i></div>
-            <div class="nav-item" onclick="carregarBloco(6, this)"><div style="width:20px; height:20px; background:#1877f2; border-radius:50%; margin:auto;"></div></div>
+            <div class="nav-item active" onclick="trocarBloco(1, this)"><i class="fas fa-home"></i></div>
+            <div class="nav-item" onclick="trocarBloco(2, this)"><i class="fas fa-play-circle"></i></div>
+            <div class="nav-item" onclick="trocarBloco(3, this)"><i class="fas fa-user-circle"></i></div>
+            <div class="nav-item" onclick="trocarBloco(4, this)"><i class="fas fa-store"></i></div>
+            <div class="nav-item" onclick="trocarBloco(5, this)"><i class="fas fa-bell"></i></div>
+            <div class="nav-item" onclick="trocarBloco(6, this)"><div style="width:20px; height:20px; background:#1877f2; border-radius:50%; margin:auto;"></div></div>
         </nav>
         <div id="view-container"></div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // FUNÇÃO DE LOGIN
-        function tentarAcesso() {
+        // CONFIGURAÇÕES SUPABASE
+        const supabaseUrl = 'https://uqdwtzlkqaosnweyoyit.supabase.co';
+        const supabaseKey = 'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // LOGICA DE ENTRADA
+        document.getElementById('btn-entrar').onclick = function() {
             const pass = document.getElementById('user-pass').value;
-            const error = document.getElementById('error-msg');
-            
-            // Coloque aqui a senha que você deseja (ex: 123456)
+            // Definimos a senha aqui para não depender de módulos externos no login
             if(pass === "123456") { 
                 document.getElementById('portal-layer').classList.add('hidden');
                 document.getElementById('app-layer').classList.remove('hidden');
-                carregarBloco(1); // Entra na Home
+                trocarBloco(1);
             } else {
-                error.classList.remove('hidden');
+                document.getElementById('error-msg').classList.remove('hidden');
             }
-        }
+        };
 
-        // CARREGADOR DE MÓDULOS (PASTA /modulos)
-        async function carregarBloco(num, el) {
+        // GERENCIADOR DE CONTEÚDO (OS 6 BLOCOS)
+        function trocarBloco(num, el) {
             if(el) {
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
                 el.classList.add('active');
             }
             const container = document.getElementById('view-container');
-            container.innerHTML = "<p>Sincronizando...</p>";
-            
-            try {
-                // Ele vai buscar o arquivo dentro da pasta 'modulos'
-                const response = await fetch(`modulos/bloco${num}.html`);
-                if(response.ok) {
-                    const html = await response.text();
-                    container.innerHTML = html;
-                } else {
-                    container.innerHTML = `<div style="padding:20px; text-align:center;">
-                        <h3>Módulo ${num} em construção</h3>
-                        <p>Crie o arquivo modulos/bloco${num}.html</p>
-                    </div>`;
-                }
-            } catch (e) {
-                container.innerHTML = "Erro ao conectar com o módulo.";
-            }
+
+            // Aqui definimos o que cada bloco faz sem precisar de pastas
+            const conteudos = {
+                1: `<div class="card-oio"><h3>Home</h3><p>Bem-vindo ao Universo OIO.</p></div>`,
+                
+                2: `<div class="card-oio">
+                        <h3>Vídeos Coletivos</h3>
+                        <div style="height:200px; background:#000; border:1px solid #333; display:flex; align-items:center; justify-content:center"><i class="fas fa-play fa-3x"></i></div>
+                        <button class="login-btn" style="margin-top:10px">SUBIR VÍDEO</button>
+                    </div>`,
+                
+                3: `<div class="card-oio"><h3>Mensagens</h3><p>Chat Online.</p></div>
+                    <div class="card-oio">
+                        <h3>Perfil</h3>
+                        <input placeholder="Cidade"><input placeholder="Time">
+                        <select><option>Estado Civil...</option><option>Solteiro</option><option>Casado</option></select>
+                        <button class="login-btn">SALVAR</button>
+                    </div>`,
+                
+                4: `<div class="card-oio"><h3>Marketingplace</h3><p>Loja e Ofertas Ativas.</p></div>`,
+                
+                5: `<div class="card-oio"><h3>Notificações</h3><p>Acesse sua agenda de contatos.</p></div>`,
+                
+                6: `<div class="grid-menu">
+                        <div class="menu-item"><i class="fas fa-bookmark"></i>Salvos</div>
+                        <div class="menu-item"><i class="fas fa-users"></i>Grupos</div>
+                        <div class="menu-item"><i class="fas fa-star"></i>Recomendações</div>
+                        <div class="menu-item"><i class="fas fa-history"></i>Recordações</div>
+                        <div class="menu-item" style="color:#ff3040" onclick="location.reload()"><i class="fas fa-power-off"></i>SAIR</div>
+                    </div>`
+            };
+
+            container.innerHTML = conteudos[num] || conteudos[1];
         }
     </script>
 </body>
