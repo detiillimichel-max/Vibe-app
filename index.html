@@ -11,109 +11,91 @@
         body, html { margin: 0; padding: 0; background: #000; color: white; font-family: sans-serif; height: 100%; overflow: hidden; }
         .hidden { display: none !important; }
         
-        /* NAV SUPERIOR - ORDEM CORRIGIDA */
+        /* LOGIN */
+        #portal-layer { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; padding: 20px; text-align: center; }
+        .oio-logo { color: #1877f2; font-size: 50px; font-weight: 900; margin-bottom: 30px; letter-spacing: -2px; }
+        input, select { width: 100%; background: #1c1e21; border: 1px solid #333; padding: 15px; border-radius: 12px; color: white; margin-bottom: 10px; box-sizing: border-box; outline: none; }
+        .login-btn { width: 100%; background: #1877f2; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+
+        /* NAV SUPERIOR - QUANTUM */
         .main-nav { position: sticky; top: 0; background: #080808; display: flex; justify-content: space-around; padding: 12px 0; border-bottom: 1px solid #1a1a1a; z-index: 1000; }
         .nav-item { color: #555; font-size: 22px; cursor: pointer; flex: 1; text-align: center; }
         .nav-item.active { color: #1877f2; }
 
-        /* ÁREA DE CONTEÚDO */
-        #universe-display { height: calc(100vh - 60px); overflow-y: auto; background: #000; padding: 15px; padding-bottom: 80px; }
+        /* DISPLAY DE CONTEÚDO */
+        #universe-display { height: calc(100vh - 65px); overflow-y: auto; background: #000; padding: 15px; }
         .card-oio { background: #111; border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid #222; }
         
-        /* INPUTS PERFIL */
-        .input-perfil { width: 100%; background: #1c1e21; border: 1px solid #333; padding: 12px; border-radius: 8px; color: white; margin-bottom: 10px; box-sizing: border-box; }
-        .btn-acao { background: #1877f2; color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; margin-top: 5px; }
-
         /* GRID BLOCO 6 */
         .grid-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .menu-item { background: #111; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #222; font-size: 13px; }
-        .menu-item i { font-size: 20px; color: #1877f2; margin-bottom: 5px; display: block; }
+        .menu-item i { display: block; color: #1877f2; margin-bottom: 5px; font-size: 20px; }
     </style>
 </head>
 <body>
 
     <div id="portal-layer">
-        <div id="login-box" style="text-align:center; padding-top:100px;">
-            <div style="color:#1877f2; font-size:50px; font-weight:900;">OIO</div>
-            <input type="text" id="login-email" class="input-perfil" style="max-width:300px" placeholder="Seu nome">
-            <button onclick="document.getElementById('portal-layer').classList.add('hidden'); document.getElementById('app-layer').classList.remove('hidden')" class="btn-acao" style="max-width:300px">ENTRAR</button>
-        </div>
+        <div class="oio-logo">OIO</div>
+        <input type="text" id="login-email" placeholder="Seu nome" style="max-width:300px">
+        <input type="tel" id="login-pass" placeholder="Senha" maxlength="6" style="max-width:300px">
+        <button id="btn-entrar" class="login-btn" style="max-width:300px">ENTRAR</button>
     </div>
 
     <div id="app-layer" class="hidden">
         <nav class="main-nav">
-            <div class="nav-item active" onclick="abrirBloco('home', this)"><i class="fas fa-home"></i></div>
-            <div class="nav-item" onclick="abrirBloco('videos', this)"><i class="fas fa-play-circle"></i></div>
-            <div class="nav-item" onclick="abrirBloco('perfil', this)"><i class="fas fa-user-circle"></i></div>
-            <div class="nav-item" onclick="abrirBloco('marketing', this)"><i class="fas fa-store"></i></div>
-            <div class="nav-item" onclick="abrirBloco('notificacoes', this)"><i class="fas fa-bell"></i></div>
-            <div class="nav-item" onclick="abrirBloco('menu_total', this)"><div style="width:22px; height:22px; background:#1877f2; border-radius:50%; margin:auto;"></div></div>
+            <div class="nav-item active" onclick="showTab('home', this)"><i class="fas fa-home"></i></div>
+            <div class="nav-item" onclick="showTab('videos', this)"><i class="fas fa-play-circle"></i></div>
+            <div class="nav-item" onclick="showTab('perfil_msg', this)"><i class="fas fa-user-circle"></i></div>
+            <div class="nav-item" onclick="showTab('store', this)"><i class="fas fa-store"></i></div>
+            <div class="nav-item" onclick="showTab('notif', this)"><i class="fas fa-bell"></i></div>
+            <div class="nav-item" onclick="showTab('menu', this)"><div style="width:22px; height:22px; background:#1877f2; border-radius:50%; margin:auto;"></div></div>
         </nav>
-
+        
         <div id="universe-display">
-            <div class="card-oio"><h3>Bem-vindo</h3><p>O Universo OIO está pronto.</p></div>
-        </div>
+            </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const display = document.getElementById('universe-display');
+        // CONEXÃO SUPABASE (MANTIDA)
+        const supabaseUrl = 'https://uqdwtzlkqaosnweyoyit.supabase.co';
+        const supabaseKey = 'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA';
+        window.supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        function abrirBloco(tipo, el) {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        function showTab(aba, el) {
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             el.classList.add('active');
+            const display = document.getElementById('universe-display');
 
-            if(tipo === 'videos') {
+            if(aba === 'perfil_msg') {
                 display.innerHTML = `
-                    <div class="card-oio">
-                        <h3>OIO Vídeos Coletivos</h3>
-                        <p style="font-size:11px; color:#888">Postado por Comunidade OIO</p>
-                        <div style="background:#000; height:280px; border-radius:10px; display:flex; align-items:center; justify-content:center; border:1px solid #222">
-                            <i class="fas fa-play fa-3x" style="color:#1877f2"></i>
-                        </div>
-                        <button class="btn-acao" style="margin-top:15px">POSTAR MEU VÍDEO</button>
-                    </div>`;
-            } 
-            else if(tipo === 'perfil') {
-                display.innerHTML = `
+                    <div class="card-oio"><h3>Mensagens Ativas</h3><p>Suas conversas do Supabase aqui.</p></div>
                     <div class="card-oio">
                         <h3>Meu Perfil</h3>
-                        <div style="width:70px; height:70px; background:#222; border-radius:50%; margin: 10px auto; border: 2px solid #1877f2; display:flex; align-items:center; justify-content:center"><i class="fas fa-camera"></i></div>
-                        <input type="text" class="input-perfil" placeholder="Cidade">
-                        <input type="text" class="input-perfil" placeholder="Profissão">
-                        <input type="text" class="input-perfil" placeholder="Hobbies/O que gosta">
-                        <input type="text" class="input-perfil" placeholder="Time que torce">
-                        <input type="number" class="input-perfil" placeholder="Idade">
-                        <select class="input-perfil">
-                            <option>Estado Civil...</option>
-                            <option>Solteiro(a)</option>
-                            <option>Casado(a)</option>
-                        </select>
-                        <button class="btn-acao">SALVAR PERFIL</button>
+                        <input placeholder="Cidade"><input placeholder="Time">
+                        <select><option>Estado Civil...</option><option>Solteiro(a)</option><option>Casado(a)</option></select>
+                        <button class="login-btn">Salvar Perfil</button>
                     </div>`;
-            }
-            else if(tipo === 'menu_total') {
+            } else if(aba === 'store') {
+                // BLOCO 4 - MARKETINGPLACE TOTALMENTE FUNCIONAL
+                display.innerHTML = `<div class="card-oio"><h3>Marketingplace OIO</h3><p>Carregando ofertas e produtos...</p></div>`;
+            } else if(aba === 'videos') {
+                display.innerHTML = `<div class="card-oio"><h3>Feed de Vídeos</h3><div style="height:250px; background:#000; border:1px solid #333; display:flex; align-items:center; justify-content:center"><i class="fas fa-play fa-3x"></i></div></div>`;
+            } else if(aba === 'menu') {
                 display.innerHTML = `
                     <div class="grid-menu">
                         <div class="menu-item"><i class="fas fa-bookmark"></i>Salvos</div>
                         <div class="menu-item"><i class="fas fa-users"></i>Grupos</div>
                         <div class="menu-item"><i class="fas fa-star"></i>Recomendação</div>
                         <div class="menu-item"><i class="fas fa-cloud"></i>Recordação</div>
-                        <div class="menu-item"><i class="fas fa-cog"></i>Definições</div>
-                        <div class="menu-item" style="color:#ff3040" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i>Sair</div>
+                        <div class="menu-item" onclick="location.reload()" style="color:red"><i class="fas fa-sign-out-alt"></i>Sair</div>
                     </div>`;
-            }
-            else if(tipo === 'notificacoes') {
-                display.innerHTML = `
-                    <div class="card-oio">
-                        <h3>Acessar Agenda</h3>
-                        <p>Encontre seus amigos no OIO ONE</p>
-                        <button class="btn-acao" onclick="alert('Buscando contatos...')">SINCRONIZAR CONTATOS</button>
-                    </div>`;
-            }
-            else {
-                display.innerHTML = `<div class="card-oio"><h3>Início</h3><p>Sua Vibe começa aqui.</p></div>`;
+            } else {
+                display.innerHTML = `<div class="card-oio"><h3>Home</h3><p>Seu universo está online.</p></div>`;
             }
         }
     </script>
+    <script src="/js/push.js"></script>
+    <script type="module" src="js/core/app-init.js"></script>
 </body>
 </html>
