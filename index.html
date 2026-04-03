@@ -3,143 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OIO ONE | SOCIAL ENGINE</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>OIO ONE | SISTEMA DE IDENTIDADE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         :root {
             --primary: #1877f2;
-            --dark-bg: #000000;
-            --card-bg: rgba(255, 255, 255, 0.07);
-            --border: rgba(255, 255, 255, 0.1);
-            --text-main: #ffffff;
-            --text-dim: #b0b3b8;
-            --glass: blur(25px);
+            --bg: #000000;
+            --glass: rgba(255, 255, 255, 0.07);
+            --border: rgba(255, 255, 255, 0.12);
         }
 
-        /* --- RESET E BASE --- */
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body, html { 
-            margin: 0; padding: 0; background: var(--dark-bg); color: var(--text-main); 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            height: 100vh; width: 100vw; overflow: hidden; 
-        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body, html { background: var(--bg); color: white; height: 100%; overflow: hidden; }
         .hidden { display: none !important; }
 
-        /* --- CAMADA DE ACESSO (PORTAL) --- */
+        /* --- TELA DE ACESSO --- */
         #portal-layer { 
-            height: 100%; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; 
-            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
-            z-index: 2000; position: relative;
+            height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            background: radial-gradient(circle, #1a1a1a 0%, #000 100%); 
         }
-        .login-container {
-            width: 88%; max-width: 400px; padding: 50px 30px;
-            background: var(--card-bg); backdrop-filter: var(--glass);
-            border-radius: 40px; border: 1px solid var(--border);
-            text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.8);
-            animation: fadeIn 0.8s ease-out;
+        .login-card { 
+            background: var(--glass); backdrop-filter: blur(40px); padding: 40px 25px; 
+            border-radius: 35px; border: 1px solid var(--border); width: 90%; max-width: 380px; text-align: center;
         }
-        .oio-brand { font-size: 80px; font-weight: 900; letter-spacing: -6px; color: var(--primary); margin-bottom: 30px; text-shadow: 0 0 30px rgba(24,119,242,0.3); }
+        .logo { font-size: 70px; font-weight: 900; color: var(--primary); margin-bottom: 20px; letter-spacing: -5px; }
         
-        .input-wrapper { width: 100%; margin-bottom: 20px; text-align: left; }
-        .input-wrapper label { font-size: 11px; color: var(--text-dim); margin-left: 15px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-        .input-wrapper input { 
-            width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); 
-            padding: 20px; border-radius: 20px; color: white; font-size: 16px; margin-top: 8px;
-            transition: all 0.3s ease;
+        .field { margin-bottom: 20px; text-align: left; }
+        .field label { font-size: 11px; color: #888; margin-left: 10px; text-transform: uppercase; font-weight: bold; }
+        .field input { 
+            width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--border); 
+            padding: 20px; border-radius: 20px; color: white; font-size: 16px; margin-top: 8px; outline: none;
         }
-        .input-wrapper input:focus { border-color: var(--primary); background: rgba(24,119,242,0.05); box-shadow: 0 0 15px rgba(24,119,242,0.2); }
 
-        .btn-action { 
-            width: 100%; padding: 22px; border-radius: 20px; border: none;
-            background: var(--primary); color: white; font-weight: 800;
-            font-size: 16px; cursor: pointer; transition: 0.3s;
-            box-shadow: 0 12px 30px rgba(24, 119, 242, 0.4);
+        .btn { 
+            width: 100%; padding: 20px; border-radius: 20px; border: none; background: var(--primary); 
+            color: white; font-weight: 900; font-size: 16px; cursor: pointer; margin-top: 10px;
         }
-        .btn-action:active { transform: scale(0.96); }
+        .btn-sec { background: transparent; border: 1px solid var(--border); margin-top: 15px; font-size: 13px; color: #aaa; }
 
-        /* --- INTERFACE PRINCIPAL --- */
-        #app-shell { height: 100vh; display: flex; flex-direction: column; }
+        /* --- APP CORE --- */
+        .header { height: 75px; display: flex; align-items: center; justify-content: space-around; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .nav-link { font-size: 24px; color: #444; }
+        .nav-link.active { color: var(--primary); }
+        #main { margin-top: 75px; height: calc(100vh - 75px); overflow-y: auto; padding: 20px; padding-bottom: 100px; }
         
-        .nav-header { 
-            height: 75px; display: flex; align-items: center; justify-content: space-around;
-            background: rgba(0,0,0,0.85); backdrop-filter: var(--glass);
-            border-bottom: 1px solid var(--border); position: fixed; top: 0; width: 100%; z-index: 1000;
-        }
-        .nav-btn { font-size: 26px; color: #4a4a4a; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); padding: 12px; border-radius: 15px; position: relative; }
-        .nav-btn.active { color: var(--primary); transform: translateY(-3px); }
-        .nav-btn.active::after { content: ''; position: absolute; bottom: 0; left: 25%; right: 25%; height: 4px; background: var(--primary); border-radius: 10px; }
-
-        #view-port { flex: 1; margin-top: 75px; overflow-y: auto; padding: 20px; padding-bottom: 120px; }
-
-        /* --- COMPONENTES VISUAIS --- */
-        .glass-card { 
-            background: var(--card-bg); border: 1px solid var(--border);
-            border-radius: 30px; padding: 25px; margin-bottom: 20px;
-            animation: slideUp 0.5s ease;
-        }
-
-        /* Sistema de Chat Profissional */
-        #chat-scroller { height: 450px; overflow-y: auto; display: flex; flex-direction: column; padding: 10px; scroll-behavior: smooth; }
-        .msg-line { display: flex; flex-direction: column; margin-bottom: 15px; max-width: 85%; }
-        .msg-line.mine { align-self: flex-end; align-items: flex-end; }
-        .msg-line.theirs { align-self: flex-start; align-items: flex-start; }
+        .card { background: var(--glass); border: 1px solid var(--border); border-radius: 30px; padding: 20px; margin-bottom: 20px; }
         
-        .bubble { 
-            padding: 14px 20px; border-radius: 25px; font-size: 15px; line-height: 1.4; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        .mine .bubble { background: var(--primary); color: white; border-bottom-right-radius: 5px; }
-        .theirs .bubble { background: #2c2c2e; color: white; border-bottom-left-radius: 5px; }
-        
-        .sender-tag { font-size: 10px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; color: var(--text-dim); }
-
-        /* Grid Facebook 6 Blocos */
-        .fb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .grid-box { 
-            background: var(--card-bg); height: 140px; border-radius: 30px; border: 1px solid var(--border);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: 0.3s;
-        }
-        .grid-box i { font-size: 35px; color: var(--primary); margin-bottom: 15px; }
-        .grid-box span { font-size: 12px; font-weight: 700; letter-spacing: 1px; }
-
-        video { width: 100%; border-radius: 25px; border: 1px solid var(--border); margin-top: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* Chat */
+        #chat-flow { height: 350px; overflow-y: auto; display: flex; flex-direction: column; margin-bottom: 15px; }
+        .bbl { max-width: 80%; padding: 12px 18px; border-radius: 20px; margin-bottom: 8px; font-size: 14px; }
+        .bbl.me { background: var(--primary); align-self: flex-end; border-bottom-right-radius: 4px; }
+        .bbl.other { background: #262626; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .u-tag { font-size: 9px; font-weight: bold; margin-bottom: 3px; opacity: 0.5; }
     </style>
 </head>
 <body>
 
-    <section id="portal-layer">
-        <div class="login-container">
-            <div class="oio-brand">OIO</div>
-            <div class="input-wrapper">
-                <label>Identificação de Usuário</label>
-                <input type="text" id="login-user" placeholder="Como quer ser chamado?">
+    <div id="portal-layer">
+        <div class="login-card" id="card-auth">
+            <div class="logo">OIO</div>
+            <h2 id="auth-title" style="margin-bottom:20px; font-size: 18px;">Entrar no Universo</h2>
+            
+            <div class="field">
+                <label>Nome de Usuário</label>
+                <input type="text" id="user-name" placeholder="Ex: Michel">
             </div>
-            <div class="input-wrapper">
-                <label>PIN do Universo</label>
-                <input type="tel" id="login-pin" placeholder="Sua senha de 4 dígitos" maxlength="4">
+            <div class="field">
+                <label>PIN de Acesso</label>
+                <input type="password" id="user-pin" placeholder="Sua senha" maxlength="8">
             </div>
-            <button class="btn-action" onclick="unlock()">Sincronizar Vibe</button>
-            <p id="auth-err" class="hidden" style="color: #ff3b30; font-size: 12px; margin-top: 20px;">PIN Inválido. Tente novamente.</p>
+
+            <button class="btn" onclick="handleAuth()" id="btn-main">CONECTAR</button>
+            <button class="btn btn-sec" onclick="toggleMode()" id="btn-toggle">Não tem conta? Criar agora</button>
+            
+            <p id="msg" style="margin-top:15px; font-size:12px; color: #ff3b30;" class="hidden"></p>
         </div>
-    </section>
+    </div>
 
-    <main id="app-shell" class="hidden">
-        <nav class="nav-header">
-            <div class="nav-btn active" onclick="route(1, this)"><i class="fas fa-home"></i></div>
-            <div class="nav-btn" onclick="route(2, this)"><i class="fas fa-play-circle"></i></div>
-            <div class="nav-btn" onclick="route(3, this)"><i class="fas fa-comment-dots"></i></div>
-            <div class="nav-btn" onclick="route(4, this)"><i class="fas fa-store"></i></div>
-            <div class="nav-btn" onclick="route(5, this)"><i class="fas fa-bell"></i></div>
-            <div class="nav-btn" onclick="route(6, this)"><div style="width:28px; height:28px; background:var(--primary); border-radius:50%; box-shadow: 0 0 10px var(--primary);"></div></div>
-        </nav>
-
-        <section id="view-port"></section>
-    </main>
+    <div id="app-layer" class="hidden">
+        <div class="header">
+            <div class="nav-link active" onclick="nav(1, this)"><i class="fas fa-home"></i></div>
+            <div class="nav-link" onclick="nav(2, this)"><i class="fas fa-play-circle"></i></div>
+            <div class="nav-link" onclick="nav(3, this)"><i class="fas fa-comment-dots"></i></div>
+            <div class="nav-link" onclick="nav(6, this)"><i class="fas fa-th-large"></i></div>
+        </div>
+        <div id="main"></div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -147,101 +96,95 @@
         const SB_KEY = 'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA';
         const supabase = window.supabase.createClient(SB_URL, SB_KEY);
 
-        let USER_ID = "";
+        let currentUser = "";
+        let isLoginMode = true;
 
-        function unlock() {
-            const u = document.getElementById('login-user').value;
-            const p = document.getElementById('login-pin').value;
-            if(u.length >= 2 && p === "2024") { 
-                USER_ID = u;
-                document.getElementById('portal-layer').classList.add('hidden');
-                document.getElementById('app-shell').classList.remove('hidden');
-                route(3); // Abre direto nas mensagens
+        function toggleMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('auth-title').innerText = isLoginMode ? "Entrar no Universo" : "Criar Nova Identidade";
+            document.getElementById('btn-main').innerText = isLoginMode ? "CONECTAR" : "CADASTRAR E ENTRAR";
+            document.getElementById('btn-toggle').innerText = isLoginMode ? "Não tem conta? Criar agora" : "Já tenho conta. Entrar";
+        }
+
+        async function handleAuth() {
+            const user = document.getElementById('user-name').value.trim();
+            const pin = document.getElementById('user-pin').value.trim();
+            const msg = document.getElementById('msg');
+
+            if(user.length < 3 || pin.length < 4) {
+                msg.innerText = "Nome (min 3) e PIN (min 4) são necessários.";
+                msg.classList.remove('hidden');
+                return;
+            }
+
+            if(isLoginMode) {
+                // Tenta logar
+                const { data, error } = await supabase.from('usuarios').select('*').eq('nome', user).eq('senha', pin).single();
+                if(data) {
+                    enterApp(user);
+                } else {
+                    msg.innerText = "Usuário ou PIN incorretos.";
+                    msg.classList.remove('hidden');
+                }
             } else {
-                document.getElementById('auth-err').classList.remove('hidden');
+                // Tenta cadastrar
+                const { error } = await supabase.from('usuarios').insert([{ nome: user, senha: pin }]);
+                if(!error) {
+                    enterApp(user);
+                } else {
+                    msg.innerText = "Este nome já está em uso.";
+                    msg.classList.remove('hidden');
+                }
             }
         }
 
-        async function route(page, el) {
-            if(el) { document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
-            const container = document.getElementById('view-port');
+        function enterApp(name) {
+            currentUser = name;
+            document.getElementById('portal-layer').classList.add('hidden');
+            document.getElementById('app-layer').classList.remove('hidden');
+            nav(3);
+        }
+
+        async function nav(p, el) {
+            if(el) { document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active')); el.classList.add('active'); }
+            const root = document.getElementById('main');
             
-            switch(page) {
-                case 1: // HOME FEED
-                    container.innerHTML = `
-                        <div class="glass-card">
-                            <h2>OIO ONE</h2>
-                            <p style="color: var(--text-dim)">Sincronizado como <b>${USER_ID}</b></p>
-                            <p>Bem-vindo ao seu ecossistema digital inteligente.</p>
-                        </div>`;
-                    break;
-
-                case 2: // VIDEO REELS
-                    container.innerHTML = `<div class="glass-card"><h3>Vibe Reels</h3><div id="reels-feed">Carregando conteúdos...</div></div>`;
-                    const { data: vids } = await supabase.from('posts_video').select('*').order('created_at', {ascending: false});
-                    if(vids) document.getElementById('reels-feed').innerHTML = vids.map(v => `<video src="${v.url}" controls></video>`).join('');
-                    break;
-
-                case 3: // CHAT PROFISSIONAL
-                    container.innerHTML = `
-                        <div class="glass-card">
-                            <h3>Conversas em Tempo Real</h3>
-                            <div id="chat-scroller"></div>
-                            <div style="display:flex; gap:12px; margin-top:20px">
-                                <input id="chat-msg" placeholder="Diga algo..." style="background:rgba(0,0,0,0.3); border:1px solid var(--border); padding:18px; border-radius:18px; color:white; flex:1;">
-                                <button class="btn-action" style="width:70px; border-radius:18px" onclick="broadcast()"><i class="fas fa-paper-plane"></i></button>
-                            </div>
+            if(p === 3) {
+                root.innerHTML = `
+                    <div class="card">
+                        <h3>Chat Profissional</h3>
+                        <div id="chat-flow"></div>
+                        <div style="display:flex; gap:10px">
+                            <input id="m-in" placeholder="Mensagem..." style="flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--border); padding:15px; border-radius:15px; color:white;">
+                            <button class="btn" style="width:60px; margin:0" onclick="send()"><i class="fas fa-paper-plane"></i></button>
                         </div>
-                        <div class="glass-card">
-                            <h3>Minha Identidade</h3>
-                            <div class="input-wrapper"><label>Cidade Atual</label><input id="p-cidade" value="Bragança Paulista"></div>
-                            <button class="btn-action" style="margin-top:10px" onclick="alert('Identidade Salva!')">ATUALIZAR PERFIL</button>
-                        </div>`;
-                    syncChat();
-                    setInterval(syncChat, 3000); // Polling de 3s para o Mini Facebook
-                    break;
-
-                case 4: // MARKETINGPLACE
-                    container.innerHTML = `<div class="glass-card"><h3>Marketplace</h3><p>Oportunidades de negócios na rede OIO.</p></div>`;
-                    break;
-
-                case 5: // NOTIFICAÇÕES
-                    container.innerHTML = `<div class="glass-card"><h3>Alertas</h3><p>Você não tem novas notificações.</p></div>`;
-                    break;
-
-                case 6: // PAINEL 6 BLOCOS
-                    container.innerHTML = `
-                        <div class="fb-grid">
-                            <div class="grid-box"><i class="fas fa-bookmark"></i><span>SALVOS</span></div>
-                            <div class="grid-box"><i class="fas fa-users"></i><span>GRUPOS</span></div>
-                            <div class="grid-box"><i class="fas fa-star"></i><span>DESTAQUES</span></div>
-                            <div class="grid-box"><i class="fas fa-history"></i><span>RECORDAÇÕES</span></div>
-                            <div class="grid-box"><i class="fas fa-cog"></i><span>AJUSTES</span></div>
-                            <div class="grid-box" style="border-color:#ff3b30" onclick="location.reload()"><i class="fas fa-power-off" style="color:#ff3b30"></i><span>SAIR</span></div>
-                        </div>`;
-                    break;
+                    </div>`;
+                sync();
+                setInterval(sync, 3000);
+            } else {
+                root.innerHTML = `<div class="card"><h2>Módulo ${p}</h2><p>Identidade: ${currentUser}</p></div>`;
             }
         }
 
-        async function syncChat() {
+        async function sync() {
             const { data } = await supabase.from('mensagens').select('*').order('created_at', {ascending: true});
-            const scroller = document.getElementById('chat-scroller');
-            if(data && scroller) {
-                scroller.innerHTML = data.map(m => `
-                    <div class="msg-line ${m.usuario === USER_ID ? 'mine' : 'theirs'}">
-                        <span class="sender-tag">${m.usuario}</span>
-                        <div class="bubble">${m.texto}</div>
+            const flow = document.getElementById('chat-flow');
+            if(data && flow) {
+                flow.innerHTML = data.map(m => `
+                    <div class="bbl ${m.usuario === currentUser ? 'me' : 'other'}">
+                        <div class="u-tag">${m.usuario}</div>
+                        ${m.texto}
                     </div>`).join('');
-                scroller.scrollTop = scroller.scrollHeight;
+                flow.scrollTop = flow.scrollHeight;
             }
         }
 
-        async function broadcast() {
-            const inp = document.getElementById('chat-msg');
-            if(!inp.value) return;
-            await supabase.from('mensagens').insert([{ texto: inp.value, usuario: USER_ID }]);
-            inp.value = "";
-            syncChat();
+        async function send() {
+            const i = document.getElementById('m-in');
+            if(!i.value) return;
+            await supabase.from('mensagens').insert([{ texto: i.value, usuario: currentUser }]);
+            i.value = "";
+            sync();
         }
     </script>
 </body>
