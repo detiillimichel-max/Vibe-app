@@ -1,16 +1,15 @@
 /**
- * OIO ONE - SISTEMA QUANTUM (MOTOR DE EMERGÊNCIA)
- * Simplificado para garantir o visual no celular.
+ * OIO ONE - SISTEMA QUANTUM (CORRIGIDO)
+ * Integrado com Som e Login do Michel
  */
 
-const QuantumSystem = {
+const OioQuantum = {
     init() {
-        console.log("Sistema Quantum: Iniciado.");
+        console.log("Sistema Quantum: Motor de Pastas Ligado.");
         this.setupNavigation();
-        this.renderHome(); // Força a primeira tela
+        this.renderHome(); 
     },
 
-    // Desenha a tela inicial manualmente para garantir que não fique preto
     renderHome() {
         const display = document.getElementById('universe-display');
         if (display) {
@@ -29,34 +28,40 @@ const QuantumSystem = {
         const navItems = document.querySelectorAll('.nav-item');
         navItems.forEach(item => {
             item.onclick = () => {
-                const target = item.innerText.toLowerCase();
-                this.switchUniverse(target);
+                // Pega o módulo pelo data-module (origin, watch, etc)
+                const modulo = item.getAttribute('data-module');
+                
+                // 🔊 TOCA O SOM AO CLICAR NA PASTA
+                if (window.OioSound) window.OioSound.mensagem();
+
+                this.switchUniverse(modulo, item);
             };
         });
     },
 
-    switchUniverse(id) {
+    switchUniverse(id, element) {
         const display = document.getElementById('universe-display');
         const navItems = document.querySelectorAll('.nav-item');
 
-        // Feedback visual
-        navItems.forEach(item => {
-            item.classList.remove('active');
-            if(item.innerText.toLowerCase() === id) item.classList.add('active');
-        });
+        // Feedback visual nos ícones
+        navItems.forEach(i => i.classList.remove('active'));
+        if(element) element.classList.add('active');
 
-        // Troca de conteúdo simples
+        // Troca o conteúdo na tela
         display.innerHTML = `
-            <div style="display: flex; height: 100%; align-items: center; justify-content: center; color: white; opacity: 0.5;">
-                <span style="letter-spacing: 5px;">MÓDULO ${id.toUpperCase()} ATIVO</span>
+            <div style="display: flex; height: 100%; align-items: center; justify-content: center; color: white; opacity: 0.8;">
+                <div style="text-align:center;">
+                    <i class="fa-solid fa-microchip" style="font-size:30px; margin-bottom:15px; display:block; color:#1877f2;"></i>
+                    <span style="letter-spacing: 5px; font-size:10px;">MÓDULO ${id.toUpperCase()} ATIVO</span>
+                </div>
             </div>`;
         
-        console.log("Mudando para:", id);
+        console.log("Navegando para:", id);
     }
 };
 
-// Inicializa sem precisar de export/import complexo
-document.addEventListener('DOMContentLoaded', () => QuantumSystem.init());
+// Torna global para o app-init.js conseguir ligar o motor
+window.OioQuantum = OioQuantum;
 
-// Torna global para o HTML alcançar
-window.switchUniverse = (id) => QuantumSystem.switchUniverse(id);
+// Inicializa o básico
+document.addEventListener('DOMContentLoaded', () => OioQuantum.init());
