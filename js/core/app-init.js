@@ -1,50 +1,26 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>OIO ONE</title>
-    
-    <link rel="stylesheet" href="styles/dna.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
-<body>
+// Importa o cliente Supabase
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-    <div id="portal-layer">
-        <div class="login-box">
-            <h1 class="portal-label">OIO ONE</h1>
-            <input type="email" id="login-email" placeholder="E-mail">
-            <input type="password" id="login-pass" placeholder="Senha">
-            <button id="btn-entrar" class="glass-btn">ACESSAR UNIVERSO</button>
-        </div>
-    </div>
+// Configuração do seu projeto Supabase
+const SUPABASE_URL = 'https://uqdwtzlkqaosnweyoyit.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA';
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    <div id="app-layer" class="hidden">
-        <header style="height:60px; background:#1877f2; display:flex; align-items:center; justify-content:space-between; padding:0 20px;">
-            <span style="font-weight:900; font-size:20px;">OIO ONE</span>
-            <div style="width:35px; height:35px; border-radius:50%; background:#fff; overflow:hidden;">
-                <img id="user-avatar" src="" style="width:100%; height:100%; object-fit:cover;">
-            </div>
-        </header>
+// Função de login
+document.getElementById("btn-entrar").addEventListener("click", async () => {
+  const email = document.getElementById("login-email").value;
+  const senha = document.getElementById("login-pass").value;
 
-        <main id="universe-display">
-            </main>
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email,
+    password: senha
+  });
 
-        <nav class="quantum-nav">
-            <div class="nav-item active"><i class="fa-solid fa-house"></i></div>
-            <div class="nav-item"><i class="fa-solid fa-play"></i></div>
-            <div class="nav-item"><i class="fa-solid fa-comment"></i></div>
-            <div class="nav-item"><i class="fa-solid fa-bag-shopping"></i></div>
-            <div class="nav-item"><i class="fa-solid fa-bell"></i></div>
-            <div class="nav-item"><i class="fa-solid fa-bars"></i></div>
-        </nav>
-    </div>
-
-    <script src="js/core.js"></script>
-    <script src="js/quantum.js"></script>
-    <script type="module" src="js/core/app-init.js"></script>
-
-</body>
-</html>
+  if (error) {
+    alert("Erro no login: " + error.message);
+  } else {
+    // Esconde tela de login e mostra app
+    document.getElementById("portal-layer").classList.add("hidden");
+    document.getElementById("app-layer").classList.remove("hidden");
+  }
+});
