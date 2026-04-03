@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>OIO ONE | CORE SYSTEM</title>
+    <title>OIO ONE | UNIVERSO</title>
     
     <link rel="stylesheet" href="styles/dna.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
@@ -11,18 +11,17 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        /* Ajustes finos que o DNA.css pode não cobrir para o seu motor de som */
-        #portal-layer.hidden { display: none !important; }
-        #app-layer.hidden { display: none !important; }
+        /* Ajustes para manter o visual das fotos */
+        #portal-layer.hidden, #app-layer.hidden { display: none !important; }
         
-        /* Garante que o display de módulos ocupe o espaço correto entre header e nav */
         #universe-display {
             flex: 1;
             overflow-y: auto;
-            width: 100%;
-            padding: 20px;
+            background: #000;
+            padding-bottom: 100px; /* Espaço para a navegação */
         }
 
+        /* Header Azul conforme a imagem */
         header {
             height: 60px;
             background: #1877f2;
@@ -30,15 +29,23 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 20px;
-            z-index: 10;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        nav {
+        /* Navegação Quantum */
+        .quantum-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
             height: 80px;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(20px);
             display: flex;
             justify-content: space-around;
             align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
             padding-bottom: env(safe-area-inset-bottom);
         }
     </style>
@@ -56,9 +63,9 @@
 
     <div id="app-layer" class="hidden">
         <header>
-            <span style="font-weight:900; font-size:20px;">OIO ONE</span>
-            <div style="width:35px; height:35px; border-radius:50%; background:#fff; overflow:hidden;">
-                <img id="user-avatar" src="" style="width:100%; height:100%; object-fit:cover;">
+            <span style="font-weight:900; font-size:20px; letter-spacing:-1px;">OIO ONE</span>
+            <div style="width:38px; height:38px; border-radius:50%; background:#fff; overflow:hidden; border:2px solid rgba(255,255,255,0.2);">
+                <img id="user-avatar-top" src="" style="width:100%; height:100%; object-fit:cover;">
             </div>
         </header>
 
@@ -66,16 +73,17 @@
             </main>
 
         <nav class="quantum-nav">
-            <div class="nav-item active"><i class="fa-solid fa-house"></i></div>
-            <div class="nav-item"><i class="fa-solid fa-play"></i></div>
-            <div class="nav-item"><i class="fa-solid fa-comment"></i></div>
-            <div class="nav-item"><i class="fa-solid fa-bag-shopping"></i></div>
-            <div class="nav-item"><i class="fa-solid fa-bell"></i></div>
-            <div class="nav-item"><i class="fa-solid fa-bars"></i></div>
+            <div class="nav-item active" data-module="origin"><i class="fa-solid fa-house"></i></div>
+            <div class="nav-item" data-module="watch"><i class="fa-solid fa-play"></i></div>
+            <div class="nav-item" data-module="friends"><i class="fa-solid fa-comment"></i></div>
+            <div class="nav-item" data-module="marketplace"><i class="fa-solid fa-bag-shopping"></i></div>
+            <div class="nav-item" data-module="notifications"><i class="fa-solid fa-bell"></i></div>
+            <div class="nav-item" data-module="profile"><i class="fa-solid fa-bars"></i></div>
         </nav>
     </div>
 
     <script src="js/core.js"></script>
+    <script src="js/quantum.js"></script>
     <script src="js/core/app-init.js"></script>
 
 </body>
