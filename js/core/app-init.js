@@ -1,38 +1,52 @@
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+// Vibe-app/js/core/app-init.js
+import { Logger } from '../services/Logger.js';
+import { OriginController } from '../modules/origin/controller.js';
 
-const SUPABASE_URL = 'https://uqdwtzlkqaosnweyoyit.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA';
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const AppInit = {
+    async start() {
+        Logger.info("Iniciando Motores OIO ONE...");
 
-window.supabase = supabase;
+        // 1. Verifica se o usuário está logado (simulado pelo localStorage por enquanto)
+        const userEmail = localStorage.getItem('oio_user_email');
+        
+        if (userEmail) {
+            // Se logado, mostra o App e esconde o Portal
+            document.getElementById('portal-layer').classList.add('hidden');
+            document.getElementById('app-layer').classList.remove('hidden');
+            
+            // 2. Carrega a Home (Origin) manualmente para garantir que não fique tela preta
+            await this.loadInitialModule();
+        } else {
+            Logger.info("Aguardando Login...");
+        }
 
-document.getElementById("btn-entrar").addEventListener("click", async () => {
-  const emailDigitado = document.getElementById("login-email").value.trim();
-  const senhaDigitada = document.getElementById("login-pass").value.trim();
+        this.setupLoginEvent();
+    },
 
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('email', emailDigitado)
-    .eq('password', senhaDigitada)
-    .maybeSingle();
+    async loadInitialModule() {
+        // Chama o controlador da Home
+        try {
+            await OriginController.init();
+            Logger.info("Universo Origin carregado com sucesso.");
+        } catch (e) {
+            Logger.error("Erro ao carregar Origin: " + e.message);
+        }
+    },
 
-  if (data && data.password === senhaDigitada) {
-    // 🔊 1. TOCA O SOM PRIMEIRO
-    if (window.OioSound) {
-        window.OioSound.post(); 
+    setupLoginEvent() {
+        const btn = document.getElementById('btn-entrar');
+        if (btn) {
+            btn.onclick = () => {
+                const email = document.getElementById('login-email').value;
+                if (email) {
+                    localStorage.setItem('oio_user_email', email);
+                    localStorage.setItem('oio_user_name', email.split('@')[0]);
+                    location.reload(); // Reinicia para aplicar as camadas
+                }
+            };
+        }
     }
+};
 
-    // 🔓 2. ABRE A INTERFACE
-    document.getElementById("portal-layer").classList.add("hidden");
-    document.getElementById("app-layer").classList.remove("hidden");
-
-    // 🚀 3. LIGA OS MÓDULOS (O Quantum)
-    if (window.OioQuantum && typeof window.OioQuantum.loadModule === 'function') {
-        window.OioQuantum.loadModule('origin'); 
-    }
-    
-  } else {
-    alert("Acesso Negado: Verifique seus dados.");
-  }
-});
+// Dispara o boot
+AppInit.start();
