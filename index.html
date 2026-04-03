@@ -3,75 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OIO ONE | RECOVERY</title>
+    <title>OIO ONE | VIBE FULL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body, html { margin: 0; padding: 0; background: #000; color: white; font-family: sans-serif; height: 100%; overflow: hidden; }
         .hidden { display: none !important; }
-        #portal-layer { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; padding: 20px; text-align: center; }
-        .oio-logo { color: #1877f2; font-size: 50px; font-weight: 900; margin-bottom: 30px; letter-spacing: -2px; }
-        input { width: 100%; max-width: 300px; background: #1c1e21; border: 1px solid #333; padding: 15px; border-radius: 12px; color: white; margin-bottom: 12px; outline: none; font-size: 16px; }
-        .login-btn { width: 100%; max-width: 300px; background: #1877f2; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        
+        /* LOGIN */
+        #portal-layer { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; padding: 20px; }
+        .oio-logo { color: #1877f2; font-size: 60px; font-weight: 900; margin-bottom: 30px; letter-spacing: -3px; }
+        input, select { width: 100%; max-width: 280px; background: #1c1e21; border: 1px solid #333; padding: 15px; border-radius: 12px; color: white; margin-bottom: 12px; outline: none; font-size: 16px; }
+        .login-btn { width: 100%; max-width: 280px; background: #1877f2; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+
+        /* NAV */
         .main-nav { position: fixed; top: 0; width: 100%; background: #080808; display: flex; padding: 12px 0; border-bottom: 1px solid #1a1a1a; z-index: 1000; }
-        .nav-item { flex: 1; text-align: center; color: #555; font-size: 22px; cursor: pointer; }
+        .nav-item { flex: 1; text-align: center; color: #555; font-size: 22px; cursor: pointer; transition: 0.3s; }
         .nav-item.active { color: #1877f2; }
-        #view-container { margin-top: 65px; height: calc(100vh - 65px); overflow-y: auto; padding: 15px; }
+
+        /* CONTEÚDO */
+        #view-container { margin-top: 65px; height: calc(100vh - 65px); overflow-y: auto; padding: 15px; padding-bottom: 80px; }
         .card-oio { background: #111; border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid #222; }
+        
+        /* GRID BLOCO 6 */
+        .grid-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .menu-item { background: #111; padding: 20px; border-radius: 15px; text-align: center; border: 1px solid #222; font-size: 13px; }
+        .menu-item i { display: block; color: #1877f2; margin-bottom: 10px; font-size: 24px; }
+        
+        video { width: 100%; border-radius: 12px; background: #000; margin-top: 10px; border: 1px solid #333; }
+        #chat-box { height: 200px; overflow-y: auto; background: #080808; border-radius: 10px; padding: 10px; margin-bottom: 10px; border: 1px solid #222; }
     </style>
 </head>
 <body>
 
     <div id="portal-layer">
         <div class="oio-logo">OIO</div>
-        <input type="text" id="user-name" placeholder="Seu nome">
-        <input type="tel" id="user-pass" placeholder="Senha de 4 dígitos" maxlength="4">
-        <button id="btn-entrar-real" class="login-btn">ENTRAR</button>
-        <p id="error-msg" class="hidden" style="color: #ff3040; margin-top: 10px;">Senha incorreta.</p>
+        <input type="tel" id="senha-acesso" placeholder="SENHA DE 4 DÍGITOS" maxlength="4">
+        <button onclick="entrarApp()" class="login-btn">ACESSAR UNIVERSO</button>
     </div>
 
     <div id="app-layer" class="hidden">
         <nav class="main-nav">
-            <div class="nav-item active" onclick="trocarBloco(1, this)"><i class="fas fa-home"></i></div>
-            <div class="nav-item" onclick="trocarBloco(2, this)"><i class="fas fa-play-circle"></i></div>
-            <div class="nav-item" onclick="trocarBloco(3, this)"><i class="fas fa-user-circle"></i></div>
-            <div class="nav-item" onclick="trocarBloco(4, this)"><i class="fas fa-store"></i></div>
-            <div class="nav-item" onclick="trocarBloco(5, this)"><i class="fas fa-bell"></i></div>
-            <div class="nav-item" onclick="trocarBloco(6, this)"><div style="width:20px; height:20px; background:#1877f2; border-radius:50%; margin:auto;"></div></div>
+            <div class="nav-item active" onclick="navegar(1, this)"><i class="fas fa-home"></i></div>
+            <div class="nav-item" onclick="navegar(2, this)"><i class="fas fa-play-circle"></i></div>
+            <div class="nav-item" onclick="navegar(3, this)"><i class="fas fa-comment-dots"></i></div>
+            <div class="nav-item" onclick="navegar(4, this)"><i class="fas fa-store"></i></div>
+            <div class="nav-item" onclick="navegar(5, this)"><i class="fas fa-bell"></i></div>
+            <div class="nav-item" onclick="navegar(6, this)"><div style="width:22px; height:22px; background:#1877f2; border-radius:50%; margin:auto;"></div></div>
         </nav>
         <div id="view-container"></div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Função de entrada direta para não falhar
-        document.getElementById('btn-entrar-real').onclick = function() {
-            const pass = document.getElementById('user-pass').value;
-            // Voltando para sua senha de 4 dígitos
-            if(pass === "2024") { // COLOQUE SUA SENHA DE 4 DÍGITOS AQUI
+        const supabaseUrl = 'https://uqdwtzlkqaosnweyoyit.supabase.co';
+        const supabaseKey = 'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        function entrarApp() {
+            const pin = document.getElementById('senha-acesso').value;
+            if(pin === "2024") { 
                 document.getElementById('portal-layer').classList.add('hidden');
                 document.getElementById('app-layer').classList.remove('hidden');
-                trocarBloco(1);
-            } else {
-                document.getElementById('error-msg').classList.remove('hidden');
+                navegar(1);
             }
-        };
+        }
 
-        function trocarBloco(num, el) {
+        async function navegar(bloco, el) {
             if(el) {
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
                 el.classList.add('active');
             }
             const container = document.getElementById('view-container');
             
-            // Conteúdo simples e funcional para o app voltar a rodar
-            const telas = {
-                1: `<div class="card-oio"><h3>Home</h3><p>OIO ONE está online.</p></div>`,
-                2: `<div class="card-oio"><h3>Vídeos</h3><p>Módulo de Vibe ativo.</p></div>`,
-                3: `<div class="card-oio"><h3>Perfil e Mensagens</h3><p>Módulo Murilo 3.</p></div>`,
-                4: `<div class="card-oio"><h3>Marketing</h3><p>Loja funcional.</p></div>`,
-                5: `<div class="card-oio"><h3>Notificações</h3><p>Agenda sincronizada.</p></div>`,
-                6: `<div class="card-oio"><h3>Menu</h3><p>Configurações do Universo.</p></div>`
-            };
-            container.innerHTML = telas[num];
+            if(bloco === 1) {
+                container.innerHTML = `<div class="card-oio"><h2>Início</h2><p>Bem-vindo ao OIO ONE. Sua Vibe está sincronizada.</p></div>`;
+            } 
+            else if(bloco === 2) {
+                container.innerHTML = `
+                    <div class="card-oio">
+                        <h3>OIO Reels Global</h3>
+                        <div id="feed-videos">Carregando vídeos...</div>
+                        <label class="login-btn" style="display:block; text-align:center; margin-top:15px;">
+                            <i class="fas fa-video"></i> POSTAR VÍDEO
+                            <input type="file" accept="video/*" class="hidden" onchange="uploadVideo(this)">
+                        </label>
+                    </div>`;
+                puxarVideos();
+            }
+            else if(bloco === 3) {
+                container.innerHTML = `
+                    <div class="card-oio">
+                        <h3>Mensagens</h3>
+                        <div id="chat-box">Sincronizando conversas...</div>
+                        <input id="chat-input" placeholder="Digite sua mensagem...">
+                        <button class="login-btn" onclick="enviarMensagem()">ENVIAR</button>
+                    </div>
+                    <div class="card-oio">
+                        <h3>Meu Perfil</h3>
+                        <input id="p-cidade" placeholder="Cidade">
+                        <input id="p-time" placeholder="Time">
+                        <select id="p-status">
+                            <option>Estado Civil...</option>
+                            <option>Solteiro(a)</option><option>Casado(a)</option>
+                        </select>
+                        <button class="login-btn" onclick="alert('Perfil Salvo!')">SALVAR NO UNIVERSO</button>
+                    </div>`;
+                puxarChat();
+            }
+            else if(bloco === 4) {
+                container.innerHTML = `<div class="card-oio"><h3>Marketingplace</h3><p>Produtos e Ofertas em tempo real.</p></div>`;
+            }
+            else if(bloco === 5) {
+                container.innerHTML = `<div class="card-oio"><h3>Notificações</h3><p>Sua agenda e alertas.</p></div>`;
+            }
+            else if(bloco === 6) {
+                container.innerHTML = `
+                    <div class="grid-menu">
+                        <div class="menu-item"><i class="fas fa-bookmark"></i>Salvos</div>
+                        <div class="menu-item"><i class="fas fa-users"></i>Grupos</div>
+                        <div class="menu-item"><i class="fas fa-star"></i>Recomendações</div>
+                        <div class="menu-item"><i class="fas fa-history"></i>Recordações</div>
+                        <div class="menu-item"><i class="fas fa-cog"></i>Ajustes</div>
+                        <div class="menu-item" style="color:#ff3040" onclick="location.reload()"><i class="fas fa-power-off"></i>SAIR</div>
+                    </div>`;
+            }
+        }
+
+        // --- MOTORES ---
+        async function puxarVideos() {
+            const { data } = await supabase.from('posts_video').select('*').order('created_at', {ascending: false});
+            const feed = document.getElementById('feed-videos');
+            if(data) feed.innerHTML = data.map(v => `<video src="${v.url}" controls></video>`).join('');
+        }
+
+        async function uploadVideo(input) {
+            const file = input.files[0];
+            if(!file) return;
+            alert("Enviando para o Universo...");
+            const name = `vibe_${Date.now()}.mp4`;
+            const { data, error } = await supabase.storage.from('videos').upload(name, file);
+            if(!error) {
+                const { data: url } = supabase.storage.from('videos').getPublicUrl(name);
+                await supabase.from('posts_video').insert([{ url: url.publicUrl }]);
+                puxarVideos();
+            }
+        }
+
+        async function puxarChat() {
+            const { data } = await supabase.from('mensagens').select('*').order('created_at', {ascending: true});
+            const box = document.getElementById('chat-box');
+            if(data) box.innerHTML = data.map(m => `<p><b>Michel:</b> ${m.texto}</p>`).join('');
+            box.scrollTop = box.scrollHeight;
+        }
+
+        async function enviarMensagem() {
+            const texto = document.getElementById('chat-input').value;
+            if(!texto) return;
+            await supabase.from('mensagens').insert([{ texto: texto, usuario: 'Michel' }]);
+            document.getElementById('chat-input').value = '';
+            puxarChat();
         }
     </script>
 </body>
