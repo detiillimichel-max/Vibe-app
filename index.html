@@ -3,107 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OIO ONE | PROFESSIONAL VERSION</title>
+    <title>OIO ONE | PROFESSIONAL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --accent: #1877f2;
-            --bg: #000000;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
-        }
+        :root { --accent: #1877f2; --bg: #000; --glass: rgba(255, 255, 255, 0.05); --border: rgba(255, 255, 255, 0.1); }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; height: 100%; overflow: hidden; }
+        .hidden { display: none !important; }
 
-        body, html { 
-            margin: 0; padding: 0; background: var(--bg); color: white; 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            height: 100%; overflow: hidden; 
-        }
-
-        /* --- TELA DE LOGIN PROFISSIONAL --- */
-        #portal-layer { 
-            height: 100vh; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; 
-            background: radial-gradient(circle at center, #111 0%, #000 100%);
-            z-index: 9999; position: relative;
-        }
-
-        .login-box {
-            background: var(--glass); backdrop-filter: blur(20px);
-            padding: 40px 30px; border-radius: 30px; border: 1px solid var(--border);
-            width: 85%; max-width: 350px; text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-
-        .oio-logo { font-size: 70px; font-weight: 900; letter-spacing: -4px; color: var(--accent); margin-bottom: 10px; }
-        
-        .input-group { width: 100%; margin-bottom: 15px; text-align: left; }
-        .input-group label { font-size: 12px; color: #888; margin-left: 10px; text-transform: uppercase; }
-        
-        input { 
-            width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.08); 
-            border: 1px solid var(--border); padding: 18px; border-radius: 15px; 
-            color: white; outline: none; font-size: 16px; transition: 0.3s;
-        }
-        input:focus { border-color: var(--accent); background: rgba(255,255,255,0.12); }
-
-        .btn-premium { 
-            width: 100%; padding: 18px; border-radius: 15px; border: none;
-            background: var(--accent); color: white; font-weight: bold;
-            font-size: 16px; cursor: pointer; transition: 0.3s;
-            box-shadow: 0 8px 20px rgba(24, 119, 242, 0.3);
-        }
-        .btn-premium:active { transform: scale(0.95); }
+        /* --- LOGIN PREMIUM --- */
+        #portal-layer { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #111 0%, #000 100%); }
+        .login-box { background: var(--glass); backdrop-filter: blur(25px); padding: 40px 30px; border-radius: 30px; border: 1px solid var(--border); width: 85%; max-width: 350px; text-align: center; }
+        .oio-logo { font-size: 70px; font-weight: 900; letter-spacing: -4px; color: var(--accent); margin-bottom: 20px; }
+        input { width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.08); border: 1px solid var(--border); padding: 18px; border-radius: 15px; color: white; margin-bottom: 15px; font-size: 16px; outline: none; }
+        .btn-premium { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--accent); color: white; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 8px 20px rgba(24, 119, 242, 0.3); }
 
         /* --- ESTRUTURA DO APP --- */
-        #app-layer { height: 100vh; display: flex; flex-direction: column; }
-
-        .top-nav { 
-            height: 70px; display: flex; align-items: center; justify-content: space-around;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--border); position: fixed; top: 0; width: 100%; z-index: 100;
-        }
-
-        .nav-icon { font-size: 24px; color: #555; position: relative; transition: 0.3s; }
+        .top-nav { height: 70px; display: flex; align-items: center; justify-content: space-around; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); position: fixed; top: 0; width: 100%; z-index: 100; }
+        .nav-icon { font-size: 24px; color: #555; transition: 0.3s; }
         .nav-icon.active { color: var(--accent); }
-        .nav-icon.active::after { 
-            content: ''; position: absolute; bottom: -15px; left: 50%; 
-            transform: translateX(-50%); width: 5px; height: 5px; 
-            background: var(--accent); border-radius: 50%; 
-        }
+        #main-render { flex: 1; margin-top: 70px; height: calc(100vh - 70px); overflow-y: auto; padding: 20px; box-sizing: border-box; }
 
-        #main-render { 
-            flex: 1; margin-top: 70px; overflow-y: auto; padding: 20px;
-            padding-bottom: 100px; scroll-behavior: smooth;
-        }
-
-        /* --- ESTILO DOS BLOCOS --- */
-        .glass-card { 
-            background: var(--glass); border: 1px solid var(--border);
-            border-radius: 25px; padding: 20px; margin-bottom: 20px;
-        }
-
-        /* Chat Estilizado */
-        .chat-container { display: flex; flex-direction: column; height: 350px; }
-        #chat-window { flex: 1; overflow-y: auto; margin-bottom: 15px; padding-right: 10px; }
-        
-        .bubble { 
-            max-width: 80%; padding: 12px 16px; border-radius: 20px; 
-            margin-bottom: 10px; font-size: 14px; line-height: 1.4;
-        }
+        /* --- CARDS & CHAT --- */
+        .glass-card { background: var(--glass); border: 1px solid var(--border); border-radius: 25px; padding: 20px; margin-bottom: 20px; }
+        #chat-window { height: 300px; overflow-y: auto; display: flex; flex-direction: column; margin-bottom: 15px; padding-right: 10px; }
+        .bubble { max-width: 80%; padding: 12px 16px; border-radius: 20px; margin-bottom: 10px; font-size: 14px; position: relative; }
         .bubble.me { background: var(--accent); align-self: flex-end; border-bottom-right-radius: 5px; }
         .bubble.other { background: #333; align-self: flex-start; border-bottom-left-radius: 5px; }
-        .bubble .sender { font-size: 10px; font-weight: bold; margin-bottom: 4px; display: block; opacity: 0.7; }
-
-        /* Grid Módulo 6 */
+        .bubble .sender { font-size: 10px; font-weight: bold; display: block; margin-bottom: 4px; opacity: 0.7; }
+        
+        /* GRID MÓDULO 6 */
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .grid-item { 
-            background: var(--glass); border: 1px solid var(--border);
-            height: 120px; border-radius: 25px; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; font-size: 13px;
-        }
-        .grid-item i { font-size: 28px; color: var(--accent); margin-bottom: 10px; }
-
-        .hidden { display: none !important; }
+        .grid-item { background: var(--glass); border: 1px solid var(--border); height: 110px; border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .grid-item i { font-size: 26px; color: var(--accent); margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -111,134 +42,95 @@
     <section id="portal-layer">
         <div class="login-box">
             <div class="oio-logo">OIO</div>
-            <div class="input-group">
-                <label>Identificação</label>
-                <input type="text" id="user-id" placeholder="Digite seu nome">
-            </div>
-            <div class="input-group">
-                <label>Chave de Acesso</label>
-                <input type="tel" id="user-pin" placeholder="Senha 4 dígitos" maxlength="4">
-            </div>
-            <button class="btn-premium" onclick="authSession()">DESBLOQUEAR</button>
-            <p id="fail" class="hidden" style="color: #ff4444; font-size: 12px; margin-top: 15px;">Senha inválida.</p>
+            <input type="text" id="user-name" placeholder="Nome de Usuário">
+            <input type="tel" id="user-pass" placeholder="Senha de 4 dígitos" maxlength="4">
+            <button class="btn-premium" onclick="initApp()">DESBLOQUEAR</button>
+            <p id="error-msg" class="hidden" style="color:#ff4444; margin-top:10px;">Verifique os dados.</p>
         </div>
     </section>
 
     <main id="app-layer" class="hidden">
         <nav class="top-nav">
-            <div class="nav-icon active" onclick="router(1, this)"><i class="fas fa-th-large"></i></div>
+            <div class="nav-icon active" onclick="router(1, this)"><i class="fas fa-home"></i></div>
             <div class="nav-icon" onclick="router(2, this)"><i class="fas fa-play-circle"></i></div>
             <div class="nav-icon" onclick="router(3, this)"><i class="fas fa-comment-alt"></i></div>
             <div class="nav-icon" onclick="router(4, this)"><i class="fas fa-shopping-bag"></i></div>
-            <div class="nav-item" onclick="router(6, this)"><div style="width:25px; height:25px; background:var(--accent); border-radius:50%"></div></div>
+            <div class="nav-icon" onclick="router(6, this)"><i class="fas fa-bars"></i></div>
         </nav>
-
         <div id="main-render"></div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const supURL = 'https://uqdwtzlkqaosnweyoyit.supabase.co';
-        const supKEY = 'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA';
-        const supabase = window.supabase.createClient(supURL, supKEY);
+        const sUrl = 'https://uqdwtzlkqaosnweyoyit.supabase.co';
+        const sKey = 'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA';
+        const supabase = window.supabase.createClient(sUrl, sKey);
+        let myUser = "";
 
-        let currentUser = "";
-
-        function authSession() {
-            const user = document.getElementById('user-id').value;
-            const pin = document.getElementById('user-pin').value;
-            
-            if(user.length > 2 && pin === "2024") {
-                currentUser = user;
+        function initApp() {
+            const name = document.getElementById('user-name').value;
+            const pass = document.getElementById('user-pass').value;
+            if(name.length > 2 && pass === "2024") { // Sua senha de 4 dígitos
+                myUser = name;
                 document.getElementById('portal-layer').classList.add('hidden');
                 document.getElementById('app-layer').classList.remove('hidden');
-                router(3); // Abre direto no chat para ver quem te chama
+                router(1);
             } else {
-                document.getElementById('fail').classList.remove('hidden');
+                document.getElementById('error-msg').classList.remove('hidden');
             }
         }
 
-        async function router(page, el) {
-            if(el) {
-                document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active'));
-                el.classList.add('active');
-            }
+        async function router(p, el) {
+            if(el) { document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active')); el.classList.add('active'); }
             const view = document.getElementById('main-render');
             
-            switch(page) {
-                case 1: // HOME
-                    view.innerHTML = `
-                        <div class="glass-card">
-                            <h2>Olá, ${currentUser}</h2>
-                            <p style="color: #888">O sistema GovTech está ativo no seu município.</p>
-                        </div>`;
-                    break;
-
-                case 2: // VÍDEOS
-                    view.innerHTML = `<div class="glass-card"><h3>OIO Vibe</h3><div id="v-list">Carregando feed global...</div></div>`;
-                    const { data: vids } = await supabase.from('posts_video').select('*');
-                    if(vids) document.getElementById('v-list').innerHTML = vids.map(v => `<video src="${v.url}" controls style="width:100%; border-radius:15px; margin-top:10px"></video>`).join('');
-                    break;
-
-                case 3: // CHAT & PERFIL
-                    view.innerHTML = `
-                        <div class="glass-card chat-container">
-                            <h3>Mensagens</h3>
-                            <div id="chat-window"></div>
-                            <div style="display:flex; gap:10px">
-                                <input id="msg-input" placeholder="Sua mensagem...">
-                                <button class="btn-premium" style="width:60px" onclick="sendMsg()"><i class="fas fa-paper-plane"></i></button>
-                            </div>
+            if(p === 1) {
+                view.innerHTML = `<div class="glass-card"><h2>Bem-vindo, ${myUser}</h2><p>O Universo OIO ONE está pronto.</p></div>`;
+            } 
+            else if(p === 2) {
+                view.innerHTML = `<div class="glass-card"><h3>Vibe Videos</h3><div id="v-feed">Carregando vídeos...</div></div>`;
+                const { data } = await supabase.from('posts_video').select('*');
+                if(data) document.getElementById('v-feed').innerHTML = data.map(v => `<video src="${v.url}" controls style="width:100%; border-radius:15px; margin-top:10px"></video>`).join('');
+            }
+            else if(p === 3) {
+                view.innerHTML = `
+                    <div class="glass-card">
+                        <h3>Chat Global</h3>
+                        <div id="chat-window"></div>
+                        <div style="display:flex; gap:10px">
+                            <input id="m-text" placeholder="Mensagem..." style="margin:0">
+                            <button class="btn-premium" style="width:60px" onclick="send()"><i class="fas fa-paper-plane"></i></button>
                         </div>
-                        <div class="glass-card">
-                            <h3>Meu Perfil</h3>
-                            <input id="u-city" placeholder="Cidade">
-                            <input id="u-team" placeholder="Time">
-                            <button class="btn-premium" style="margin-top:10px" onclick="alert('Perfil Sincronizado')">SALVAR</button>
-                        </div>`;
-                    loadMessages();
-                    break;
-
-                case 6: // MENU COMPLETO
-                    view.innerHTML = `
-                        <div class="menu-grid">
-                            <div class="grid-item"><i class="fas fa-bookmark"></i>Salvos</div>
-                            <div class="grid-item"><i class="fas fa-users"></i>Grupos</div>
-                            <div class="grid-item"><i class="fas fa-star"></i>Recomendações</div>
-                            <div class="grid-item"><i class="fas fa-history"></i>Recordações</div>
-                            <div class="grid-item"><i class="fas fa-cog"></i>Ajustes</div>
-                            <div class="grid-item" style="color:#ff4444" onclick="location.reload()"><i class="fas fa-power-off"></i>SAIR</div>
-                        </div>`;
-                    break;
+                    </div>`;
+                loadChat();
+                setInterval(loadChat, 3000);
+            }
+            else if(p === 6) {
+                view.innerHTML = `
+                    <div class="menu-grid">
+                        <div class="grid-item"><i class="fas fa-user-circle"></i>Perfil</div>
+                        <div class="grid-item"><i class="fas fa-cog"></i>Ajustes</div>
+                        <div class="grid-item" style="color:#ff4444" onclick="location.reload()"><i class="fas fa-power-off"></i>SAIR</div>
+                    </div>`;
             }
         }
 
-        async function loadMessages() {
+        async function loadChat() {
             const { data } = await supabase.from('mensagens').select('*').order('created_at', {ascending: true});
-            if(data) {
-                document.getElementById('chat-window').innerHTML = data.map(m => `
-                    <div class="bubble ${m.usuario === currentUser ? 'me' : 'other'}">
-                        <span class="sender">${m.usuario}</span>
-                        ${m.texto}
-                    </div>`).join('');
-                const win = document.getElementById('chat-window');
+            const win = document.getElementById('chat-window');
+            if(data && win) {
+                win.innerHTML = data.map(m => `<div class="bubble ${m.usuario === myUser ? 'me' : 'other'}"><span class="sender">${m.usuario}</span>${m.texto}</div>`).join('');
                 win.scrollTop = win.scrollHeight;
             }
         }
 
-        async function sendMsg() {
-            const input = document.getElementById('msg-input');
-            if(!input.value) return;
-            await supabase.from('mensagens').insert([{ texto: input.value, usuario: currentUser }]);
-            input.value = "";
-            loadMessages();
+        async function send() {
+            const txt = document.getElementById('m-text').value;
+            if(!txt) return;
+            await supabase.from('mensagens').insert([{ texto: txt, usuario: myUser }]);
+            document.getElementById('m-text').value = "";
+            loadChat();
         }
-
-        // Auto-update do chat a cada 3 segundos
-        setInterval(() => {
-            if(!document.getElementById('chat-window')) return;
-            loadMessages();
-        }, 3000);
     </script>
 </body>
 </html>
