@@ -2,190 +2,101 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OIO ONE | SISTEMA DE IDENTIDADE</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>OIO ONE</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
-        :root {
-            --primary: #1877f2;
-            --bg: #000000;
-            --glass: rgba(255, 255, 255, 0.07);
-            --border: rgba(255, 255, 255, 0.12);
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body, html { background: var(--bg); color: white; height: 100%; overflow: hidden; }
-        .hidden { display: none !important; }
-
-        /* --- TELA DE ACESSO --- */
-        #portal-layer { 
-            height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            background: radial-gradient(circle, #1a1a1a 0%, #000 100%); 
-        }
-        .login-card { 
-            background: var(--glass); backdrop-filter: blur(40px); padding: 40px 25px; 
-            border-radius: 35px; border: 1px solid var(--border); width: 90%; max-width: 380px; text-align: center;
-        }
-        .logo { font-size: 70px; font-weight: 900; color: var(--primary); margin-bottom: 20px; letter-spacing: -5px; }
+        :root { --accent: #1877f2; --glass: rgba(255, 255, 255, 0.1); }
+        * { margin:0; padding:0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { background:#000; height:100vh; width:100vw; overflow:hidden; font-family: sans-serif; color: #fff; }
         
-        .field { margin-bottom: 20px; text-align: left; }
-        .field label { font-size: 11px; color: #888; margin-left: 10px; text-transform: uppercase; font-weight: bold; }
-        .field input { 
-            width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--border); 
-            padding: 20px; border-radius: 20px; color: white; font-size: 16px; margin-top: 8px; outline: none;
-        }
-
-        .btn { 
-            width: 100%; padding: 20px; border-radius: 20px; border: none; background: var(--primary); 
-            color: white; font-weight: 900; font-size: 16px; cursor: pointer; margin-top: 10px;
-        }
-        .btn-sec { background: transparent; border: 1px solid var(--border); margin-top: 15px; font-size: 13px; color: #aaa; }
-
-        /* --- APP CORE --- */
-        .header { height: 75px; display: flex; align-items: center; justify-content: space-around; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); position: fixed; top: 0; width: 100%; z-index: 1000; }
-        .nav-link { font-size: 24px; color: #444; }
-        .nav-link.active { color: var(--primary); }
-        #main { margin-top: 75px; height: calc(100vh - 75px); overflow-y: auto; padding: 20px; padding-bottom: 100px; }
+        /* VÍDEO DE FUNDO */
+        video#bg-video { position:absolute; top:0; left:0; width:100%; height:100%; object-fit: cover; z-index: 1; filter: brightness(0.3); }
         
-        .card { background: var(--glass); border: 1px solid var(--border); border-radius: 30px; padding: 20px; margin-bottom: 20px; }
+        /* PORTAL DE LOGIN */
+        #oio-portal { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; background:#000; }
+        .login-card { width:85%; max-width:400px; padding:40px; background:var(--glass); backdrop-filter:blur(20px); border-radius:30px; border:1px solid rgba(255,255,255,0.1); text-align:center; z-index:2; }
         
-        /* Chat */
-        #chat-flow { height: 350px; overflow-y: auto; display: flex; flex-direction: column; margin-bottom: 15px; }
-        .bbl { max-width: 80%; padding: 12px 18px; border-radius: 20px; margin-bottom: 8px; font-size: 14px; }
-        .bbl.me { background: var(--primary); align-self: flex-end; border-bottom-right-radius: 4px; }
-        .bbl.other { background: #262626; align-self: flex-start; border-bottom-left-radius: 4px; }
-        .u-tag { font-size: 9px; font-weight: bold; margin-bottom: 3px; opacity: 0.5; }
+        .input-oio { width:100%; height:60px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1); border-radius:15px; color:#fff; padding:0 20px; margin-bottom:20px; outline:none; font-size:16px; }
+        .btn-entrar { width:100%; height:60px; background:var(--accent); border:none; border-radius:15px; color:#fff; font-weight:bold; font-size:18px; }
+
+        /* APP PRINCIPAL (ESCONDIDO NO INÍCIO) */
+        #oio-os { display:none; flex-direction:column; height:100vh; position:relative; z-index:5; }
+        
+        nav#footer { position:fixed; bottom:0; width:100%; height:80px; background:rgba(0,0,0,0.8); display:flex; justify-content:space-around; align-items:center; border-top:1px solid rgba(255,255,255,0.1); }
+        .nav-icon { font-size:24px; color:#555; }
+        .nav-icon.active { color:var(--accent); }
     </style>
 </head>
 <body>
 
-    <div id="portal-layer">
-        <div class="login-card" id="card-auth">
-            <div class="logo">OIO</div>
-            <h2 id="auth-title" style="margin-bottom:20px; font-size: 18px;">Entrar no Universo</h2>
-            
-            <div class="field">
-                <label>Nome de Usuário</label>
-                <input type="text" id="user-name" placeholder="Ex: Michel">
-            </div>
-            <div class="field">
-                <label>PIN de Acesso</label>
-                <input type="password" id="user-pin" placeholder="Sua senha" maxlength="8">
-            </div>
+    <video id="bg-video" loop playsinline autoplay muted src="https://cdn.pixabay.com/vimeo/327315600/city-22634.mp4"></video>
 
-            <button class="btn" onclick="handleAuth()" id="btn-main">CONECTAR</button>
-            <button class="btn btn-sec" onclick="toggleMode()" id="btn-toggle">Não tem conta? Criar agora</button>
-            
-            <p id="msg" style="margin-top:15px; font-size:12px; color: #ff3b30;" class="hidden"></p>
+    <div id="oio-portal">
+        <div class="login-card">
+            <h1 style="margin-bottom:30px; letter-spacing:-2px;">OIO ONE</h1>
+            <input type="text" id="id-name" class="input-oio" placeholder="Nome do Usuário">
+            <input type="password" id="id-pin" class="input-oio" placeholder="Senha (PIN)">
+            <button class="btn-entrar" onclick="fazerLogin()">ENTRAR NO UNIVERSO</button>
+            <p id="auth-msg" style="color:red; margin-top:15px; display:none; font-size:12px;">Preencha todos os campos!</p>
         </div>
     </div>
 
-    <div id="app-layer" class="hidden">
-        <div class="header">
-            <div class="nav-link active" onclick="nav(1, this)"><i class="fas fa-home"></i></div>
-            <div class="nav-link" onclick="nav(2, this)"><i class="fas fa-play-circle"></i></div>
-            <div class="nav-link" onclick="nav(3, this)"><i class="fas fa-comment-dots"></i></div>
-            <div class="nav-link" onclick="nav(6, this)"><i class="fas fa-th-large"></i></div>
+    <div id="oio-os">
+        <header style="padding:40px 25px; display:flex; justify-content:space-between; align-items:center;">
+            <h2 id="user-display">Michel</h2>
+            <i class="fa-solid fa-circle-user" style="font-size:30px;"></i>
+        </header>
+
+        <div id="content" style="padding:20px; flex:1;">
+            <div style="background:var(--glass); padding:30px; border-radius:20px; border:1px solid rgba(255,255,255,0.1);">
+                <h3>Sistema Ativo</h3>
+                <p style="opacity:0.6; margin-top:10px;">Todos os 6 módulos foram carregados.</p>
+            </div>
         </div>
-        <div id="main"></div>
+
+        <nav id="footer">
+            <i class="fa-solid fa-house nav-icon active"></i>
+            <i class="fa-solid fa-play nav-icon"></i>
+            <i class="fa-solid fa-comment nav-icon"></i>
+            <i class="fa-solid fa-bag-shopping nav-icon"></i>
+            <i class="fa-solid fa-bell nav-icon"></i>
+            <i class="fa-solid fa-bars nav-icon"></i>
+        </nav>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const SB_URL = 'https://uqdwtzlkqaosnweyoyit.supabase.co';
-        const SB_KEY = 'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA';
-        const supabase = window.supabase.createClient(SB_URL, SB_KEY);
+        // Função de Login que aceita qualquer senha
+        function fazerLogin() {
+            const nome = document.getElementById('id-name').value.trim();
+            const senha = document.getElementById('id-pin').value.trim();
+            const erro = document.getElementById('auth-msg');
 
-        let currentUser = "";
-        let isLoginMode = true;
+            // Se o usuário colocou o nome e a senha (qualquer uma de 4 dígitos ou mais)
+            if (nome !== "" && senha.length >= 4) {
+                // Salva o nome
+                localStorage.setItem('oio_user', nome);
+                document.getElementById('user-display').innerText = nome;
 
-        function toggleMode() {
-            isLoginMode = !isLoginMode;
-            document.getElementById('auth-title').innerText = isLoginMode ? "Entrar no Universo" : "Criar Nova Identidade";
-            document.getElementById('btn-main').innerText = isLoginMode ? "CONECTAR" : "CADASTRAR E ENTRAR";
-            document.getElementById('btn-toggle').innerText = isLoginMode ? "Não tem conta? Criar agora" : "Já tenho conta. Entrar";
-        }
-
-        async function handleAuth() {
-            const user = document.getElementById('user-name').value.trim();
-            const pin = document.getElementById('user-pin').value.trim();
-            const msg = document.getElementById('msg');
-
-            if(user.length < 3 || pin.length < 4) {
-                msg.innerText = "Nome (min 3) e PIN (min 4) são necessários.";
-                msg.classList.remove('hidden');
-                return;
-            }
-
-            if(isLoginMode) {
-                // Tenta logar
-                const { data, error } = await supabase.from('usuarios').select('*').eq('nome', user).eq('senha', pin).single();
-                if(data) {
-                    enterApp(user);
-                } else {
-                    msg.innerText = "Usuário ou PIN incorretos.";
-                    msg.classList.remove('hidden');
-                }
+                // Esconde o Portal e mostra o App
+                document.getElementById('oio-portal').style.display = 'none';
+                document.getElementById('oio-os').style.display = 'flex';
+                
+                if (window.navigator.vibrate) window.navigator.vibrate(50);
             } else {
-                // Tenta cadastrar
-                const { error } = await supabase.from('usuarios').insert([{ nome: user, senha: pin }]);
-                if(!error) {
-                    enterApp(user);
-                } else {
-                    msg.innerText = "Este nome já está em uso.";
-                    msg.classList.remove('hidden');
-                }
+                erro.style.display = 'block';
+                if (window.navigator.vibrate) window.navigator.vibrate([50, 100, 50]);
             }
         }
 
-        function enterApp(name) {
-            currentUser = name;
-            document.getElementById('portal-layer').classList.add('hidden');
-            document.getElementById('app-layer').classList.remove('hidden');
-            nav(3);
-        }
-
-        async function nav(p, el) {
-            if(el) { document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active')); el.classList.add('active'); }
-            const root = document.getElementById('main');
-            
-            if(p === 3) {
-                root.innerHTML = `
-                    <div class="card">
-                        <h3>Chat Profissional</h3>
-                        <div id="chat-flow"></div>
-                        <div style="display:flex; gap:10px">
-                            <input id="m-in" placeholder="Mensagem..." style="flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--border); padding:15px; border-radius:15px; color:white;">
-                            <button class="btn" style="width:60px; margin:0" onclick="send()"><i class="fas fa-paper-plane"></i></button>
-                        </div>
-                    </div>`;
-                sync();
-                setInterval(sync, 3000);
-            } else {
-                root.innerHTML = `<div class="card"><h2>Módulo ${p}</h2><p>Identidade: ${currentUser}</p></div>`;
-            }
-        }
-
-        async function sync() {
-            const { data } = await supabase.from('mensagens').select('*').order('created_at', {ascending: true});
-            const flow = document.getElementById('chat-flow');
-            if(data && flow) {
-                flow.innerHTML = data.map(m => `
-                    <div class="bbl ${m.usuario === currentUser ? 'me' : 'other'}">
-                        <div class="u-tag">${m.usuario}</div>
-                        ${m.texto}
-                    </div>`).join('');
-                flow.scrollTop = flow.scrollHeight;
-            }
-        }
-
-        async function send() {
-            const i = document.getElementById('m-in');
-            if(!i.value) return;
-            await supabase.from('mensagens').insert([{ texto: i.value, usuario: currentUser }]);
-            i.value = "";
-            sync();
-        }
+        // Garante que o vídeo toque no mobile
+        document.addEventListener('click', () => {
+            const v = document.getElementById('bg-video');
+            if(v) v.play();
+        }, {once: true});
     </script>
 </body>
 </html>
