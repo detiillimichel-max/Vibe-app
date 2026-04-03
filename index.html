@@ -6,30 +6,57 @@
     <title>OIO ONE | Vibe App</title>
     
     <link rel="stylesheet" href="styles/dna.css">
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        /* Estilos críticos para garantir que o login não quebre o visual enquanto o dna.css carrega */
+        :root { --primary: #1877f2; --glass: rgba(255, 255, 255, 0.05); }
+        * { margin:0; padding:0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { background:#000; height:100vh; width:100vw; overflow:hidden; font-family: -apple-system, system-ui, sans-serif; color: #fff; }
+        
+        .top-stripe { height: 45px; background: var(--primary); width: 100%; position: fixed; top: 0; z-index: 1000; }
+
+        #oio-portal { 
+            position:fixed; inset:0; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; 
+            background: radial-gradient(circle at top, #1e1e1e 0%, #000 100%); 
+        }
+        .login-card { width:88%; max-width:380px; padding:40px 30px; background:var(--glass); backdrop-filter:blur(25px); -webkit-backdrop-filter:blur(25px); border-radius:35px; border:1px solid rgba(255,255,255,0.1); text-align:center; }
+        .brand { font-size: 42px; font-weight: 900; letter-spacing: -2px; margin-bottom: 35px; color: #fff; }
+        .input-oio { width:100%; height:60px; background:rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.1); border-radius:18px; color:#fff; padding:0 20px; margin-bottom:15px; outline:none; font-size:16px; }
+        .btn-entrar { width:100%; height:60px; background:var(--primary); border:none; border-radius:18px; color:#fff; font-weight:800; font-size:16px; cursor:pointer; box-shadow: 0 10px 25px rgba(24, 119, 242, 0.4); }
+
+        #oio-os { display:none; flex-direction:column; height:100vh; padding-top: 45px; }
+    </style>
 </head>
 <body>
 
+    <div class="top-stripe"></div>
+
     <div id="oio-portal">
         <div class="login-card">
-            <h1 class="brand-title">OIO ONE</h1>
-            <input type="text" id="id-name" class="input-oio" placeholder="Seu Nome">
-            <input type="password" id="id-pin" class="input-oio" placeholder="PIN de 4 dígitos">
+            <div class="brand">OIO ONE</div>
+            <input type="text" id="id-name" class="input-oio" placeholder="Usuário">
+            <input type="password" id="id-pin" class="input-oio" placeholder="PIN de Acesso">
             <button class="btn-entrar" onclick="initCore()">ENTRAR NO UNIVERSO</button>
         </div>
     </div>
 
-    <div id="oio-os" style="display:none;">
-        <header class="top-bar">
-            <span id="display-user-name">Michel Detilli</span>
-            <div class="user-avatar-circle"></div>
+    <div id="oio-os">
+        <header class="app-header">
+            <div class="user-info">
+                <span id="display-name" style="font-weight: 800; font-size: 22px;">Michel Detilli</span>
+            </div>
+            <div class="profile-icon">
+                <i class="fa-solid fa-circle-user"></i>
+            </div>
         </header>
 
         <main id="app-canvas">
             </main>
 
-        <nav class="bottom-nav">
+        <nav class="main-nav">
             <div class="nav-item active" onclick="route(1, this)"><i class="fa-solid fa-house"></i></div>
             <div class="nav-item" onclick="route(2, this)"><i class="fa-solid fa-play"></i></div>
             <div class="nav-item" onclick="route(3, this)"><i class="fa-solid fa-comment"></i></div>
