@@ -13,41 +13,10 @@
     <script type="module" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"></script>
 
     <style>
-        /* Ajustes de Camada para Mobile */
         #portal-layer.hidden, #app-layer.hidden { display: none !important; }
-        
-        #universe-display {
-            flex: 1;
-            overflow-y: auto;
-            background: #000;
-            padding-bottom: 100px;
-        }
-
-        header {
-            height: 60px;
-            background: #1877f2;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .quantum-nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            height: 80px;
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(20px);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: env(safe-area-inset-bottom);
-        }
+        #universe-display { flex: 1; overflow-y: auto; background: #000; padding-bottom: 100px; }
+        header { height: 60px; background: #1877f2; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: sticky; top: 0; z-index: 100; }
+        .quantum-nav { position: fixed; bottom: 0; width: 100%; height: 80px; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-bottom: env(safe-area-inset-bottom); }
     </style>
 </head>
 <body>
@@ -68,9 +37,7 @@
                 <img id="user-avatar-top" src="" style="width:100%; height:100%; object-fit:cover;">
             </div>
         </header>
-
         <main id="universe-display"></main>
-
         <nav class="quantum-nav">
             <div class="nav-item active" data-module="origin"><i class="fa-solid fa-house"></i></div>
             <div class="nav-item" data-module="watch"><i class="fa-solid fa-play"></i></div>
@@ -81,22 +48,35 @@
         </nav>
     </div>
 
-    <script src="js/core.js"></script>
-    <script src="js/quantum.js"></script>
-    
     <script type="module">
-        // Importamos os serviços e controllers que você já tem
+        // Importamos tudo de uma vez para garantir a ordem
         import { Logger } from './js/services/Logger.js';
         import { OriginController } from './js/modules/origin/controller.js';
         
-        // Garante que o OriginController seja visto pelo app-init
-        window.OriginController = OriginController;
+        // Garante que o sistema de som e navegação carreguem ANTES do init
+        const loadScript = (src) => {
+            return new Promise((resolve) => {
+                const s = document.createElement('script');
+                s.src = src;
+                s.onload = resolve;
+                document.body.appendChild(s);
+            });
+        };
 
-        // Ativa o arquivo de boot que você já tem na pasta core
-        import './js/core/app-init.js';
-        
-        Logger.info("OIO ONE: Sistema Reativado 💎");
+        async function startApp() {
+            await loadScript('js/core.js');
+            await loadScript('js/quantum.js');
+            
+            // Injeta o Controller na memória global para o app-init.js
+            window.OriginController = OriginController;
+            
+            // Chama o seu inicializador da pasta core
+            import('./js/core/app-init.js').then(() => {
+                Logger.info("OIO ONE: Online e Operacional.");
+            });
+        }
+
+        startApp();
     </script>
-
 </body>
 </html>
