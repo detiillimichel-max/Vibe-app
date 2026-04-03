@@ -1,52 +1,52 @@
-// Vibe-app/js/core/app-init.js
-import { Logger } from '../services/Logger.js';
 import { OriginController } from '../modules/origin/controller.js';
 
 const AppInit = {
     async start() {
-        Logger.info("Iniciando Motores OIO ONE...");
-
-        // 1. Verifica se o usuário está logado (simulado pelo localStorage por enquanto)
-        const userEmail = localStorage.getItem('oio_user_email');
+        // Verifica se o usuário já está autenticado no celular
+        const userName = localStorage.getItem('oio_user_name');
         
-        if (userEmail) {
-            // Se logado, mostra o App e esconde o Portal
-            document.getElementById('portal-layer').classList.add('hidden');
-            document.getElementById('app-layer').classList.remove('hidden');
+        const portal = document.getElementById('portal-layer');
+        const app = document.getElementById('app-layer');
+
+        if (userName) {
+            // Se já tem o nome salvo, entra direto no App
+            if(portal) portal.classList.add('hidden');
+            if(app) app.classList.remove('hidden');
             
-            // 2. Carrega a Home (Origin) manualmente para garantir que não fique tela preta
-            await this.loadInitialModule();
-        } else {
-            Logger.info("Aguardando Login...");
-        }
-
-        this.setupLoginEvent();
-    },
-
-    async loadInitialModule() {
-        // Chama o controlador da Home
-        try {
+            // Inicia o conteúdo (Home/Origin)
             await OriginController.init();
-            Logger.info("Universo Origin carregado com sucesso.");
-        } catch (e) {
-            Logger.error("Erro ao carregar Origin: " + e.message);
+        } else {
+            // Se não tem nome salvo, garante que o Portal de Login apareça
+            if(portal) portal.classList.remove('hidden');
+            if(app) app.classList.add('hidden');
+            
+            this.setupLoginEvent();
         }
     },
 
     setupLoginEvent() {
         const btn = document.getElementById('btn-entrar');
         if (btn) {
-            btn.onclick = () => {
-                const email = document.getElementById('login-email').value;
-                if (email) {
-                    localStorage.setItem('oio_user_email', email);
-                    localStorage.setItem('oio_user_name', email.split('@')[0]);
-                    location.reload(); // Reinicia para aplicar as camadas
+            btn.onclick = async () => {
+                // Pega os valores dos inputs (ajustados para Nome e Senha)
+                const nome = document.querySelector('#login-email')?.value; // O ID pode ser email no HTML, mas pegamos o texto
+                const senha = document.querySelector('#login-pass')?.value;
+
+                if (nome && senha) {
+                    // Salva no celular para não precisar logar toda hora
+                    localStorage.setItem('oio_user_name', nome);
+                    // Opcional: Salvar senha se for necessário para outras requisições
+                    localStorage.setItem('oio_user_temp_pass', senha);
+                    
+                    // Recarrega para o start() acima liberar o acesso
+                    location.reload(); 
+                } else {
+                    alert("Por favor, digite seu Nome e Senha!");
                 }
             };
         }
     }
 };
 
-// Dispara o boot
+// Inicia o motor
 AppInit.start();
