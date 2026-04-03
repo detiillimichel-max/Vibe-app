@@ -1,78 +1,50 @@
-// OIO ONE - CORE SYSTEM 💎
-// ✅ Carrega som sem travar o app
-setTimeout(() => {
-    import('../sounds.js').catch(() => {});
-}, 1000);
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>OIO ONE</title>
+    
+    <link rel="stylesheet" href="styles/dna.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
 
-const display = document.getElementById('universe-display');
-const portal = document.getElementById('portal-layer');
-const app = document.getElementById('app-layer');
-const btnEntrar = document.getElementById('btn-entrar');
+    <div id="portal-layer">
+        <div class="login-box">
+            <h1 class="portal-label">OIO ONE</h1>
+            <input type="email" id="login-email" placeholder="E-mail">
+            <input type="password" id="login-pass" placeholder="Senha">
+            <button id="btn-entrar" class="glass-btn">ACESSAR UNIVERSO</button>
+        </div>
+    </div>
 
-if (btnEntrar) {
-    btnEntrar.onclick = async () => {
-        const email = document.getElementById('login-email').value.trim();
-        const pass = document.getElementById('login-pass').value.trim();
+    <div id="app-layer" class="hidden">
+        <header style="height:60px; background:#1877f2; display:flex; align-items:center; justify-content:space-between; padding:0 20px;">
+            <span style="font-weight:900; font-size:20px;">OIO ONE</span>
+            <div style="width:35px; height:35px; border-radius:50%; background:#fff; overflow:hidden;">
+                <img id="user-avatar" src="" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+        </header>
 
-        if (!email || !pass) return alert("Preencha todos os campos!");
+        <main id="universe-display">
+            </main>
 
-        btnEntrar.innerText = "Sincronizando...";
+        <nav class="quantum-nav">
+            <div class="nav-item active"><i class="fa-solid fa-house"></i></div>
+            <div class="nav-item"><i class="fa-solid fa-play"></i></div>
+            <div class="nav-item"><i class="fa-solid fa-comment"></i></div>
+            <div class="nav-item"><i class="fa-solid fa-bag-shopping"></i></div>
+            <div class="nav-item"><i class="fa-solid fa-bell"></i></div>
+            <div class="nav-item"><i class="fa-solid fa-bars"></i></div>
+        </nav>
+    </div>
 
-        let { data: user } = await window.supabase
-            .from('profiles')
-            .select('*')
-            .eq('email', email)
-            .maybeSingle();
+    <script src="js/core.js"></script>
+    <script src="js/quantum.js"></script>
+    <script type="module" src="js/core/app-init.js"></script>
 
-        if (!user) {
-            const { data: newUser } = await window.supabase
-                .from('profiles')
-                .insert([{ 
-                    email: email, 
-                    password: pass, 
-                    username: email.split('@')[0],
-                    avatar_url: "https://ui-avatars.com/api/?name=" + email 
-                }])
-                .select().single();
-            user = newUser;
-        }
-
-        if (user && user.password === pass) {
-            localStorage.setItem('oio_user_name', user.username);
-            localStorage.setItem('oio_user_avatar', user.avatar_url);
-            localStorage.setItem('oio_user_email', email);
-            portal.classList.add('hidden');
-            app.classList.remove('hidden');
-            window.OioSound?.post();
-            carregarModulo('origin');
-        } else {
-            alert("Senha incorreta!");
-            btnEntrar.innerText = "ACESSAR UNIVERSO";
-        }
-    };
-}
-
-async function carregarModulo(nomeModulo) {
-    display.innerHTML = '<div style="padding:50px; text-align:center; color:#1877f2;"><i class="fas fa-circle-notch fa-spin fa-2x"></i></div>';
-    try {
-        const caminho = `../modules/${nomeModulo}/controller.js`;
-        const mod = await import(caminho);
-        const controller = mod[Object.keys(mod)[0]] || mod.default;
-        if (controller && controller.init) await controller.init();
-    } catch (e) {
-        console.error("Erro ao carregar módulo:", e);
-        display.innerHTML = `<p style="text-align:center; padding:50px; color:#444;">Módulo ${nomeModulo} indisponível.</p>`;
-    }
-}
-
-const navItems = document.querySelectorAll('.nav-item');
-const rotas = ['origin', 'watch', 'friends', 'marketplace', 'notifications', 'profile'];
-
-navItems.forEach((item, index) => {
-    item.onclick = () => {
-        navItems.forEach(i => i.classList.remove('active'));
-        item.classList.add('active');
-        window.OioSound?.like();
-        carregarModulo(rotas[index]);
-    };
-});
+</body>
+</html>
