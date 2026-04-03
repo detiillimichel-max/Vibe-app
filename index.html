@@ -3,62 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>OIO ONE | SUPREME EDITION</title>
+    <title>OIO ONE | CORE SCALE</title>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        :root { 
-            --accent: #1877f2; 
-            --accent-glow: rgba(24, 119, 242, 0.4);
-            --glass: rgba(255, 255, 255, 0.05); 
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --bg: #000;
-        }
-
+        :root { --accent: #1877f2; --glass: rgba(255, 255, 255, 0.05); --border: rgba(255, 255, 255, 0.1); }
         * { margin:0; padding:0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { background:var(--bg); height:100vh; width:100vw; overflow:hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #fff; }
+        body, html { background:#000; height:100vh; width:100vw; overflow:hidden; font-family: sans-serif; color: #fff; }
 
-        /* VIDEO BACKGROUND ENGINE */
-        video#bg-video { position:absolute; top:0; left:0; width:100%; height:100%; object-fit: cover; z-index: 1; filter: brightness(0.3) blur(5px); }
+        /* BACKDROP VIDEO */
+        video#bg-video { position:absolute; top:0; left:0; width:100%; height:100%; object-fit: cover; z-index: 1; filter: brightness(0.2) blur(8px); }
 
-        /* PORTAL DE ACESSO (LOGIN DINÂMICO) */
-        #oio-portal { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; background:#000; transition: 0.8s cubic-bezier(0.8, 0, 0.2, 1); }
-        .login-card { width:88%; max-width:400px; padding:45px 35px; background:var(--glass); backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px); border-radius:40px; border:1px solid var(--glass-border); text-align:center; z-index:2; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
-        .brand { font-size: 50px; font-weight: 900; letter-spacing: -3px; margin-bottom: 40px; background: linear-gradient(to bottom, #fff, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .input-oio { width:100%; height:65px; background:rgba(0,0,0,0.4); border:1px solid var(--glass-border); border-radius:20px; color:#fff; padding:0 25px; margin-bottom:20px; outline:none; font-size:16px; transition: 0.3s; }
-        .input-oio:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
-        .btn-entrar { width:100%; height:65px; background:var(--accent); border:none; border-radius:20px; color:#fff; font-weight:900; font-size:18px; box-shadow: 0 15px 30px var(--accent-glow); cursor: pointer; }
+        /* LOGIN PORTAL */
+        #oio-portal { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; background:#000; }
+        .login-card { width:88%; padding:40px; background:var(--glass); backdrop-filter:blur(30px); border-radius:35px; border:1px solid var(--border); text-align:center; }
+        .input-oio { width:100%; height:60px; background:rgba(0,0,0,0.5); border:1px solid var(--border); border-radius:18px; color:#fff; padding:0 20px; margin-bottom:15px; outline:none; }
+        .btn-entrar { width:100%; height:60px; background:var(--accent); border:none; border-radius:18px; color:#fff; font-weight:bold; box-shadow: 0 10px 20px rgba(24, 119, 242, 0.3); }
 
-        /* ESTRUTURA DO APP (OS) */
-        #oio-os { display:none; flex-direction:column; height:100vh; position:relative; z-index:5; background: rgba(0,0,0,0.6); }
+        /* APP OS */
+        #oio-os { display:none; flex-direction:column; height:100vh; position:relative; z-index:10; }
+        header { padding: 50px 25px 15px; display:flex; justify-content:space-between; align-items:center; }
+        #main-view { flex:1; overflow-y:auto; padding:15px; padding-bottom: 110px; }
+
+        /* COMPONENTES DE ESCALA */
+        .card-vibe { width:100%; aspect-ratio: 9/16; background:#111; border-radius:25px; margin-bottom:15px; border:1px solid var(--border); overflow:hidden; position:relative; }
+        .card-vibe video { width:100%; height:100%; object-fit:cover; }
         
-        header { padding: 60px 25px 20px; display:flex; justify-content:space-between; align-items:center; backdrop-filter: blur(10px); }
-        #user-display { font-size: 24px; font-weight: 800; letter-spacing: -1px; }
+        .chat-bubble { padding:15px; border-radius:20px; background:var(--glass); border:1px solid var(--border); margin-bottom:10px; max-width:85%; }
+        .chat-bubble.me { align-self: flex-end; background:var(--accent); border:none; }
 
-        #main-content { flex:1; overflow-y:auto; padding: 20px; padding-bottom: 120px; }
-
-        /* CARDS E GRIDS */
-        .card { background: var(--glass); padding: 25px; border-radius: 30px; border: 1px solid var(--glass-border); margin-bottom: 20px; animation: slideUp 0.5s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* BARRA DE NAVEGAÇÃO (6 MÓDULOS) */
-        nav#footer { 
-            position:fixed; bottom:0; width:100%; height:95px; 
-            background:rgba(0,0,0,0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            display:flex; justify-content:space-around; align-items:center; 
-            border-top:1px solid var(--glass-border); padding-bottom: env(safe-area-inset-bottom);
-        }
-        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 5px; color: #555; transition: 0.3s; width: 15%; }
-        .nav-btn i { font-size: 22px; }
-        .nav-btn span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
-        .nav-btn.active { color: var(--accent); transform: translateY(-5px); }
-
-        /* ESTILOS DO CHAT */
-        #chat-flow { height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
-        .msg-bubble { padding: 12px 18px; border-radius: 20px; background: var(--glass); max-width: 85%; border: 1px solid var(--glass-border); }
-        .msg-bubble.me { align-self: flex-end; background: var(--accent); border: none; }
+        /* RODAPÉ 6 MÓDULOS */
+        nav#oio-nav { position:fixed; bottom:0; width:100%; height:85px; background:rgba(0,0,0,0.8); backdrop-filter:blur(20px); display:flex; justify-content:space-around; align-items:center; border-top:1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); }
+        .n-btn { display:flex; flex-direction:column; align-items:center; gap:4px; color:#444; font-size:20px; transition:0.3s; }
+        .n-btn.active { color:var(--accent); transform:translateY(-3px); }
+        .n-btn span { font-size:9px; font-weight:bold; }
     </style>
 </head>
 <body>
@@ -67,125 +47,87 @@
 
     <div id="oio-portal">
         <div class="login-card">
-            <div class="brand">OIO ONE</div>
-            <input type="text" id="id-name" class="input-oio" placeholder="Seu Nome">
-            <input type="tel" id="id-pin" class="input-oio" placeholder="PIN de Acesso" maxlength="8">
-            <button class="btn-entrar" onclick="oio_login()">INICIAR SESSÃO</button>
-            <p id="auth-error" style="color:#ff3b30; margin-top:20px; display:none; font-weight:bold; font-size:12px;">NOME E PIN OBRIGATÓRIOS</p>
+            <h1 style="font-size:40px; margin-bottom:30px; letter-spacing:-2px;">OIO ONE</h1>
+            <input type="text" id="user-in" class="input-oio" placeholder="Seu Nome">
+            <input type="password" id="pin-in" class="input-oio" placeholder="PIN (4 dígitos)">
+            <button class="btn-entrar" onclick="initApp()">ENTRAR</button>
         </div>
     </div>
 
     <div id="oio-os">
         <header>
-            <div id="user-display">Michel</div>
-            <div style="width:45px; height:45px; border-radius:15px; background:var(--accent); display:flex; align-items:center; justify-content:center;">
-                <i class="fa-solid fa-user-astronaut"></i>
-            </div>
+            <h2 id="user-tag" style="font-weight:900;">Michel</h2>
+            <i class="fa-solid fa-circle-nodes" style="color:var(--accent); font-size:24px;"></i>
         </header>
 
-        <main id="main-content">
-            </main>
+        <main id="main-view"></main>
 
-        <nav id="footer">
-            <div class="nav-btn active" onclick="router(1, this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
-            <div class="nav-btn" onclick="router(2, this)"><i class="fa-solid fa-play"></i><span>Vibe</span></div>
-            <div class="nav-btn" onclick="router(3, this)"><i class="fa-solid fa-comment"></i><span>Chat</span></div>
-            <div class="nav-btn" onclick="router(4, this)"><i class="fa-solid fa-bag-shopping"></i><span>Shop</span></div>
-            <div class="nav-btn" onclick="router(5, this)"><i class="fa-solid fa-bell"></i><span>Avisos</span></div>
-            <div class="nav-btn" onclick="router(6, this)"><i class="fa-solid fa-bars"></i><span>Menu</span></div>
+        <nav id="oio-nav">
+            <div class="n-btn active" onclick="router(1, this)"><i class="fa-solid fa-house"></i><span>HOME</span></div>
+            <div class="n-btn" onclick="router(2, this)"><i class="fa-solid fa-play"></i><span>VIBE</span></div>
+            <div class="n-btn" onclick="router(3, this)"><i class="fa-solid fa-comment"></i><span>CHAT</span></div>
+            <div class="n-btn" onclick="router(4, this)"><i class="fa-solid fa-bag-shopping"></i><span>SHOP</span></div>
+            <div class="n-btn" onclick="router(5, this)"><i class="fa-solid fa-bell"></i><span>NOTIF</span></div>
+            <div class="n-btn" onclick="router(6, this)"><i class="fa-solid fa-bars"></i><span>MENU</span></div>
         </nav>
     </div>
 
     <script>
-        /* CONFIGURAÇÃO SUPABASE */
         const _URL = 'https://uqdwtzlkqaosnweyoyit.supabase.co';
         const _KEY = 'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA';
         const supabase = window.supabase.createClient(_URL, _KEY);
 
-        // FUNÇÃO DE LOGIN (LIVRE)
-        function oio_login() {
-            const nome = document.getElementById('id-name').value.trim();
-            const pin = document.getElementById('id-pin').value.trim();
-            const erro = document.getElementById('auth-error');
-
-            if (nome !== "" && pin.length >= 4) {
-                localStorage.setItem('oio_user', nome);
-                document.getElementById('user-display').innerText = nome;
-                
-                document.getElementById('oio-portal').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('oio-portal').style.display = 'none';
-                    document.getElementById('oio-os').style.display = 'flex';
-                    router(1, document.querySelector('.nav-btn'));
-                }, 600);
-            } else {
-                erro.style.display = 'block';
-                if (window.navigator.vibrate) window.navigator.vibrate([50, 100, 50]);
+        function initApp() {
+            const n = document.getElementById('user-in').value;
+            const p = document.getElementById('pin-in').value;
+            if(n && p.length >= 4) {
+                localStorage.setItem('oio_user', n);
+                document.getElementById('user-tag').innerText = n;
+                document.getElementById('oio-portal').style.display = 'none';
+                document.getElementById('oio-os').style.display = 'flex';
+                router(1, document.querySelector('.n-btn'));
             }
         }
 
-        // ROTEADOR DOS 6 MÓDULOS
-        function router(id, el) {
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-            
-            const stage = document.getElementById('main-content');
+        function router(id, btn) {
+            document.querySelectorAll('.n-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const view = document.getElementById('main-view');
             
             switch(id) {
-                case 1: 
-                    stage.innerHTML = `<div class="card"><h3>Painel Central</h3><p>OIO ONE operando em 100%.</p></div>`; 
-                    break;
-                case 2: 
-                    stage.innerHTML = `<div class="card"><h3>Vibe Feed</h3><p>Carregando vídeos do Supabase...</p></div>`; 
-                    break;
-                case 3: 
-                    stage.innerHTML = `
-                        <div class="card" style="height:100%; display:flex; flex-direction:column;">
-                            <div id="chat-flow"></div>
-                            <div style="display:flex; gap:10px;">
-                                <input id="chat-in" class="input-oio" style="margin:0;" placeholder="Sua mensagem...">
-                                <button onclick="sendChat()" style="width:60px; border-radius:15px; border:none; background:var(--accent); color:#fff;"><i class="fa-solid fa-paper-plane"></i></button>
-                            </div>
-                        </div>`;
-                    loadChat();
-                    break;
-                case 4: 
-                    stage.innerHTML = `<div class="card"><h3>OIO Shop</h3><p>Nenhum item disponível no momento.</p></div>`; 
-                    break;
-                case 5: 
-                    stage.innerHTML = `<div class="card"><h3>Notificações</h3><p>Você não tem novos avisos.</p></div>`; 
-                    break;
-                case 6: 
-                    stage.innerHTML = `
-                        <div class="card" onclick="location.reload()" style="color:#ff3b30; text-align:center; font-weight:bold;">
-                            <i class="fa-solid fa-power-off"></i> ENCERRAR SESSÃO
-                        </div>`; 
-                    break;
+                case 1: view.innerHTML = `<div style="background:var(--glass); padding:30px; border-radius:25px; border:1px solid var(--border);"><h3>OIO ONE CORE</h3><p style="opacity:0.6; margin-top:10px;">Escala 1: Iniciada.</p></div>`; break;
+                case 2: renderVibe(); break;
+                case 3: renderChat(); break;
+                case 4: view.innerHTML = `<div style="text-align:center; padding:50px; opacity:0.3;">🛒 SHOP EM BREVE</div>`; break;
+                case 5: view.innerHTML = `<div style="text-align:center; padding:50px; opacity:0.3;">🔔 SEM AVISOS</div>`; break;
+                case 6: view.innerHTML = `<div onclick="location.reload()" style="text-align:center; padding:30px; background:rgba(255,0,0,0.1); border-radius:20px; color:red; font-weight:bold;">SAIR</div>`; break;
             }
-            if (window.navigator.vibrate) window.navigator.vibrate(10);
         }
 
-        // MOTOR DO CHAT
-        async function loadChat() {
+        async function renderVibe() {
+            const view = document.getElementById('main-view');
+            view.innerHTML = `<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div class="card-vibe"><video src="https://cdn.pixabay.com/vimeo/147169811/space-1162.mp4" loop muted autoplay></video></div>
+                <div class="card-vibe"><video src="https://cdn.pixabay.com/vimeo/327314605/digital-22629.mp4" loop muted autoplay></video></div>
+            </div>`;
+        }
+
+        async function renderChat() {
+            const view = document.getElementById('main-view');
+            view.innerHTML = `<div style="display:flex; flex-direction:column; height:450px;">
+                <div id="chat-flow" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:10px; margin-bottom:15px;"></div>
+                <div style="display:flex; gap:10px;"><input id="c-in" class="input-oio" style="margin:0;" placeholder="Sua vibe..."><button onclick="sendMsg()" style="width:60px; background:var(--accent); border:none; border-radius:15px;"><i class="fa-solid fa-paper-plane"></i></button></div>
+            </div>`;
+            const { data } = await supabase.from('mensagens').select('*').limit(10);
             const flow = document.getElementById('chat-flow');
-            const { data } = await supabase.from('mensagens').select('*').order('created_at', {ascending: true}).limit(20);
-            if(data && flow) {
-                flow.innerHTML = data.map(m => `
-                    <div class="msg-bubble ${m.usuario === localStorage.getItem('oio_user') ? 'me' : ''}">
-                        <small style="font-size:9px; opacity:0.6; font-weight:bold;">${m.usuario}</small><br>${m.texto}
-                    </div>
-                `).join('');
-                flow.scrollTop = flow.scrollHeight;
-            }
+            if(data) flow.innerHTML = data.map(m => `<div class="chat-bubble ${m.usuario == localStorage.getItem('oio_user') ? 'me' : ''}"><b>${m.usuario}</b><br>${m.texto}</div>`).join('');
         }
 
-        async function sendChat() {
-            const input = document.getElementById('chat-in');
-            const user = localStorage.getItem('oio_user');
-            if(input.value) {
-                await supabase.from('mensagens').insert([{ usuario: user, texto: input.value }]);
-                input.value = "";
-                loadChat();
+        async function sendMsg() {
+            const i = document.getElementById('c-in');
+            if(i.value) {
+                await supabase.from('mensagens').insert([{ usuario: localStorage.getItem('oio_user'), texto: i.value }]);
+                i.value = ""; renderChat();
             }
         }
     </script>
