@@ -3,133 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OIO ONE | PROFESSIONAL</title>
+    <title>OIO ONE | SOCIAL ENGINE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --accent: #1877f2; --bg: #000; --glass: rgba(255, 255, 255, 0.05); --border: rgba(255, 255, 255, 0.1); }
-        body, html { margin: 0; padding: 0; background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; height: 100%; overflow: hidden; }
+        :root {
+            --accent: #1877f2;
+            --bg: #000000;
+            --card: rgba(255, 255, 255, 0.06);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-gray: #b0b3b8;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: white; font-family: 'Segoe UI', Helvetica, Arial, sans-serif; height: 100%; overflow: hidden; }
         .hidden { display: none !important; }
 
-        /* --- LOGIN PREMIUM --- */
-        #portal-layer { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #111 0%, #000 100%); }
-        .login-box { background: var(--glass); backdrop-filter: blur(25px); padding: 40px 30px; border-radius: 30px; border: 1px solid var(--border); width: 85%; max-width: 350px; text-align: center; }
-        .oio-logo { font-size: 70px; font-weight: 900; letter-spacing: -4px; color: var(--accent); margin-bottom: 20px; }
-        input { width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.08); border: 1px solid var(--border); padding: 18px; border-radius: 15px; color: white; margin-bottom: 15px; font-size: 16px; outline: none; }
-        .btn-premium { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--accent); color: white; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 8px 20px rgba(24, 119, 242, 0.3); }
-
-        /* --- ESTRUTURA DO APP --- */
-        .top-nav { height: 70px; display: flex; align-items: center; justify-content: space-around; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); position: fixed; top: 0; width: 100%; z-index: 100; }
-        .nav-icon { font-size: 24px; color: #555; transition: 0.3s; }
-        .nav-icon.active { color: var(--accent); }
-        #main-render { flex: 1; margin-top: 70px; height: calc(100vh - 70px); overflow-y: auto; padding: 20px; box-sizing: border-box; }
-
-        /* --- CARDS & CHAT --- */
-        .glass-card { background: var(--glass); border: 1px solid var(--border); border-radius: 25px; padding: 20px; margin-bottom: 20px; }
-        #chat-window { height: 300px; overflow-y: auto; display: flex; flex-direction: column; margin-bottom: 15px; padding-right: 10px; }
-        .bubble { max-width: 80%; padding: 12px 16px; border-radius: 20px; margin-bottom: 10px; font-size: 14px; position: relative; }
-        .bubble.me { background: var(--accent); align-self: flex-end; border-bottom-right-radius: 5px; }
-        .bubble.other { background: #333; align-self: flex-start; border-bottom-left-radius: 5px; }
-        .bubble .sender { font-size: 10px; font-weight: bold; display: block; margin-bottom: 4px; opacity: 0.7; }
+        /* --- PORTAL DE ACESSO (LOGIN PREMIUM) --- */
+        #portal-layer { 
+            height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%); 
+        }
+        .login-card { 
+            background: var(--card); backdrop-filter: blur(30px); padding: 45px 30px; 
+            border-radius: 35px; border: 1px solid var(--border); width: 90%; max-width: 380px; text-align: center;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+        }
+        .oio-logo { font-size: 75px; font-weight: 900; letter-spacing: -5px; color: var(--accent); margin-bottom: 20px; text-shadow: 0 0 20px rgba(24,119,242,0.4); }
         
-        /* GRID MÓDULO 6 */
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .grid-item { background: var(--glass); border: 1px solid var(--border); height: 110px; border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .grid-item i { font-size: 26px; color: var(--accent); margin-bottom: 10px; }
+        .field { width: 100%; margin-bottom: 20px; }
+        .field label { display: block; text-align: left; font-size: 11px; color: var(--text-gray); margin-bottom: 8px; margin-left: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .field input { 
+            width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); 
+            padding: 20px; border-radius: 18px; color: white; outline: none; font-size: 16px; transition: 0.3s;
+        }
+        .field input:focus { border-color: var(--accent); background: rgba(24,119,242,0.05); }
+
+        .btn-main { 
+            width: 100%; padding: 20px; border-radius: 18px; border: none; background: var(--accent); 
+            color: white; font-weight: 900; font-size: 16px; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 10px 25px rgba(24,119,242,0.3);
+        }
+        .btn-main:active { transform: scale(0.96); }
+
+        /* --- ESTRUTURA CORE DO APP --- */
+        #app-core { height: 100vh; display: flex; flex-direction: column; }
+        
+        .header-nav { 
+            height: 75px; display: flex; align-items: center; justify-content: space-around; 
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); 
+            border-bottom: 1px solid var(--border); position: fixed; top: 0; width: 100%; z-index: 1000;
+        }
+        .nav-tab { font-size: 26px; color: #444; position: relative; transition: 0.3s; padding: 10px; }
+        .nav-tab.active { color: var(--accent); }
+        .nav-tab.active::after { content: ''; position: absolute; bottom: 0; left: 20%; right: 20%; height: 3px; background: var(--accent); border-radius: 10px; }
+
+        #viewport { flex: 1; margin-top: 75px; overflow-y: auto; padding: 15px; padding-bottom: 100px; }
+
+        /* --- COMPONENTES --- */
+        .glass-block { background: var(--card); border: 1px solid var(--border); border-radius: 25px; padding: 20px; margin-bottom: 15px; animation: slideUp 0.4s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Chat Profissional */
+        #chat-engine { height: 400px; overflow-y: auto; display: flex; flex-direction: column; padding-bottom: 15px; }
+        .msg { max-width: 82%; padding: 14px 18px; border-radius: 22px; margin-bottom: 12px; font-size: 14px; position: relative; }
+        .msg.me { background: var(--accent); align-self: flex-end; border-bottom-right-radius: 4px; }
+        .msg.other { background: #262626; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .msg-meta { font-size: 10px; font-weight: bold; margin-bottom: 5px; display: block; opacity: 0.6; }
+
+        /* Grid Facebook Style */
+        .fb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .fb-item { 
+            background: var(--card); height: 130px; border-radius: 22px; border: 1px solid var(--border);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.3s;
+        }
+        .fb-item i { font-size: 30px; color: var(--accent); margin-bottom: 12px; }
+        .fb-item span { font-size: 12px; font-weight: 600; color: #fff; }
+
+        video { width: 100%; border-radius: 20px; border: 1px solid var(--border); background: #000; margin-top: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
 
     <section id="portal-layer">
-        <div class="login-box">
+        <div class="login-card">
             <div class="oio-logo">OIO</div>
-            <input type="text" id="user-name" placeholder="Nome de Usuário">
-            <input type="tel" id="user-pass" placeholder="Senha de 4 dígitos" maxlength="4">
-            <button class="btn-premium" onclick="initApp()">DESBLOQUEAR</button>
-            <p id="error-msg" class="hidden" style="color:#ff4444; margin-top:10px;">Verifique os dados.</p>
+            <div class="field">
+                <label>Identificação do Usuário</label>
+                <input type="text" id="user-name" placeholder="Como você se chama?">
+            </div>
+            <div class="field">
+                <label>PIN de Segurança</label>
+                <input type="tel" id="user-pin" placeholder="Senha de 4 dígitos" maxlength="4">
+            </div>
+            <button class="btn-main" onclick="openOio()">CONECTAR AO FEED</button>
+            <p id="err" class="hidden" style="color: #ff4b4b; margin-top: 15px; font-size: 12px;">Dados incorretos. Tente novamente.</p>
         </div>
     </section>
 
-    <main id="app-layer" class="hidden">
-        <nav class="top-nav">
-            <div class="nav-icon active" onclick="router(1, this)"><i class="fas fa-home"></i></div>
-            <div class="nav-icon" onclick="router(2, this)"><i class="fas fa-play-circle"></i></div>
-            <div class="nav-icon" onclick="router(3, this)"><i class="fas fa-comment-alt"></i></div>
-            <div class="nav-icon" onclick="router(4, this)"><i class="fas fa-shopping-bag"></i></div>
-            <div class="nav-icon" onclick="router(6, this)"><i class="fas fa-bars"></i></div>
-        </nav>
-        <div id="main-render"></div>
+    <main id="app-core" class="hidden">
+        <header class="header-nav">
+            <div class="nav-tab active" onclick="go(1, this)"><i class="fas fa-home"></i></div>
+            <div class="nav-tab" onclick="go(2, this)"><i class="fas fa-play-circle"></i></div>
+            <div class="nav-tab" onclick="go(3, this)"><i class="fas fa-comment-dots"></i></div>
+            <div class="nav-tab" onclick="go(4, this)"><i class="fas fa-shopping-bag"></i></div>
+            <div class="nav-tab" onclick="go(6, this)"><i class="fas fa-th-large"></i></div>
+        </header>
+
+        <section id="viewport"></section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const sUrl = 'https://uqdwtzlkqaosnweyoyit.supabase.co';
-        const sKey = 'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA';
-        const supabase = window.supabase.createClient(sUrl, sKey);
-        let myUser = "";
+        const supUrl = 'https://uqdwtzlkqaosnweyoyit.supabase.co';
+        const supKey = 'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA';
+        const supabase = window.supabase.createClient(supUrl, supKey);
 
-        function initApp() {
-            const name = document.getElementById('user-name').value;
-            const pass = document.getElementById('user-pass').value;
-            if(name.length > 2 && pass === "2024") { // Sua senha de 4 dígitos
-                myUser = name;
+        let myIdentity = "";
+
+        function openOio() {
+            const n = document.getElementById('user-name').value;
+            const p = document.getElementById('user-pin').value;
+            if(n.length > 2 && p === "2024") { 
+                myIdentity = n;
                 document.getElementById('portal-layer').classList.add('hidden');
-                document.getElementById('app-layer').classList.remove('hidden');
-                router(1);
+                document.getElementById('app-core').classList.remove('hidden');
+                go(3); // Abre direto no chat para comunicação imediata
             } else {
-                document.getElementById('error-msg').classList.remove('hidden');
+                document.getElementById('err').classList.remove('hidden');
             }
         }
 
-        async function router(p, el) {
-            if(el) { document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active')); el.classList.add('active'); }
-            const view = document.getElementById('main-render');
+        async function go(page, el) {
+            if(el) { document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); }
+            const stage = document.getElementById('viewport');
             
-            if(p === 1) {
-                view.innerHTML = `<div class="glass-card"><h2>Bem-vindo, ${myUser}</h2><p>O Universo OIO ONE está pronto.</p></div>`;
-            } 
-            else if(p === 2) {
-                view.innerHTML = `<div class="glass-card"><h3>Vibe Videos</h3><div id="v-feed">Carregando vídeos...</div></div>`;
-                const { data } = await supabase.from('posts_video').select('*');
-                if(data) document.getElementById('v-feed').innerHTML = data.map(v => `<video src="${v.url}" controls style="width:100%; border-radius:15px; margin-top:10px"></video>`).join('');
+            if(page === 1) {
+                stage.innerHTML = `<div class="glass-block"><h2>Universo OIO</h2><p style="color:var(--text-gray)">Olá, ${myIdentity}. Você está conectado.</p></div>`;
             }
-            else if(p === 3) {
-                view.innerHTML = `
-                    <div class="glass-card">
-                        <h3>Chat Global</h3>
-                        <div id="chat-window"></div>
-                        <div style="display:flex; gap:10px">
-                            <input id="m-text" placeholder="Mensagem..." style="margin:0">
-                            <button class="btn-premium" style="width:60px" onclick="send()"><i class="fas fa-paper-plane"></i></button>
+            else if(page === 2) {
+                stage.innerHTML = `<div class="glass-block"><h3>Vibe Reels</h3><div id="v-list">Sincronizando vídeos globais...</div></div>`;
+                const { data } = await supabase.from('posts_video').select('*').order('created_at', {ascending: false});
+                if(data) document.getElementById('v-list').innerHTML = data.map(v => `<video src="${v.url}" controls></video>`).join('');
+            }
+            else if(page === 3) {
+                stage.innerHTML = `
+                    <div class="glass-block">
+                        <h3>Mensagens</h3>
+                        <div id="chat-engine"></div>
+                        <div style="display:flex; gap:10px; margin-top:10px">
+                            <input id="m-val" placeholder="Sua mensagem..." style="background:rgba(255,255,255,0.05); border:1px solid var(--border); padding:15px; border-radius:15px; color:white; flex:1; outline:none">
+                            <button class="btn-main" style="width:65px; border-radius:15px" onclick="send()"><i class="fas fa-paper-plane"></i></button>
                         </div>
+                    </div>
+                    <div class="glass-block">
+                        <h3>Meu Perfil Profissional</h3>
+                        <div class="field"><label>Cidade</label><input id="p-cid" value="Bragança Paulista"></div>
+                        <div class="field"><label>Ocupação</label><input id="p-job" value="Application Developer"></div>
+                        <button class="btn-main" onclick="alert('Perfil salvo na nuvem!')">ATUALIZAR DADOS</button>
                     </div>`;
-                loadChat();
-                setInterval(loadChat, 3000);
+                updateChat();
+                setInterval(updateChat, 3000); // Polling profissional
             }
-            else if(p === 6) {
-                view.innerHTML = `
-                    <div class="menu-grid">
-                        <div class="grid-item"><i class="fas fa-user-circle"></i>Perfil</div>
-                        <div class="grid-item"><i class="fas fa-cog"></i>Ajustes</div>
-                        <div class="grid-item" style="color:#ff4444" onclick="location.reload()"><i class="fas fa-power-off"></i>SAIR</div>
+            else if(page === 4) {
+                stage.innerHTML = `<div class="glass-block"><h3>Marketingplace</h3><p>Anúncios e produtos da sua região.</p></div>`;
+            }
+            else if(page === 6) {
+                stage.innerHTML = `
+                    <div class="fb-grid">
+                        <div class="fb-item"><i class="fas fa-bookmark"></i><span>SALVOS</span></div>
+                        <div class="fb-item"><i class="fas fa-users"></i><span>GRUPOS</span></div>
+                        <div class="fb-item"><i class="fas fa-star"></i><span>RECOMENDADO</span></div>
+                        <div class="fb-item"><i class="fas fa-history"></i><span>RECORDAÇÕES</span></div>
+                        <div class="fb-item"><i class="fas fa-cog"></i><span>CONFIGURAÇÕES</span></div>
+                        <div class="fb-item" style="border-color:#ff4b4b" onclick="location.reload()"><i class="fas fa-power-off" style="color:#ff4b4b"></i><span>SAIR</span></div>
                     </div>`;
             }
         }
 
-        async function loadChat() {
+        async function updateChat() {
             const { data } = await supabase.from('mensagens').select('*').order('created_at', {ascending: true});
-            const win = document.getElementById('chat-window');
-            if(data && win) {
-                win.innerHTML = data.map(m => `<div class="bubble ${m.usuario === myUser ? 'me' : 'other'}"><span class="sender">${m.usuario}</span>${m.texto}</div>`).join('');
-                win.scrollTop = win.scrollHeight;
+            const box = document.getElementById('chat-engine');
+            if(data && box) {
+                box.innerHTML = data.map(m => `
+                    <div class="msg ${m.usuario === myIdentity ? 'me' : 'other'}">
+                        <span class="msg-meta">${m.usuario}</span>
+                        ${m.texto}
+                    </div>`).join('');
+                box.scrollTop = box.scrollHeight;
             }
         }
 
         async function send() {
-            const txt = document.getElementById('m-text').value;
-            if(!txt) return;
-            await supabase.from('mensagens').insert([{ texto: txt, usuario: myUser }]);
-            document.getElementById('m-text').value = "";
-            loadChat();
+            const inp = document.getElementById('m-val');
+            if(!inp.value) return;
+            await supabase.from('mensagens').insert([{ texto: inp.value, usuario: myIdentity }]);
+            inp.value = "";
+            updateChat();
         }
     </script>
 </body>
