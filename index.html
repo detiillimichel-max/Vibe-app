@@ -1,30 +1,61 @@
-<div id="portal-layer">...</div> <div id="app-layer" class="hidden">...</div> ```
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>OIO ONE | UNIVERSO</title>
+    
+    <link rel="stylesheet" href="styles/dna.css">
+    <link rel="stylesheet" href="styles/global.css">
+    <link rel="stylesheet" href="styles/premium_clean.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"></script>
 
-Se a tela está preta, o CSS `dna.css` ou `global.css` pode estar escondendo o `#portal-layer` por padrão, ou o JavaScript parou de rodar no meio do caminho.
+    <style>
+        #portal-layer.hidden, #app-layer.hidden { display: none !important; }
+        #universe-display { flex: 1; overflow-y: auto; background: #000; padding-bottom: 100px; }
+        .quantum-nav { position: fixed; bottom: 0; width: 100%; height: 80px; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body>
 
-### 🛠️ Faça este teste rápido no `app-init.js`:
-Para forçar o Login a aparecer e a gente sair dessa tela preta, mude o começo do seu `AppInit` para isto (estou tirando as validações complexas só para testar a visão):
+    <div id="portal-layer">
+        <div class="login-box">
+            <h1 class="portal-label">OIO ONE</h1>
+            <input type="text" id="login-email" placeholder="Seu Nome">
+            <input type="password" id="login-pass" placeholder="Senha de 4 dígitos">
+            <button id="btn-entrar" class="glass-btn">ACESSAR UNIVERSO</button>
+        </div>
+    </div>
 
-```javascript
-// No topo do js/core/app-init.js
-const AppInit = {
-    async start() {
-        console.log("Tentando iniciar o Portal...");
+    <div id="app-layer" class="hidden">
+        <header style="height: 60px; background: #1877f2; display: flex; align-items: center; justify-content: space-between; padding: 0 20px;">
+            <span style="font-weight:900; font-size:20px; color: white;">OIO ONE</span>
+        </header>
         
-        const portal = document.getElementById('portal-layer');
-        const app = document.getElementById('app-layer');
+        <main id="universe-display"></main>
 
-        // FORÇAR O LOGIN A APARECER PARA TESTE
-        if (portal) {
-            portal.classList.remove('hidden');
-            portal.style.display = 'block'; // Garante que não é erro de CSS
-            console.log("Portal liberado!");
-        }
+        <nav class="quantum-nav">
+            <div class="nav-item active" data-module="origin"><i class="fa-solid fa-house"></i></div>
+            <div class="nav-item" data-module="watch"><i class="fa-solid fa-play"></i></div>
+            <div class="nav-item" data-module="friends"><i class="fa-solid fa-comment"></i></div>
+            <div class="nav-item" data-module="marketplace"><i class="fa-solid fa-bag-shopping"></i></div>
+            <div class="nav-item" data-module="notifications"><i class="fa-solid fa-bell"></i></div>
+            <div class="nav-item" data-module="profile"><i class="fa-solid fa-bars"></i></div>
+        </nav>
+    </div>
+
+    <script src="js/core.js"></script>
+    <script src="js/quantum.js"></script>
+
+    <script type="module">
+        import { OriginController } from './js/modules/origin/controller.js';
+        window.OriginController = OriginController;
         
-        if (app) app.classList.add('hidden');
+        // Chama o inicializador que você já tem
+        import './js/core/app-init.js';
+    </script>
 
-        this.setupLoginEvent();
-    },
-    // ... restante do código do botão
-};
-AppInit.start();
+</body>
+</html>
