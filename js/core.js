@@ -1,71 +1,66 @@
-// OIO ONE - SISTEMA DE SOM GLOBAL 🔊
-window.OioSound = {
+// CONFIGURAÇÃO DO UNIVERSO OIO ONE
+const SUPABASE_URL = 'https://uqdwtzlkqaosnweyoyit.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA';
 
-    ctx: null,
+// Inicializa o cliente globalmente
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    iniciar() {
-        if (!this.ctx) {
-            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+const App = {
+    init() {
+        const portal = document.getElementById('portal-layer');
+        const app = document.getElementById('app-layer');
+        const userSalvo = localStorage.getItem('oio_user_name');
+
+        // Fluxo de Entrada
+        if (userSalvo) {
+            portal?.classList.add('hidden');
+            app?.classList.remove('hidden');
+            console.log("Sistema Pronto. Bem-vindo, " + userSalvo);
+        } else {
+            this.setupLogin();
         }
     },
 
-    // 🔵 Som de mensagem (chat)
-    mensagem() {
-        this.iniciar();
-        this._tocar([880, 660], 0.4, 'sine', 0.4);
-    },
+    setupLogin() {
+        const btn = document.getElementById('btn-entrar');
+        if (!btn) return;
 
-    // 🟠 Som de post (feed)
-    post() {
-        this.iniciar();
-        this._tocar([440, 550, 660], 0.15, 'triangle', 0.5);
-    },
+        btn.onclick = async () => {
+            const userDigitado = document.getElementById('login-user')?.value || document.getElementById('login-email')?.value;
+            const passDigitada = document.getElementById('login-pass')?.value;
 
-    // 🟢 Som de like
-    like() {
-        this.iniciar();
-        this._tocar([660, 880], 0.2, 'sine', 0.3);
-    },
+            if (!userDigitado || !passDigitada) {
+                alert("Digite seu Nome e Senha!");
+                return;
+            }
 
-    // 🟣 Som de vídeo (watch)
-    video() {
-        this.iniciar();
-        this._tocar([300, 450, 600], 0.2, 'triangle', 0.6);
-    },
+            btn.innerText = "CONECTANDO...";
 
-    // 🔴 Som de notificação
-    notificacao() {
-        this.iniciar();
-        this._tocar([523, 659, 784], 0.15, 'sine', 0.7);
-    },
+            try {
+                // Validação direta na tabela 'profiles'
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('username', userDigitado)
+                    .eq('password', passDigitada)
+                    .single();
 
-    // 🟡 Som de marketplace
-    marketplace() {
-        this.iniciar();
-        this._tocar([440, 554, 659, 880], 0.12, 'sine', 0.6);
-    },
-
-    _tocar(notas, duracao, tipo, volume) {
-        try {
-            const ctx = this.ctx;
-            notas.forEach((freq, i) => {
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.type = tipo;
-                osc.frequency.setValueAtTime(freq, ctx.currentTime + i * duracao);
-                gain.gain.setValueAtTime(volume, ctx.currentTime + i * duracao);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * duracao + duracao);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(ctx.currentTime + i * duracao);
-                osc.stop(ctx.currentTime + i * duracao + duracao);
-            });
-        } catch (e) {
-            console.log('OIO Sound: aguardando interação.');
-        }
+                if (data) {
+                    localStorage.setItem('oio_user_name', data.username);
+                    localStorage.setItem('oio_user_id', data.id);
+                    location.reload(); // Recarrega para entrar no App
+                } else {
+                    alert("Usuário ou Senha incorretos!");
+                    btn.innerText = "ACESSAR UNIVERSO";
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Erro de conexão com o Supabase.");
+                btn.innerText = "ACESSAR UNIVERSO";
+            }
+        };
     }
 };
 
-// ✅ Ativa no primeiro toque
-document.addEventListener('touchstart', () => window.OioSound.iniciar(), { once: true });
-document.addEventListener('click', () => window.OioSound.iniciar(), { once: true });
+// Dispara quando o navegador terminar de carregar
+window.onload = () => App.init();
