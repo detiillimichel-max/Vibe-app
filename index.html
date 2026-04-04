@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OIO ONE</title>
     <link rel="stylesheet" href="css/style.css">
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <script>
         window.supabase = supabase.createClient(
             'https://uqdwtzlkqaosnweyoyit.supabase.co',
@@ -29,7 +27,7 @@
                 style="width: 100%; padding: 16px; margin-bottom: 25px; border-radius: 12px; border: 1px solid #3a3b3c; background: #242526; color: white; font-size: 16px; box-sizing: border-box; outline: none;">
             
             <button id="btn-entrar" 
-                style="width: 100%; padding: 16px; background: #1877f2; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s;">
+                style="width: 100%; padding: 16px; background: #1877f2; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer;">
                 ACESSAR UNIVERSO
             </button>
         </div>
@@ -42,29 +40,45 @@
     </div>
 
     <script src="js/modules/js/core.js"></script>
-    <script type="module" src="js/core/app-init.js"></script>
 
-    <!-- 🔍 TESTE TEMPORÁRIO - remove depois que funcionar -->
     <script>
-    document.getElementById('btn-entrar').addEventListener('click', async () => {
-        const login = document.getElementById('login-email').value.trim();
-        const senha = document.getElementById('login-pass').value.trim();
-        
-        const { data, error } = await window.supabase
-            .from('profiles')
-            .select('*')
-            .eq('email', login)
-            .eq('password', senha)
-            .maybeSingle();
+        // Verifica se já está logado
+        const userEmail = localStorage.getItem('oio_user_email');
+        if (userEmail) {
+            document.getElementById('portal-layer').style.display = 'none';
+            document.getElementById('app-layer').style.display = 'block';
+        }
 
-        alert('data: ' + JSON.stringify(data) + '\n\nerror: ' + JSON.stringify(error));
-    });
+        // Login
+        document.getElementById('btn-entrar').onclick = async () => {
+            const login = document.getElementById('login-email').value.trim();
+            const senha = document.getElementById('login-pass').value.trim();
+
+            if (!login || !senha) {
+                alert('Preencha usuário e senha!');
+                return;
+            }
+
+            const { data, error } = await window.supabase
+                .from('profiles')
+                .select('*')
+                .ilike('email', login)
+                .eq('password', senha)
+                .maybeSingle();
+
+            if (data) {
+                localStorage.setItem('oio_user_email', data.email);
+                localStorage.setItem('oio_user_name', data.email);
+                localStorage.setItem('oio_user_id', data.id || 1);
+                location.reload();
+            } else {
+                alert('Dados incorretos!\n\nDigitado: ' + login + ' / ' + senha);
+            }
+        };
     </script>
 
     <style>
         .hidden { display: none !important; }
-        #btn-entrar:active { transform: scale(0.98); opacity: 0.8; }
-        input:focus { border-color: #1877f2 !important; }
     </style>
 
 </body>
