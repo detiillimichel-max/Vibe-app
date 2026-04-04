@@ -3,41 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OIO ONE - DESENVOLVIMENTO</title>
+    <title>OIO ONE - UNIVERSO</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        window.supabase = supabase.createClient(
-            'https://uqdwtzlkqaosnweyoyit.supabase.co',
-            'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA'
-        );
-    </script>
     <style>
-        body { margin: 0; background: #18191a; color: white; font-family: sans-serif; overflow-x: hidden; }
-        #app-layer { display: block; height: 100vh; width: 100vw; }
-        #universe-display { height: calc(100vh - 70px); overflow-y: auto; }
+        body { margin: 0; background: #000; color: white; font-family: -apple-system, sans-serif; overflow: hidden; }
+        #app-layer { display: flex; flex-direction: column; height: 100vh; }
+        
+        header { 
+            height: 60px; border-bottom: 1px solid #222; 
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 10;
+        }
+
+        main { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
+
+        /* Barra de Navegação com os 6 Módulos */
+        nav { 
+            height: 75px; border-top: 1px solid #222; 
+            display: flex; justify-content: space-around; align-items: center;
+            background: #050505; position: fixed; bottom: 0; width: 100%;
+        }
+        .nav-item { color: #555; font-size: 10px; text-align: center; cursor: pointer; flex: 1; transition: 0.3s; }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
+        .nav-item.active { color: #1877f2; transform: scale(1.1); }
+
+        .card { background: #111; border: 1px solid #222; padding: 20px; border-radius: 15px; margin-bottom: 15px; }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
     <div id="app-layer">
-        <div id="universe-display">
+        <header>
+            <h2 id="module-title" style="font-size: 16px; letter-spacing: 3px; color: #1877f2;">ORIGIN</h2>
+        </header>
+
+        <main id="universe-display">
+            </main>
+
+        <nav>
+            <div class="nav-item active" onclick="trocarModulo('origin', this)">
+                <i class="fas fa-rocket"></i>Origin
             </div>
+            <div class="nav-item" onclick="trocarModulo('watch', this)">
+                <i class="fas fa-play-circle"></i>Watch
+            </div>
+            <div class="nav-item" onclick="trocarModulo('friends', this)">
+                <i class="fas fa-users"></i>Friends
+            </div>
+            <div class="nav-item" onclick="trocarModulo('marketplace', this)">
+                <i class="fas fa-shopping-bag"></i>Market
+            </div>
+            <div class="nav-item" onclick="trocarModulo('notifications', this)">
+                <i class="fas fa-bell"></i>Alerts
+            </div>
+            <div class="nav-item" onclick="trocarModulo('profile', this)">
+                <i class="fas fa-user-circle"></i>Profile
+            </div>
+        </nav>
     </div>
 
-    <script type="module">
-        // Importa o motor que carrega os módulos
-        import { OriginController } from './js/modules/origin/controller.js';
+    <script>
+        const display = document.getElementById('universe-display');
+        const title = document.getElementById('module-title');
 
-        // Carrega o Universo assim que a página abrir
-        window.onload = () => {
-            console.log("OIO ONE: Modo Desenvolvedor Ativo (Sem Login)");
-            if (OriginController && OriginController.init) {
-                OriginController.init();
-            } else {
-                document.getElementById('universe-display').innerHTML = 
-                    '<p style="padding:20px;">Carregando Universo OIO...</p>';
-            }
+        // Dados dos 6 Módulos (A "Costura" dos Conteúdos)
+        const conteudos = {
+            origin: `<h1>🚀 Feed Origin</h1><div class="card">Novidades do Universo OIO aparecerão aqui.</div>`,
+            watch: `<h1>📺 Watch</h1><div class="card">Vídeos e transmissões em destaque.</div>`,
+            friends: `<h1>🤝 Friends</h1><div class="card">Conecte-se com outros desenvolvedores.</div>`,
+            marketplace: `<h1>🛒 Marketplace</h1><div class="card">Itens e serviços do ecossistema.</div>`,
+            notifications: `<h1>🔔 Notifications</h1><div class="card">Você não tem novos alertas.</div>`,
+            profile: `<h1>👤 Profile</h1><div class="card">Configurações de Michel Detilli.</div>`
         };
+
+        function trocarModulo(mod, el) {
+            // 1. Atualiza o Título e Conteúdo
+            title.innerText = mod.toUpperCase();
+            display.innerHTML = conteudos[mod];
+            
+            // 2. Muda a cor do ícone no menu
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            el.classList.add('active');
+
+            // 3. Efeito suave de vibração (se estiver no celular)
+            if (navigator.vibrate) navigator.vibrate(10);
+        }
+
+        // Carregar o primeiro módulo ao abrir
+        window.onload = () => trocarModulo('origin', document.querySelector('.nav-item'));
     </script>
 </body>
 </html>
