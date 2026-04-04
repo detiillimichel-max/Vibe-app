@@ -3,80 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OIO ONE</title>
+    <title>OIO ONE - DESENVOLVIMENTO</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ✅ ÚNICO CLIENTE SUPABASE
         window.supabase = supabase.createClient(
             'https://uqdwtzlkqaosnweyoyit.supabase.co',
             'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA'
         );
     </script>
+    <style>
+        body { margin: 0; background: #18191a; color: white; font-family: sans-serif; overflow-x: hidden; }
+        #app-layer { display: block; height: 100vh; width: 100vw; }
+        #universe-display { height: calc(100vh - 70px); overflow-y: auto; }
+    </style>
 </head>
-<body style="margin:0; background:#18191a; font-family: sans-serif; color: white; overflow: hidden;">
+<body>
 
-    <div id="portal-layer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; padding: 20px;">
-        <h1 style="font-size: 32px; letter-spacing: 2px; margin-bottom: 40px;">OIO ONE</h1>
-        <div style="width: 100%; max-width: 320px;">
-            <input type="text" id="login-email" placeholder="Usuário (Michel Detilli)" 
-                style="width: 100%; padding: 16px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #3a3b3c; background: #242526; color: white; font-size: 16px; width: 100%; box-sizing: border-box;">
-            
-            <input type="password" id="login-pass" placeholder="Senha" 
-                style="width: 100%; padding: 16px; margin-bottom: 25px; border-radius: 12px; border: 1px solid #3a3b3c; background: #242526; color: white; font-size: 16px; width: 100%; box-sizing: border-box;">
-            
-            <button id="btn-entrar" 
-                style="width: 100%; padding: 16px; background: #1877f2; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer;">
-                ACESSAR UNIVERSO
-            </button>
-        </div>
-        <p style="color: #b0b3b8; font-size: 12px; margin-top: 30px;">Vibe-app © 2026</p>
-    </div>
-
-    <div id="app-layer" style="display: none; height: 100vh; width: 100vw;">
-        <div id="universe-display" style="height: 100%; width: 100%;"></div>
+    <div id="app-layer">
+        <div id="universe-display">
+            </div>
     </div>
 
     <script type="module">
+        // Importa o motor que carrega os módulos
         import { OriginController } from './js/modules/origin/controller.js';
 
-        const btn = document.getElementById('btn-entrar');
-        const portal = document.getElementById('portal-layer');
-        const app = document.getElementById('app-layer');
-
-        // VERIFICA LOGIN SALVO
-        if (localStorage.getItem('oio_user_email')) {
-            portal.style.display = 'none';
-            app.style.display = 'block';
-            OriginController.init(); // Chama o universo
-        }
-
-        btn.onclick = async () => {
-            const login = document.getElementById('login-email').value.trim();
-            const senha = document.getElementById('login-pass').value.trim();
-
-            if (!login || !senha) return alert("Preencha os campos!");
-
-            btn.innerText = "CONECTANDO...";
-
-            try {
-                const { data } = await window.supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('email', login)
-                    .eq('password', senha)
-                    .maybeSingle();
-
-                if (data) {
-                    localStorage.setItem('oio_user_email', data.email);
-                    localStorage.setItem('oio_user_id', data.id);
-                    location.reload();
-                } else {
-                    alert("Dados não conferem no banco!");
-                    btn.innerText = "ACESSAR UNIVERSO";
-                }
-            } catch (err) {
-                alert("Erro de rede ou Supabase.");
-                btn.innerText = "ACESSAR UNIVERSO";
+        // Carrega o Universo assim que a página abrir
+        window.onload = () => {
+            console.log("OIO ONE: Modo Desenvolvedor Ativo (Sem Login)");
+            if (OriginController && OriginController.init) {
+                OriginController.init();
+            } else {
+                document.getElementById('universe-display').innerHTML = 
+                    '<p style="padding:20px;">Carregando Universo OIO...</p>';
             }
         };
     </script>
