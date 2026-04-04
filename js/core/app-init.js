@@ -1,15 +1,3 @@
-import { OriginController } from '../modules/origin/controller.js';
-
-function waitForSupabase() {
-    return new Promise((resolve) => {
-        const check = () => {
-            if (window.supabase) resolve(window.supabase);
-            else requestAnimationFrame(check);
-        };
-        check();
-    });
-}
-
 const AppInit = {
     async start() {
         const userEmail = localStorage.getItem('oio_user_email');
@@ -17,14 +5,10 @@ const AppInit = {
         const app = document.getElementById('app-layer');
 
         if (userEmail) {
-            if(portal) portal.style.display = 'none';
-            if(app) {
-                app.style.display = 'block';
-                app.classList.remove('hidden');
-            }
-            await OriginController.init();
+            portal.style.display = 'none';
+            app.style.display = 'block';
+            console.log("Usuário já logado.");
         } else {
-            if(portal) portal.style.display = 'flex';
             this.setupLoginEvent();
         }
     },
@@ -34,42 +18,34 @@ const AppInit = {
         if (!btn) return;
 
         btn.onclick = async () => {
-            const loginInput = document.getElementById('login-email').value.trim(); 
-            const passInput = document.getElementById('login-pass').value.trim();
+            const user = document.getElementById('login-email').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
 
-            if (!loginInput || !passInput) {
-                alert("Preencha os campos.");
-                return;
-            }
-
-            btn.innerText = "ENTRANDO...";
+            btn.innerText = "VERIFICANDO...";
 
             try {
-                const supabase = await waitForSupabase();
-
-                const { data, error } = await supabase
+                // ✅ Busca exata no banco
+                const { data, error } = await window.supabase
                     .from('profiles')
                     .select('*')
-                    .eq('email', loginInput) 
-                    .eq('password', passInput)
+                    .eq('email', user)
+                    .eq('password', pass)
                     .maybeSingle();
 
                 if (data) {
                     localStorage.setItem('oio_user_email', data.email);
-                    localStorage.setItem('oio_user_name', data.email);
-                    localStorage.setItem('oio_user_id', data.id);
-                    
                     location.reload();
                 } else {
-                    alert("Acesso negado. Verifique se o nome está igual ao banco.");
+                    alert("Acesso negado. Verifique os dados.");
                     btn.innerText = "ACESSAR UNIVERSO";
                 }
             } catch (err) {
-                alert("Erro de conexão.");
+                alert("Erro de conexão com o Supabase.");
                 btn.innerText = "ACESSAR UNIVERSO";
             }
         };
     }
 };
 
+// Inicia o processo
 AppInit.start();
