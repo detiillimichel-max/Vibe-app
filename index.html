@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        window.supabase = supabase.createClient(
+        // Inicialização do Supabase
+        window.supabaseClient = supabase.createClient(
             'https://uqdwtzlkqaosnweyoyit.supabase.co',
             'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA'
         );
@@ -16,70 +17,62 @@
 <body style="margin:0; background:#18191a; font-family: sans-serif; overflow: hidden;">
 
     <div id="portal-layer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw; padding: 20px; box-sizing: border-box;">
-        
         <h1 style="color: white; font-size: 32px; letter-spacing: 2px; margin-bottom: 40px;">OIO ONE</h1>
-
         <div style="width: 100%; max-width: 320px;">
-            <input type="text" id="login-email" placeholder="Usuário (ex: Michel Detilli)" 
-                style="width: 100%; padding: 16px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #3a3b3c; background: #242526; color: white; font-size: 16px; box-sizing: border-box; outline: none;">
-            
-            <input type="password" id="login-pass" placeholder="Senha" 
-                style="width: 100%; padding: 16px; margin-bottom: 25px; border-radius: 12px; border: 1px solid #3a3b3c; background: #242526; color: white; font-size: 16px; box-sizing: border-box; outline: none;">
-            
-            <button id="btn-entrar" 
-                style="width: 100%; padding: 16px; background: #1877f2; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer;">
-                ACESSAR UNIVERSO
-            </button>
+            <input type="text" id="login-email" placeholder="Usuário (Michel Detilli)" style="width: 100%; padding: 16px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #3a3b3c; background: #242526; color: white; font-size: 16px; outline: none;">
+            <input type="password" id="login-pass" placeholder="Senha" style="width: 100%; padding: 16px; margin-bottom: 25px; border-radius: 12px; border: 1px solid #3a3b3c; background: #242526; color: white; font-size: 16px; outline: none;">
+            <button id="btn-entrar" style="width: 100%; padding: 16px; background: #1877f2; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer;">ACESSAR UNIVERSO</button>
         </div>
-
         <p style="color: #b0b3b8; font-size: 12px; margin-top: 30px;">Vibe-app © 2026</p>
     </div>
 
-    <div id="app-layer" class="hidden" style="display: none; height: 100vh; width: 100vw;">
+    <div id="app-layer" style="display: none; height: 100vh; width: 100vw;">
         <div id="universe-display" style="height: 100%; width: 100%;"></div>
     </div>
 
-    <script src="js/modules/js/core.js"></script>
-
     <script>
+        const btn = document.getElementById('btn-entrar');
+        const portal = document.getElementById('portal-layer');
+        const app = document.getElementById('app-layer');
+
         // Verifica se já está logado
-        const userEmail = localStorage.getItem('oio_user_email');
-        if (userEmail) {
-            document.getElementById('portal-layer').style.display = 'none';
-            document.getElementById('app-layer').style.display = 'block';
+        if (localStorage.getItem('oio_user_email')) {
+            portal.style.display = 'none';
+            app.style.display = 'block';
         }
 
-        // Login
-        document.getElementById('btn-entrar').onclick = async () => {
+        btn.onclick = async () => {
             const login = document.getElementById('login-email').value.trim();
             const senha = document.getElementById('login-pass').value.trim();
 
             if (!login || !senha) {
-                alert('Preencha usuário e senha!');
+                alert("Preencha tudo!");
                 return;
             }
 
-            const { data, error } = await window.supabase
-                .from('profiles')
-                .select('*')
-                .ilike('email', login)
-                .eq('password', senha)
-                .maybeSingle();
+            btn.innerText = "VERIFICANDO...";
 
-            if (data) {
-                localStorage.setItem('oio_user_email', data.email);
-                localStorage.setItem('oio_user_name', data.email);
-                localStorage.setItem('oio_user_id', data.id || 1);
-                location.reload();
-            } else {
-                alert('Dados incorretos!\n\nDigitado: ' + login + ' / ' + senha);
+            try {
+                // ✅ Usando .eq() para busca exata
+                const { data, error } = await window.supabaseClient
+                    .from('profiles')
+                    .select('*')
+                    .eq('email', login)
+                    .eq('password', senha)
+                    .maybeSingle();
+
+                if (data) {
+                    localStorage.setItem('oio_user_email', data.email);
+                    location.reload();
+                } else {
+                    alert("Acesso negado! Nome ou senha errados.");
+                    btn.innerText = "ACESSAR UNIVERSO";
+                }
+            } catch (err) {
+                alert("Erro na conexão!");
+                btn.innerText = "ACESSAR UNIVERSO";
             }
         };
     </script>
-
-    <style>
-        .hidden { display: none !important; }
-    </style>
-
 </body>
 </html>
