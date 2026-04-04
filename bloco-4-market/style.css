@@ -1,0 +1,82 @@
+/* 🛍️ MARKETPLACE PREMIUM - OIO ONE */
+.market-container {
+    padding: 16px;
+    background: #000;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.market-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.market-title {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Grid de Produtos Estilo Facebook */
+.product-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dois itens por linha no celular */
+    gap: 12px;
+}
+
+.product-card {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.product-image {
+    width: 100%;
+    aspect-ratio: 1/1;
+    background: linear-gradient(45deg, #1877f2, #00d2ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+}
+
+.product-info {
+    padding: 10px;
+}
+
+.product-price {
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.product-name {
+    color: #b0b3b8;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-location {
+    color: #65676b;
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+.btn-buy {
+    width: 100%;
+    background: #222;
+    color: #1877f2;
+    border: none;
+    padding: 8px;
+    margin-top: 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 12px;
+}
