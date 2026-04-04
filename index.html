@@ -6,10 +6,8 @@
     <title>OIO ONE</title>
     <link rel="stylesheet" href="css/style.css">
 
-    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- ✅ Inicializa o Supabase -->
     <script>
         window.supabase = supabase.createClient(
             'https://uqdwtzlkqaosnweyoyit.supabase.co',
@@ -45,6 +43,23 @@
 
     <script src="js/modules/js/core.js"></script>
     <script type="module" src="js/core/app-init.js"></script>
+
+    <!-- 🔍 TESTE TEMPORÁRIO - remove depois que funcionar -->
+    <script>
+    document.getElementById('btn-entrar').addEventListener('click', async () => {
+        const login = document.getElementById('login-email').value.trim();
+        const senha = document.getElementById('login-pass').value.trim();
+        
+        const { data, error } = await window.supabase
+            .from('profiles')
+            .select('*')
+            .eq('email', login)
+            .eq('password', senha)
+            .maybeSingle();
+
+        alert('data: ' + JSON.stringify(data) + '\n\nerror: ' + JSON.stringify(error));
+    });
+    </script>
 
     <style>
         .hidden { display: none !important; }
