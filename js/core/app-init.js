@@ -17,11 +17,14 @@ const AppInit = {
         const app = document.getElementById('app-layer');
 
         if (userEmail) {
-            if(portal) portal.classList.add('hidden');
-            if(app) app.classList.remove('hidden');
+            if(portal) portal.style.display = 'none';
+            if(app) {
+                app.style.display = 'block';
+                app.classList.remove('hidden');
+            }
             await OriginController.init();
         } else {
-            if(portal) portal.classList.remove('hidden');
+            if(portal) portal.style.display = 'flex';
             this.setupLoginEvent();
         }
     },
@@ -31,8 +34,15 @@ const AppInit = {
         if (!btn) return;
 
         btn.onclick = async () => {
-            const loginInformado = document.getElementById('login-email').value.trim(); 
-            const senhaInformada = document.getElementById('login-pass').value.trim();
+            const loginInput = document.getElementById('login-email').value.trim(); 
+            const passInput = document.getElementById('login-pass').value.trim();
+
+            if (!loginInput || !passInput) {
+                alert("Preencha os campos.");
+                return;
+            }
+
+            btn.innerText = "ENTRANDO...";
 
             try {
                 const supabase = await waitForSupabase();
@@ -40,21 +50,23 @@ const AppInit = {
                 const { data, error } = await supabase
                     .from('profiles')
                     .select('*')
-                    .eq('email', loginInformado)  // ✅ corrigido: era 'emall'
-                    .eq('password', senhaInformada)
+                    .eq('email', loginInput) 
+                    .eq('password', passInput)
                     .maybeSingle();
 
                 if (data) {
-                    localStorage.setItem('oio_user_email', data.email); // ✅ corrigido
-                    localStorage.setItem('oio_user_name', data.email);  // ✅ corrigido
-                    localStorage.setItem('oio_user_id', data.id || 1);
+                    localStorage.setItem('oio_user_email', data.email);
+                    localStorage.setItem('oio_user_name', data.email);
+                    localStorage.setItem('oio_user_id', data.id);
                     
                     location.reload();
                 } else {
-                    alert("Dados incorretos. Verifique o nome e a senha.");
+                    alert("Acesso negado. Verifique se o nome está igual ao banco.");
+                    btn.innerText = "ACESSAR UNIVERSO";
                 }
             } catch (err) {
-                alert("Erro de conexão com o banco.");
+                alert("Erro de conexão.");
+                btn.innerText = "ACESSAR UNIVERSO";
             }
         };
     }
