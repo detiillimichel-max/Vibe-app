@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Inicialização do Supabase
-        window.supabaseClient = supabase.createClient(
+        // ✅ Ajustado para 'window.supabase' para bater com seu app-init.js
+        window.supabase = supabase.createClient(
             'https://uqdwtzlkqaosnweyoyit.supabase.co',
             'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA'
         );
@@ -30,49 +30,12 @@
         <div id="universe-display" style="height: 100%; width: 100%;"></div>
     </div>
 
-    <script>
-        const btn = document.getElementById('btn-entrar');
-        const portal = document.getElementById('portal-layer');
-        const app = document.getElementById('app-layer');
+    <script src="js/modules/js/core.js"></script>
+    <script type="module" src="js/core/app-init.js"></script>
 
-        // Verifica se já está logado
-        if (localStorage.getItem('oio_user_email')) {
-            portal.style.display = 'none';
-            app.style.display = 'block';
-        }
-
-        btn.onclick = async () => {
-            const login = document.getElementById('login-email').value.trim();
-            const senha = document.getElementById('login-pass').value.trim();
-
-            if (!login || !senha) {
-                alert("Preencha tudo!");
-                return;
-            }
-
-            btn.innerText = "VERIFICANDO...";
-
-            try {
-                // ✅ Usando .eq() para busca exata
-                const { data, error } = await window.supabaseClient
-                    .from('profiles')
-                    .select('*')
-                    .eq('email', login)
-                    .eq('password', senha)
-                    .maybeSingle();
-
-                if (data) {
-                    localStorage.setItem('oio_user_email', data.email);
-                    location.reload();
-                } else {
-                    alert("Acesso negado! Nome ou senha errados.");
-                    btn.innerText = "ACESSAR UNIVERSO";
-                }
-            } catch (err) {
-                alert("Erro na conexão!");
-                btn.innerText = "ACESSAR UNIVERSO";
-            }
-        };
-    </script>
+    <style>
+        .hidden { display: none !important; }
+        #btn-entrar:active { transform: scale(0.98); }
+    </style>
 </body>
 </html>
