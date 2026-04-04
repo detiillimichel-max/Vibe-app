@@ -4,38 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OIO ONE</title>
-    <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ✅ Ajustado para 'window.supabase' para bater com seu app-init.js
+        // ✅ PADRONIZADO: Agora o JS vai encontrar 'supabase'
         window.supabase = supabase.createClient(
             'https://uqdwtzlkqaosnweyoyit.supabase.co',
             'sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA'
         );
     </script>
 </head>
-<body style="margin:0; background:#18191a; font-family: sans-serif; overflow: hidden;">
+<body style="margin:0; background:#18191a; font-family: sans-serif;">
 
-    <div id="portal-layer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw; padding: 20px; box-sizing: border-box;">
-        <h1 style="color: white; font-size: 32px; letter-spacing: 2px; margin-bottom: 40px;">OIO ONE</h1>
-        <div style="width: 100%; max-width: 320px;">
-            <input type="text" id="login-email" placeholder="Usuário (Michel Detilli)" style="width: 100%; padding: 16px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #3a3b3c; background: #242526; color: white; font-size: 16px; outline: none;">
-            <input type="password" id="login-pass" placeholder="Senha" style="width: 100%; padding: 16px; margin-bottom: 25px; border-radius: 12px; border: 1px solid #3a3b3c; background: #242526; color: white; font-size: 16px; outline: none;">
-            <button id="btn-entrar" style="width: 100%; padding: 16px; background: #1877f2; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer;">ACESSAR UNIVERSO</button>
-        </div>
-        <p style="color: #b0b3b8; font-size: 12px; margin-top: 30px;">Vibe-app © 2026</p>
+    <div id="portal-layer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; padding: 20px;">
+        <h1 style="color: white;">OIO ONE</h1>
+        <input type="text" id="login-email" placeholder="Usuário" style="width: 100%; max-width: 300px; padding: 15px; margin-bottom: 10px; border-radius: 8px;">
+        <input type="password" id="login-pass" placeholder="Senha" style="width: 100%; max-width: 300px; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
+        <button id="btn-entrar" style="width: 100%; max-width: 300px; padding: 15px; background: #1877f2; color: white; border: none; border-radius: 8px; font-weight: bold;">ACESSAR UNIVERSO</button>
     </div>
 
-    <div id="app-layer" style="display: none; height: 100vh; width: 100vw;">
-        <div id="universe-display" style="height: 100%; width: 100%;"></div>
+    <div id="app-layer" style="display: none; height: 100vh;">
+        <div id="universe-display"></div>
     </div>
 
-    <script src="js/modules/js/core.js"></script>
     <script type="module" src="js/core/app-init.js"></script>
-
-    <style>
-        .hidden { display: none !important; }
-        #btn-entrar:active { transform: scale(0.98); }
-    </style>
 </body>
 </html>
