@@ -1,27 +1,62 @@
 body {
   margin: 0;
-  padding: 0;
   background: #000;
   color: #e4e6eb;
   font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+header, footer {
+  padding: 20px;
+  background: #111;
+  border: 1px solid #222;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 30px;
+}
+
+.grid button {
+  padding: 20px;
+  font-size: 1.2rem;
+  border-radius: 12px;
+  border: 1px solid #222;
+  background: #111;
+  color: #e4e6eb;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.grid button:hover {
+  background: #1877f2;
+  color: #fff;
 }
 
 .tela {
   width: 100%;
-  height: 100vh; /* ocupa toda a altura da tela */
+  height: 100vh;
   background: #000;
   color: #e4e6eb;
   padding: 20px;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
 }
 
-.tela h2 {
-  margin-top: 0;
-  color: #1877f2;
-  font-size: 1.8rem;
+.voltar {
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #222;
+  background: #1877f2;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.voltar:hover {
+  background: #0f5bb5;
 }
 
 .fade-out { animation: fadeOut 0.3s forwards; }
