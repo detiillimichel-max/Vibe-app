@@ -3,38 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>OIO ONE | GovTech</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Vibe-app | OIO ONE</title>
+    
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-    <div id="auth-screen" class="full-screen">
-        <div class="login-card">
-            <h2>OIO ONE</h2>
-            <input type="email" id="email" placeholder="Email institucional">
-            <input type="password" id="pass" placeholder="Senha">
-            <button onclick="login()">Entrar no Sistema</button>
-        </div>
-    </div>
-
-    <div id="main-portal" style="display:none;">
-        <header class="main-header">
-            <div class="user-info">
-                <div class="avatar" id="user-avatar"></div>
-                <span id="user-name">Carregando...</span>
-            </div>
-            <i class="fa-solid fa-gear"></i>
+    <div id="main-portal">
+        <header class="premium-header">
+            <img src="assets/Michel.png" class="user-avatar" alt="Profile">
+            <h2>Vibe App</h2>
         </header>
 
-        <main class="vibe-nav-grid">
-            <button class="nav-btn" onclick="navegar('home')">Home</button>
-            <button class="nav-btn" onclick="navegar('market')">Market</button>
-            </main>
+        <nav class="vibe-nav-grid">
+            <div class="nav-btn" onclick="abrirModulo('1-home')"><span>Home</span></div>
+            <div class="nav-btn" onclick="abrirModulo('2-watch')"><span>Watch</span></div>
+            <div class="nav-btn" onclick="abrirModulo('3-friends')"><span>Friends</span></div>
+            <div class="nav-btn" onclick="abrirModulo('4-market')"><span>Market</span></div>
+            <div class="nav-btn" onclick="abrirModulo('5-alerts')"><span>Alerts</span></div>
+            <div class="nav-btn" onclick="abrirModulo('6-menu')"><span>Menu</span></div>
+        </nav>
     </div>
 
-    <div id="app-view"></div>
+    <div id="app-view" style="display:none;"></div>
 
     <script src="js/core.js"></script>
+    
+    <script>
+        // Registrar o Service Worker (sw.js)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+
+        async function abrirModulo(id) {
+            const view = document.getElementById('app-view');
+            const portal = document.getElementById('main-portal');
+
+            try {
+                // Busca o index.html de dentro da pasta bloco-X-nome
+                const res = await fetch(`./bloco-${id}/index.html`);
+                if (!res.ok) throw new Error("Pasta não encontrada");
+                
+                const html = await res.text();
+                
+                // Injeta o conteúdo e o CSS do bloco
+                view.innerHTML = `
+                    <link rel="stylesheet" href="./bloco-${id}/style.css">
+                    ${html}
+                `;
+                
+                portal.style.display = 'none';
+                view.style.display = 'block';
+
+            } catch (err) {
+                console.error("Erro ao abrir bloco:", err);
+            }
+        }
+
+        function fecharBloco() {
+            document.getElementById('app-view').style.display = 'none';
+            document.getElementById('main-portal').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
