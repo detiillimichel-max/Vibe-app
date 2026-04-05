@@ -1,63 +1,12 @@
-/* 🔔 ALERTS UI - OIO ONE */
+/* Ajustes locais do Bloco 5 */
 .alerts-container {
     padding: 15px;
-    background: #000;
-    min-height: 100vh;
-    font-family: -apple-system, system-ui, sans-serif;
 }
 
-.alerts-header {
-    color: white;
-    font-size: 22px;
-    font-weight: 800;
-    margin-bottom: 20px;
-}
-
-.notification-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.notif-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
-    transition: 0.3s ease;
-}
-
-/* Estado de nova notificação */
-.notif-item.unread {
-    border-left: 4px solid #1877f2;
-    background: rgba(24, 119, 242, 0.08);
-}
-
-.notif-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: #222;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    border: 1px solid #333;
-}
-
-.notif-content {
-    flex: 1;
-    color: #e4e6eb;
-    font-size: 14px;
-    line-height: 1.4;
-}
-
-.notif-time {
-    display: block;
-    font-size: 11px;
-    color: #888;
-    margin-top: 5px;
+.alert-card {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
 }
