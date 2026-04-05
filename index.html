@@ -3,59 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vibe App | Premium</title>
-  
+  <title>Vibe App</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#050505">
 </head>
 <body>
 
-  <div id="main-portal">
-    <header class="premium-header">
-      <h1 class="logo-vibe">Vibe</h1>
-      <p>Infraestrutura Digital</p>
+  <div id="menu-principal">
+    <header>
+      <h1>Vibe App</h1>
+      <p>Escolha um módulo para entrar</p>
     </header>
-
     <main class="grid">
-      <button class="glass-btn" onclick="abrirBloco('home')">
-        <i class="fa-solid fa-house"></i>
-        <span>Home</span>
-      </button>
-      <button class="glass-btn" onclick="abrirBloco('watch')">
-        <i class="fa-solid fa-play"></i>
-        <span>Watch</span>
-      </button>
-      <button class="glass-btn" onclick="abrirBloco('friends')">
-        <i class="fa-solid fa-user-group"></i>
-        <span>Friends</span>
-      </button>
-      <button class="glass-btn" onclick="abrirBloco('market')">
-        <i class="fa-solid fa-store"></i>
-        <span>Market</span>
-      </button>
-      <button class="glass-btn" onclick="abrirBloco('alerts')">
-        <i class="fa-solid fa-bell"></i>
-        <span>Alerts</span>
-      </button>
-      <button class="glass-btn" onclick="abrirBloco('menu')">
-        <i class="fa-solid fa-bars"></i>
-        <span>Menu</span>
-      </button>
+      <button onclick="abrirModulo('home')">Home</button>
+      <button onclick="abrirModulo('watch')">Watch</button>
+      <button onclick="abrirModulo('friends')">Friends</button>
+      <button onclick="abrirModulo('market')">Market</button>
+      <button onclick="abrirModulo('alerts')">Alerts</button>
+      <button onclick="abrirModulo('menu')">Menu</button>
     </main>
   </div>
 
-  <div id="app-view" style="display: none;"></div>
+  <div id="container-modulo" style="display: none;"></div>
 
   <script>
-    // Função de navegação que evita o erro do GitHub
-    async function abrirBloco(nome) {
-      const portal = document.getElementById('main-portal');
-      const view = document.getElementById('app-view');
+    async function abrirModulo(nome) {
+      const menu = document.getElementById('menu-principal');
+      const container = document.getElementById('container-modulo');
       
-      // Mapeamento exato das suas pastas
+      // Mapeamento das suas pastas
       const pastas = {
         'home': 'bloco-1-home',
         'watch': 'bloco-2-watch',
@@ -67,30 +42,30 @@
 
       try {
         const response = await fetch(`./${pastas[nome]}/index.html`);
-        if (!response.ok) throw new Error('Pasta não encontrada');
-        
         const html = await response.text();
-        portal.style.display = 'none';
-        view.innerHTML = html;
-        view.style.display = 'block';
+        
+        // A MÁGICA: Esconde o menu e mostra só o conteúdo novo
+        menu.style.display = 'none';
+        container.innerHTML = html;
+        container.style.display = 'block';
+        
+        // Faz os scripts internos do módulo funcionarem
+        const scripts = container.querySelectorAll("script");
+        scripts.forEach(oldScript => {
+          const newScript = document.createElement("script");
+          newScript.text = oldScript.text;
+          document.body.appendChild(newScript);
+        });
 
-        // Garante que o botão voltar de cada bloco funcione
-        const btnVoltar = view.querySelector('.voltar');
-        if (btnVoltar) {
-          btnVoltar.onclick = () => {
-            view.style.display = 'none';
-            portal.style.display = 'block';
-          };
-        }
       } catch (err) {
-        alert("Erro ao abrir: " + pastas[nome]);
+        alert("Erro ao carregar o módulo: " + nome);
       }
     }
-  </script>
 
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(err => console.log("Erro SW", err));
+    function voltarAoMenu() {
+      document.getElementById('menu-principal').style.display = 'block';
+      document.getElementById('container-modulo').style.display = 'none';
+      document.getElementById('container-modulo').innerHTML = '';
     }
   </script>
 </body>
