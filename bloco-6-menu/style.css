@@ -1,69 +1,15 @@
-/* 👤 PROFILE & MENU LUXURY - OIO ONE */
-.profile-container {
-    background: #000;
-    min-height: 100vh;
-    font-family: -apple-system, system-ui, sans-serif;
+/* Ajustes locais do Bloco 6 */
+.menu-container {
+    padding: 15px;
 }
 
-.cover-photo {
-    height: 180px;
-    background: linear-gradient(135deg, #1877f2 0%, #00d2ff 100%);
-    position: relative;
-    border-bottom: 1px solid #222;
-}
-
-.profile-header {
-    padding: 0 20px;
-    position: relative;
-    margin-top: -60px;
-    text-align: center;
-}
-
-.profile-pic-large {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
+.menu-item {
     background: #111;
-    border: 5px solid #000;
-    margin: 0 auto;
-}
-
-.user-name-title {
-    color: white;
-    font-size: 24px;
-    font-weight: 800;
-    margin-top: 12px;
-}
-
-.user-bio {
-    color: #b0b3b8;
-    font-size: 14px;
-    margin-top: 4px;
-}
-
-/* Lista de Opções do Usuário */
-.settings-list {
-    margin-top: 30px;
-    padding: 0 16px 40px;
-}
-
-.setting-card {
-    background: rgba(255, 255, 255, 0.03);
     border: 1px solid #222;
-    border-radius: 15px;
-    padding: 16px;
+    border-radius: 12px;
+    padding: 12px;
     margin-bottom: 12px;
     display: flex;
     align-items: center;
-    gap: 15px;
-    color: white;
-    font-weight: 600;
-    transition: 0.2s;
-}
-
-.setting-icon { 
-    color: #1877f2; 
-    font-size: 22px; 
-    width: 30px;
-    text-align: center;
+    justify-content: space-between;
 }
