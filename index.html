@@ -3,119 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <title>Vibe App</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    body {
-      background: #000;
-      color: #e4e6eb;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-    header {
-      padding: 30px 15px;
-      background: #111;
-      border-bottom: 1px solid #222;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
-      color: #1877f2;
-    }
-    header p {
-      margin: 5px 0 0;
-      color: #b0b3b8;
-    }
-    .menu-principal {
-      margin: 40px auto;
-      max-width: 600px;
-    }
-    .menu-principal ul {
-      list-style: none;
-      padding: 0;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-    }
-    .menu-principal a {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 15px;
-      background: #111;
-      border: 1px solid #222;
-      border-radius: 12px;
-      color: #e4e6eb;
-      text-decoration: none;
-      font-size: 1.1rem;
-      transition: background 0.3s, color 0.3s;
-    }
-    .menu-principal a i {
-      color: #1877f2;
-    }
-    .menu-principal a:hover {
-      background: #1877f2;
-      color: #fff;
-    }
-    footer {
-      padding: 20px;
-      background: #111;
-      border-top: 1px solid #222;
-      color: #b0b3b8;
-      font-size: 0.9rem;
-    }
-    @media (max-width: 600px) {
-      .menu-principal ul {
-        grid-template-columns: 1fr;
-      }
-      .menu-principal a {
-        font-size: 1.2rem;
-        padding: 18px;
-      }
-    }
-    /* Efeitos de transição */
-    .fade-out {
-      animation: fadeOut 0.3s forwards;
-    }
-    .fade-in {
-      animation: fadeIn 0.3s forwards;
-    }
-    @keyframes fadeOut {
-      from { opacity: 1; }
-      to { opacity: 0; }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>🌌 Vibe App</h1>
+    <h1>Vibe App</h1>
     <p>Escolha um módulo para entrar</p>
   </header>
 
-  <nav class="menu-principal">
-    <ul>
-      <li><a href="/home"><i class="fa-solid fa-house"></i> Home</a></li>
-      <li><a href="/watch"><i class="fa-solid fa-play"></i> Watch</a></li>
-      <li><a href="/friends"><i class="fa-solid fa-user-group"></i> Friends</a></li>
-      <li><a href="/market"><i class="fa-solid fa-cart-shopping"></i> Market</a></li>
-      <li><a href="/alerts"><i class="fa-solid fa-bell"></i> Alerts</a></li>
-      <li><a href="/menu"><i class="fa-solid fa-bars"></i> Menu</a></li>
-    </ul>
-  </nav>
+  <main class="grid">
+    <button data-bloco="1-home">Home</button>
+    <button data-bloco="2-watch">Watch</button>
+    <button data-bloco="3-friends">Friends</button>
+    <button data-bloco="4-market">Market</button>
+    <button data-bloco="5-alerts">Alerts</button>
+    <button data-bloco="6-menu">Menu</button>
+  </main>
 
   <div id="app"></div>
 
-  <footer>
-    <p>© 2026 Vibe App — Michel</p>
-  </footer>
+  <footer>© 2026 Vibe App — Michel</footer>
 
-  <script src="./js/core.js"></script>
-  <script src="./js/quantum.js"></script>
+  <script type="module" src="./js/core.js"></script>
+  <script type="module" src="./js/quantum.js"></script>
 </body>
 </html>
