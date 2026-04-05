@@ -1,97 +1,40 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vibe App Premium</title>
-  
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#050505">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>OIO ONE | GovTech</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div id="main-portal">
-    <header class="vibe-header">
-      <h1 class="logo-vibe">Vibe</h1>
-    </header>
+    <div id="auth-screen" class="full-screen">
+        <div class="login-card">
+            <h2>OIO ONE</h2>
+            <input type="email" id="email" placeholder="Email institucional">
+            <input type="password" id="pass" placeholder="Senha">
+            <button onclick="login()">Entrar no Sistema</button>
+        </div>
+    </div>
 
-    <main class="vibe-nav-grid">
-      <button class="nav-btn" onclick="abrirModulo('home')">
-        <i class="fa-solid fa-house"></i>
-        <span>Home</span>
-      </button>
-      <button class="nav-btn" onclick="abrirModulo('watch')">
-        <i class="fa-solid fa-play"></i>
-        <span>Watch</span>
-      </button>
-      <button class="nav-btn" onclick="abrirModulo('friends')">
-        <i class="fa-solid fa-user-group"></i>
-        <span>Friends</span>
-      </button>
-      <button class="nav-btn" onclick="abrirModulo('market')">
-        <i class="fa-solid fa-store"></i>
-        <span>Market</span>
-      </button>
-      <button class="nav-btn message-badge" onclick="abrirModulo('alerts')">
-        <i class="fa-solid fa-bell"></i>
-        <span class="badge">5</span>
-        <span>Alerts</span>
-      </button>
-      <button class="nav-btn" onclick="abrirModulo('menu')">
-        <i class="fa-solid fa-bars"></i>
-        <span>Menu</span>
-      </button>
-    </main>
-  </div>
+    <div id="main-portal" style="display:none;">
+        <header class="main-header">
+            <div class="user-info">
+                <div class="avatar" id="user-avatar"></div>
+                <span id="user-name">Carregando...</span>
+            </div>
+            <i class="fa-solid fa-gear"></i>
+        </header>
 
-  <div id="app-view" style="display: none;"></div>
+        <main class="vibe-nav-grid">
+            <button class="nav-btn" onclick="navegar('home')">Home</button>
+            <button class="nav-btn" onclick="navegar('market')">Market</button>
+            </main>
+    </div>
 
-  <script>
-    // Função de navegação blindada contra o erro do GitHub
-    async function abrirModulo(nome) {
-      const portal = document.getElementById('main-portal');
-      const view = document.getElementById('app-view');
-      
-      // Mapeamento das pastas no seu GitHub
-      const pastas = {
-        'home': 'bloco-1-home',
-        'watch': 'bloco-2-watch',
-        'friends': 'bloco-3-friends',
-        'market': 'bloco-4-market',
-        'alerts': 'bloco-5-alerts',
-        'menu': 'bloco-6-menu'
-      };
+    <div id="app-view"></div>
 
-      try {
-        const response = await fetch(`./${pastas[nome]}/index.html`);
-        const html = await response.text();
-        
-        // A mágica: esconde o menu, mostra o módulo
-        portal.style.display = 'none';
-        view.innerHTML = html;
-        view.style.display = 'block';
-
-        // Garante que o botão voltar de cada bloco funcione
-        const btnVoltar = view.querySelector('.voltar');
-        if (btnVoltar) {
-          btnVoltar.onclick = () => {
-            view.style.display = 'none';
-            portal.style.display = 'block';
-          };
-        }
-      } catch (err) {
-        alert("Erro ao abrir modulo: " + pastas[nome]);
-      }
-    }
-  </script>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(err => console.log("Erro SW", err));
-    }
-  </script>
+    <script src="js/core.js"></script>
 </body>
 </html>
