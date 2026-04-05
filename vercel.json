@@ -1,0 +1,11 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/home", "destination": "/bloco-1-home/index.html" },
+    { "source": "/watch", "destination": "/bloco-2-watch/index.html" },
+    { "source": "/friends", "destination": "/bloco-3-friends/index.html" },
+    { "source": "/market", "destination": "/bloco-4-market/index.html" },
+    { "source": "/alerts", "destination": "/bloco-5-alerts/index.html" },
+    { "source": "/menu", "destination": "/bloco-6-menu/index.html" }
+  ]
+}
