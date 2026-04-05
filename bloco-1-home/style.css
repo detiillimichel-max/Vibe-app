@@ -1,57 +1,96 @@
-/* Bloco 1 Home - Nível PS5 / Play Store */
+/* Reset total para não herdar lixo da raiz */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
 .app-screen {
-    background: radial-gradient(circle at top, #1a1a1a 0%, #000 100%); /* Efeito de luz no fundo */
+    background: #000;
+    color: #fff;
     min-height: 100vh;
+    padding-bottom: 50px;
 }
 
+/* Cabeçalho que você viu na PS5 Store */
+.module-header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: linear-gradient(to bottom, #111, #000);
+    border-bottom: 1px solid #222;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.module-header h2 {
+    font-size: 20px;
+    font-weight: 800;
+    margin-left: 15px;
+}
+
+/* O Feed (Dando ar de respiro) */
 .home-container {
-    padding: 20px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
-/* Card Estilo Console/Premium */
+/* CARD NÍVEL PLAY STORE */
 .post-card {
-    background: linear-gradient(145deg, #111, #080808);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 28px; /* Bordas bem curvas igual ao print */
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 24px; /* Curva de app moderno */
     padding: 20px;
-    margin-bottom: 25px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-/* Efeito de destaque ao tocar */
-.post-card:active {
-    transform: scale(0.97);
-    border-color: #1877f2; /* Brilho azul ao selecionar */
+.header-post {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.avatar-user {
+    width: 48px;
+    height: 48px;
+    background: #333;
+    border-radius: 50%;
+    border: 2px solid #1877f2; /* Aro de destaque */
 }
 
 .user-name {
-    font-size: 17px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    color: #fff;
-}
-
-.content-text {
     font-size: 16px;
-    color: #ccc;
-    line-height: 1.5;
-    margin-top: 10px;
+    font-weight: 700;
 }
 
-/* Barra de Ações Invisível até o foco */
+.post-time {
+    font-size: 12px;
+    color: #888;
+}
+
+/* Texto do post */
+.content-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #ddd;
+    margin-bottom: 20px;
+}
+
+/* Botões de Ação (Estilo Pílula) */
 .action-bar {
     display: flex;
-    gap: 15px;
-    margin-top: 15px;
+    gap: 10px;
+    border-top: 1px solid #222;
+    padding-top: 15px;
 }
 
 .btn-action {
-    background: rgba(255,255,255,0.05);
+    flex: 1;
+    padding: 10px;
+    border-radius: 12px;
     border: none;
+    background: #1a1a1a;
     color: #fff;
-    padding: 10px 18px;
-    border-radius: 50px; /* Botões pílula */
-    font-size: 12px;
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 13px;
 }
