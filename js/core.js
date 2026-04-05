@@ -1,21 +1,20 @@
 // core.js - O Motor
 document.addEventListener('DOMContentLoaded', () => {
-  // Simulação de login (depois vamos integrar com Supabase Auth)
-  const userLogged = true; // trocar para false para testar bloqueio
+  const userLogged = true; // depois integrar com Supabase Auth
 
   if (!userLogged) {
-    alert("Você precisa estar logado para acessar os blocos.");
-    window.location.href = "/login.html"; // página de login futura
+    alert("Você precisa estar logado para usar o app.");
+    window.location.href = "/login.html";
     return;
   }
 
-  // Controle de navegação do menu inicial
-  const links = document.querySelectorAll('.menu-principal a');
-  links.forEach(link => {
-    link.addEventListener('click', (e) => {
+  // Navegação interna
+  const botoes = document.querySelectorAll('.menu-principal a');
+  botoes.forEach(botao => {
+    botao.addEventListener('click', (e) => {
       e.preventDefault();
-      const destino = link.getAttribute('href');
-      abrirBloco(destino.replace('/', '')); // chama o corredor
+      const destino = botao.getAttribute('href').replace('/', '');
+      abrirBloco(destino);
     });
   });
 });
