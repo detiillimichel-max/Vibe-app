@@ -1,47 +1,15 @@
-/* Estilo Friends - OIO ONE */
+/* Ajustes locais do Bloco 3 */
 .friends-container {
     padding: 15px;
-    background: #000;
-    min-height: 100vh;
 }
 
 .friend-card {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #111;
-    border: 1px solid #222;
-    padding: 12px;
-    border-radius: 12px;
-    margin-bottom: 10px;
-}
-
-.friend-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.friend-avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: #333;
-    border: 1px solid #444;
-}
-
-.friend-name {
-    color: white;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-.btn-add {
-    background: #1877f2;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: bold;
 }
