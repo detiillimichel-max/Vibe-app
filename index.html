@@ -1,129 +1,94 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OIO ONE - Vibe App</title>
-  <style>
-    /* --- CSS GLOBAL & NAV (ESTILO PREMIUM) --- */
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { background: #111; color: #e4e6eb; font-family: 'Segoe UI', sans-serif; padding-bottom: 75px; overflow-x: hidden; }
-    
-    nav { 
-        background: #1c1c1c; display: flex; justify-content: space-around; 
-        align-items: center; padding: 10px 0 6px; border-top: 1px solid #333; 
-        position: fixed; bottom: 0; width: 100%; z-index: 999; 
-    }
-    nav a { color: #aaa; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; gap: 2px; flex: 1; }
-    nav a.active { color: #1877f2; }
-    nav a svg { width: 24px; height: 24px; fill: currentColor; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Vibe App - OIO ONE</title>
+    <style>
+        /* CSS DE LUXO - ARQUITETURA PREMIUM */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #000; color: #fff; overflow-x: hidden; padding-bottom: 70px; }
+        
+        .app-screen { display: none; min-height: 100vh; animation: fadeIn 0.4s ease; }
+        .active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Controle de Visualização */
-    .app-view { display: none; width: 100%; animation: fadeIn 0.3s ease; }
-    .app-view.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* HEADER FIXO */
+        .header { background: #121212; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 100; }
+        .header h1 { color: #1877f2; font-size: 24px; font-weight: 800; }
 
-    /* --- ESTILOS COMPARTILHADOS DOS BLOCOS --- */
-    .top-bar { background: #1c1c1c; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; position: sticky; top: 0; z-index: 100; }
-    .top-bar h2 { font-size: 20px; font-weight: 700; }
-    .icon-btn { background: #3a3a3a; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-    .icon-btn svg { width: 18px; height: 18px; fill: #e4e6eb; }
-    .divider { height: 8px; background: #111; }
-    
-    /* (Aqui ficariam os estilos específicos de cada bloco que você já criou) */
-    /* Resumo para o Marketplace */
-    .products-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
-    .product-card { background: #1c1c1c; position: relative; }
-    .product-img { width: 100%; height: 150px; background: #2a2a2a; display: flex; align-items: center; justify-content: center; font-size: 40px; }
-    /* Resumo para Notificações */
-    .notif-item { display: flex; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #1c1c1c; }
-    /* Resumo para Perfil */
-    .cover { height: 150px; background: linear-gradient(135deg, #1a1a3e, #1877f2); }
-    .avatar-wrap { margin-top: -40px; padding-left: 16px; }
-    .avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid #1c1c1c; background: #3a3a3a; display: flex; align-items: center; justify-content: center; font-size: 30px; color: white; }
-  </style>
+        /* FEED & CARDS */
+        .post-card { background: #1c1c1c; margin: 10px 0; padding: 15px; border-radius: 15px; }
+        .avatar { width: 45px; height: 45px; background: #3a3a3a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+
+        /* CHAT SYSTEM */
+        #chat-content { height: 70vh; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .bubble { max-width: 80%; padding: 12px; border-radius: 18px; font-size: 15px; }
+        .sent { background: #1877f2; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .received { background: #333; align-self: flex-start; border-bottom-left-radius: 2px; }
+
+        /* NAV INFERIOR */
+        nav { background: #121212; position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #333; z-index: 1000; }
+        nav button { background: none; border: none; color: #888; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
+        nav button.active-link { color: #1877f2; }
+    </style>
 </head>
 <body>
 
-  <nav id="main-nav">
-    <a href="javascript:void(0)" onclick="navegar('home')" id="nav-home" class="active">
-      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> Home
-    </a>
-    <a href="javascript:void(0)" onclick="navegar('friends')" id="nav-friends">
-      <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg> Amigos
-    </a>
-    <a href="javascript:void(0)" onclick="navegar('market')" id="nav-market">
-      <svg viewBox="0 0 24 24"><path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm0 10c-1.66 0-3-1.34-3-3h2c0 .55.45 1 1 1s1-.45 1-1h2c0 1.66-1.34 3-3 3z"/></svg> Market
-    </a>
-    <a href="javascript:void(0)" onclick="navegar('alerts')" id="nav-alerts">
-      <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg> Alertas
-    </a>
-    <a href="javascript:void(0)" onclick="navegar('menu')" id="nav-menu">
-      <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Perfil
-    </a>
-  </nav>
-
-  <section id="view-home" class="app-view active">
-    <div class="top-bar"><h2>Vibe</h2><div class="icon-btn">🔍</div></div>
-    <div style="padding:20px; text-align:center;">
-      <p>O que você está pensando, Michel?</p>
-      <div class="divider"></div>
-      <p>Feed de Postagens carregando...</p>
+    <div id="screen-home" class="app-screen active">
+        <div class="header"><h1>Vibe</h1><div class="avatar">M</div></div>
+        <div style="padding: 20px; text-align: center; color: #888;">
+            <h2>Bem-vindo, Michel</h2>
+            <p>Seu ecossistema modular está online.</p>
+        </div>
+        <div class="post-card"><strong>Pipoco:</strong> OIO ONE carregado com sucesso!</div>
     </div>
-  </section>
 
-  <section id="view-friends" class="app-view">
-    <div class="top-bar"><h2>Amigos</h2></div>
-    <div class="notif-item">
-      <div class="avatar">I</div>
-      <div><strong>Ingryd Costa</strong> quer ser sua amiga.</div>
+    <div id="screen-chat" class="app-screen">
+        <div class="header"><h1>Mensagens</h1></div>
+        <div id="chat-content">
+            <div class="bubble received">Olá! Como está o projeto OIO ONE?</div>
+        </div>
+        <div style="position: fixed; bottom: 80px; width: 100%; padding: 10px; display: flex; gap: 10px;">
+            <input type="text" id="chat-input" placeholder="Sua mensagem..." style="flex: 1; padding: 12px; border-radius: 25px; border: none; background: #222; color: #fff;">
+            <button onclick="enviarMsg()" style="background: #1877f2; color: white; border: none; border-radius: 50%; width: 45px; height: 45px;">➔</button>
+        </div>
     </div>
-  </section>
 
-  <section id="view-market" class="app-view">
-    <div class="top-bar"><h2>Marketplace</h2></div>
-    <div class="products-grid">
-      <div class="product-card"><div class="product-img">🚗</div><p>R$ 2.700</p></div>
-      <div class="product-card"><div class="product-img">🏍️</div><p>R$ 13.000</p></div>
-    </div>
-  </section>
+    <nav>
+        <button onclick="navTo('home')" id="btn-home" class="active-link">🏠<span>Home</span></button>
+        <button onclick="navTo('chat')" id="btn-chat">💬<span>Chat</span></button>
+        <button onclick="navTo('market')">🛒<span>Market</span></button>
+        <button onclick="navTo('perfil')">👤<span>Perfil</span></button>
+    </nav>
 
-  <section id="view-alerts" class="app-view">
-    <div class="top-bar"><h2>Notificações</h2></div>
-    <div class="notif-item">
-      <div>🔔 <strong>Nova atividade:</strong> Seu post foi curtido.</div>
-    </div>
-  </section>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+        // CONEXÃO ÚNICA (O MOTOR)
+        const supabase = supabase.createClient('SUA_URL_AQUI', 'SUA_KEY_AQUI');
 
-  <section id="view-menu" class="app-view">
-    <div class="cover"></div>
-    <div class="avatar-wrap"><div class="avatar">M</div></div>
-    <div style="padding:16px;">
-      <h2>Michel Detilli</h2>
-      <p>App Developer & Architect</p>
-    </div>
-  </section>
+        function navTo(screen) {
+            // Esconde todas as telas
+            document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active-link'));
+            
+            // Mostra a selecionada
+            document.getElementById('screen-' + screen).classList.add('active');
+            if(document.getElementById('btn-' + screen)) {
+                document.getElementById('btn-' + screen).classList.add('active-link');
+            }
+        }
 
-  <script>
-    function navegar(viewId) {
-      // 1. Esconder todos os blocos
-      document.querySelectorAll('.app-view').forEach(view => {
-        view.classList.remove('active');
-      });
+        async function enviarMsg() {
+            const input = document.getElementById('chat-input');
+            if(!input.value) return;
 
-      // 2. Mostrar o bloco escolhido
-      document.getElementById('view-' + viewId).classList.add('active');
-
-      // 3. Mudar cor do ícone na Nav
-      document.querySelectorAll('#main-nav a').forEach(link => {
-        link.classList.remove('active');
-      });
-      document.getElementById('nav-' + viewId).classList.add('active');
-
-      // 4. Voltar pro topo da tela
-      window.scrollTo(0, 0);
-    }
-  </script>
-
+            // Injeta na tela na hora (Design Premium)
+            const chat = document.getElementById('chat-content');
+            chat.innerHTML += `<div class="bubble sent">${input.value}</div>`;
+            chat.scrollTop = chat.scrollHeight;
+            input.value = '';
+        }
+    </script>
 </body>
 </html>
