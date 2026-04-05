@@ -2,47 +2,17 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="./styles/dna.css">
     <link rel="stylesheet" href="./style.css">
+    <!-- Biblioteca de ícones profissionais -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-
-    <div class="market-container">
-        <div class="market-header">
-            <div class="market-title">Market</div>
-            <div style="color: #444; font-size: 12px;">Serviços e Conexões OIO</div>
-        </div>
-
-        <div class="grid-showcase">
-            <div class="item-card">
-                <div class="item-icon">⚡</div>
-                <div class="item-name">Dev VIP</div>
-                <div class="item-desc">Desenvolvimento de apps exclusivos.</div>
-                <button class="btn-vibe">Contratar</button>
-            </div>
-
-            <div class="item-card">
-                <div class="item-icon">🎨</div>
-                <div class="item-name">Design UI</div>
-                <div class="item-desc">Interfaces premium para seu projeto.</div>
-                <button class="btn-vibe">Contratar</button>
-            </div>
-
-            <div class="item-card">
-                <div class="item-icon">📊</div>
-                <div class="item-name">Gestão</div>
-                <div class="item-desc">Consultoria de negócios digitais.</div>
-                <button class="btn-vibe">Contratar</button>
-            </div>
-
-            <div class="item-card">
-                <div class="item-icon">🌐</div>
-                <div class="item-name">Hosting</div>
-                <div class="item-desc">Hospedagem de alta performance.</div>
-                <button class="btn-vibe">Contratar</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="./script.js"></script>
+    <div id="app"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./services/db.js"></script>
+    <script src="./components/productCard.js"></script>
+    <script src="./components/actionBar.js"></script>
+    <script src="./app.js"></script>
 </body>
 </html>
