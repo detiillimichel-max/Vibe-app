@@ -1,19 +1,17 @@
-// 🧠 ALMA DO MARKETPLACE - OIO ONE
-console.log("Sistema de Vendas OIO: Ativo.");
+// Script principal do Bloco 4 - Market
+document.addEventListener('DOMContentLoaded', async () => {
+    const container = document.getElementById('app');
+    const { data, error } = await getProducts();
 
-// Simulação de clique no produto
-document.addEventListener('click', function(e) {
-    if (e.target && e.target.classList.contains('btn-buy')) {
-        const card = e.target.closest('.product-card');
-        const preco = card.querySelector('.product-price').innerText;
-        alert(`Interessado no item de ${preco}? Iniciando chat com o vendedor...`);
+    if (error) {
+        container.innerHTML = "<p>Erro ao carregar produtos.</p>";
+        console.error(error);
+        return;
     }
+
+    container.innerHTML = `
+        <div class="market-container">
+            ${data.map(product => ProductCard(product)).join('')}
+        </div>
+    `;
 });
-
-// Futura integração com Supabase para carregar produtos reais
-async function fetchMarketProducts() {
-    console.log("Carregando vitrine do banco de dados...");
-}
-
-fetchMarketProducts();
-
