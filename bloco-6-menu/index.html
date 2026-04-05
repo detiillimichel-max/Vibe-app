@@ -1,17 +1,43 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <title>Menu</title>
-  <link rel="stylesheet" href="../style.css">
-</head>
-<body>
-  <header><h2>Menu</h2></header>
-  <main>
-    <p>Acesse configurações e opções adicionais.</p>
-  </main>
-  <footer>
-    <button class="voltar" onclick="window.location.href='/'">Voltar</button>
-  </footer>
-</body>
-</html>
+<div class="app-screen">
+    <header class="module-header">
+        <button class="voltar"><i class="fa-solid fa-chevron-left"></i></button>
+        <h2>Configurações</h2>
+        <i class="fa-solid fa-gear"></i>
+    </header>
+
+    <div class="menu-content">
+        <div class="profile-section">
+            <div class="profile-avatar">M</div>
+            <div class="profile-info">
+                <h3>Michel Detilli</h3>
+                <p>Configurar Perfil Público</p>
+            </div>
+            <i class="fa-solid fa-chevron-right"></i>
+        </div>
+
+        <div class="tools-group">
+            <div class="tool-item">
+                <i class="fa-solid fa-user-shield icon-blue"></i>
+                <span>Segurança da Conta</span>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+            </div>
+            <div class="tool-item">
+                <i class="fa-solid fa-address-book icon-green"></i>
+                <span>Sincronizar Contatos</span>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+            </div>
+            <div class="tool-item">
+                <i class="fa-solid fa-cloud-arrow-up icon-purple"></i>
+                <span>Upload de Galeria</span>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+            </div>
+            <div class="tool-item">
+                <i class="fa-solid fa-wallet icon-gold"></i>
+                <span>Meu Marketplace</span>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+            </div>
+        </div>
+
+        <button class="logout-btn" onclick="location.reload()">Sair do Sistema</button>
+    </div>
+</div>
