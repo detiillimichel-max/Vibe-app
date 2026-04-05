@@ -60,20 +60,43 @@
       <input type="password" id="password" placeholder="Senha" required>
       <button type="submit"><i class="fa-solid fa-right-to-bracket"></i> Entrar</button>
     </form>
+    <p style="margin-top:10px;">
+      <a href="#" id="signupLink" style="color:#1877f2;">Criar conta</a>
+    </p>
   </div>
 
-  <script>
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    const SUPABASE_URL = "https://uqdwtzlkqaosnweyoyit.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_uafBQD1aJ3w8_eq4meOsNQ_wzk8TwhA";
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      // Simulação de login (depois integrar com Supabase Auth)
-      if (email && password) {
-        localStorage.setItem('userLogged', 'true');
-        window.location.href = '/';
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        alert("Erro: " + error.message);
       } else {
-        alert("Preencha todos os campos!");
+        window.location.href = "/";
+      }
+    });
+
+    document.getElementById('signupLink').addEventListener('click', async (e) => {
+      e.preventDefault();
+      const email = prompt("Digite seu email:");
+      const password = prompt("Digite sua senha:");
+      if (email && password) {
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        if (error) {
+          alert("Erro: " + error.message);
+        } else {
+          alert("Conta criada! Verifique seu email.");
+        }
       }
     });
   </script>
