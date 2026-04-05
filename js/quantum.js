@@ -1,4 +1,4 @@
-// quantum.js - Corredor
+// quantum.js - Corredor estilo app
 export function abrirBloco(nome) {
   const container = document.getElementById('app');
   container.classList.add('fade-out');
@@ -8,7 +8,8 @@ export function abrirBloco(nome) {
     fetch(`/bloco-${nome}/index.html`)
       .then(res => res.text())
       .then(html => {
-        container.innerHTML = html;
+        // Carrega o bloco como tela cheia
+        container.innerHTML = `<div class="tela">${html}</div>`;
         container.classList.remove('fade-out');
         container.classList.add('fade-in');
       })
