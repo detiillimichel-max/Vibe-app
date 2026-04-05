@@ -2,36 +2,17 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/dna.css">
     <link rel="stylesheet" href="./style.css">
+    <!-- Biblioteca de ícones profissionais -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-    <div class="profile-container">
-        <div class="cover-photo"></div>
-        <div class="profile-header">
-            <div class="profile-pic-large"></div>
-            <div class="user-name-title">Michel Detilli</div>
-            <div class="user-bio">Application Developer | OIO ONE 🚀</div>
-        </div>
-
-        <div class="settings-list">
-            <div class="setting-card">
-                <span class="setting-icon">📁</span> Meus 16 Projetos
-            </div>
-            <div class="setting-card">
-                <span class="setting-icon">🛡️</span> Segurança e Conta
-            </div>
-            <div class="setting-card">
-                <span class="setting-icon">💾</span> Itens Salvos
-            </div>
-            <div class="setting-card">
-                <span class="setting-icon">🌙</span> Aparência e Dark Mode
-            </div>
-            <div class="setting-card" style="color: #ff4b4b; border-color: rgba(255, 75, 75, 0.2);">
-                <span class="setting-icon">🚪</span> Sair da Conta
-            </div>
-        </div>
-    </div>
-    <script src="./script.js"></script>
+    <div id="app"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./services/db.js"></script>
+    <script src="./components/menuItem.js"></script>
+    <script src="./components/actionBar.js"></script>
+    <script src="./app.js"></script>
 </body>
 </html>
