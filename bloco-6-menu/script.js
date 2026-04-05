@@ -1,18 +1,17 @@
-// 🧠 ALMA DO BLOCO 6 - PROFILE & MENU
-console.log("Módulo de Perfil OIO: Ativo.");
+// Script principal do Bloco 6 - Menu
+document.addEventListener('DOMContentLoaded', async () => {
+    const container = document.getElementById('app');
+    const { data, error } = await getMenuItems();
 
-// Função para gerenciar cliques no menu
-document.addEventListener('click', function(e) {
-    const card = e.target.closest('.setting-card');
-    if (card) {
-        const opcao = card.innerText.trim();
-        console.log(`Usuário acessou: ${opcao}`);
-        
-        // Exemplo: Se for o botão de sair
-        if (opcao.includes("Sair")) {
-            if(confirm("Deseja desconectar do Vibe-app?")) {
-                window.location.reload();
-            }
-        }
+    if (error) {
+        container.innerHTML = "<p>Erro ao carregar menu.</p>";
+        console.error(error);
+        return;
     }
+
+    container.innerHTML = `
+        <div class="menu-container">
+            ${data.map(item => MenuItem(item)).join('')}
+        </div>
+    `;
 });
