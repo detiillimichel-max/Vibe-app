@@ -2,16 +2,159 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Friends</title>
-  <link rel="stylesheet" href="../style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amigos – Vibe App</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #111; color: #e4e6eb; font-family: 'Segoe UI', sans-serif; padding-bottom: 70px; }
+    nav { background: #1c1c1c; display: flex; justify-content: space-around; align-items: center; padding: 10px 0 6px; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 100; }
+    nav a { color: #aaa; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; gap: 2px; }
+    nav a.active { color: #1877f2; border-bottom: 3px solid #1877f2; padding-bottom: 2px; }
+    nav a svg { width: 24px; height: 24px; fill: currentColor; }
+
+    .top-bar { background: #1c1c1c; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; }
+    .top-bar h2 { font-size: 20px; font-weight: 700; }
+    .icon-btn { background: #3a3a3a; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .icon-btn svg { width: 18px; height: 18px; fill: #e4e6eb; }
+
+    .tabs { display: flex; gap: 8px; padding: 12px 16px; overflow-x: auto; scrollbar-width: none; }
+    .tab { background: #1877f2; color: white; border: none; border-radius: 20px; padding: 6px 16px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .tab.outline { background: #3a3a3a; color: #e4e6eb; }
+
+    .section { padding: 8px 16px 4px; font-size: 18px; font-weight: 700; }
+    .see-all { color: #1877f2; font-size: 14px; font-weight: 600; float: right; cursor: pointer; }
+
+    .friend-card { display: flex; align-items: center; gap: 12px; padding: 10px 16px; }
+    .avatar { width: 56px; height: 56px; border-radius: 50%; background: #3a3a3a; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: white; position: relative; overflow: hidden; }
+    .online-dot { position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background: #42b72a; border-radius: 50%; border: 2px solid #111; }
+    .friend-info { flex: 1; }
+    .friend-info h4 { font-size: 15px; font-weight: 600; }
+    .friend-info p { font-size: 13px; color: #aaa; margin-top: 2px; }
+    .friend-actions { display: flex; gap: 8px; margin-top: 8px; }
+    .btn-confirm { background: #1877f2; color: white; border: none; border-radius: 6px; padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .btn-delete { background: #3a3a3a; color: #e4e6eb; border: none; border-radius: 6px; padding: 8px 14px; font-size: 13px; cursor: pointer; }
+    .btn-add { background: #e7f0fd; color: #1877f2; border: none; border-radius: 6px; padding: 10px; font-size: 13px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 6px; }
+    .btn-remove { background: #3a3a3a; color: #e4e6eb; border: none; border-radius: 6px; padding: 10px; font-size: 13px; cursor: pointer; width: 100%; margin-top: 6px; }
+    .divider { height: 8px; background: #111; }
+
+    .suggest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px 16px; }
+    .suggest-card { background: #1c1c1c; border-radius: 10px; overflow: hidden; }
+    .suggest-avatar { height: 120px; background: linear-gradient(135deg, #2a2a3e, #1a1a2e); display: flex; align-items: center; justify-content: center; font-size: 48px; }
+    .suggest-body { padding: 10px; }
+    .suggest-body h4 { font-size: 14px; font-weight: 600; }
+    .suggest-body p { font-size: 12px; color: #aaa; margin: 4px 0 8px; }
+    .btn-add-small { background: #1877f2; color: white; border: none; border-radius: 6px; padding: 8px; font-size: 13px; font-weight: 600; cursor: pointer; width: 100%; }
+  </style>
 </head>
 <body>
-  <header><h2>Friends</h2></header>
-  <main>
-    <p>Gerencie sua lista de amigos e conexões.</p>
-  </main>
-  <footer>
-    <button class="voltar" onclick="window.location.href='/'">Voltar</button>
-  </footer>
+
+<div class="top-bar">
+  <h2>Amigos</h2>
+  <button class="icon-btn"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></button>
+</div>
+
+<nav>
+  <a href="/home"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
+  <a href="/watch"><svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 8l-7 4V7l7 4z"/></svg></a>
+  <a href="/friends" class="active"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></a>
+  <a href="/market"><svg viewBox="0 0 24 24"><path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm0 10c-1.66 0-3-1.34-3-3h2c0 .55.45 1 1 1s1-.45 1-1h2c0 1.66-1.34 3-3 3z"/></svg></a>
+  <a href="/alerts"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></a>
+  <a href="/menu"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></a>
+</nav>
+
+<div class="tabs">
+  <button class="tab">Sugestões</button>
+  <button class="tab outline">Seus amigos</button>
+</div>
+
+<div class="section">Pedidos de amizade <span style="color:#1877f2">5</span> <span class="see-all">Ver tudo</span></div>
+
+<div class="friend-card">
+  <div class="avatar" style="background:#e91e8c;">I<div class="online-dot"></div></div>
+  <div class="friend-info">
+    <h4>Ingryd Costa</h4>
+    <p>1 amigo em comum · 2 d</p>
+    <p style="color:#42b72a; font-size:12px;">● Online há 9 minutos</p>
+    <div class="friend-actions">
+      <button class="btn-confirm">Confirmar</button>
+      <button class="btn-delete">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<div class="friend-card">
+  <div class="avatar" style="background:#ff9800;">R</div>
+  <div class="friend-info">
+    <h4>Raimunda Souza</h4>
+    <p>14 amigos em comum · 2 sem</p>
+    <div class="friend-actions">
+      <button class="btn-confirm">Confirmar</button>
+      <button class="btn-delete">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<div class="friend-card">
+  <div class="avatar" style="background:#9c27b0;">A</div>
+  <div class="friend-info">
+    <h4>Ana Reis</h4>
+    <p>5 amigos em comum · 1 sem</p>
+    <div class="friend-actions">
+      <button class="btn-confirm">Confirmar</button>
+      <button class="btn-delete">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<div class="friend-card">
+  <div class="avatar" style="background:#4caf50;">I</div>
+  <div class="friend-info">
+    <h4>Ivone Rocha</h4>
+    <p>16 amigos em comum · 2 sem</p>
+    <div class="friend-actions">
+      <button class="btn-confirm">Confirmar</button>
+      <button class="btn-delete">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+<div class="section">Pessoas que talvez você conheça</div>
+
+<div class="suggest-grid">
+  <div class="suggest-card">
+    <div class="suggest-avatar">👨‍💼</div>
+    <div class="suggest-body">
+      <h4>Diego Soati</h4>
+      <p>5 amigos em comum</p>
+      <button class="btn-add-small">+ Adicionar</button>
+    </div>
+  </div>
+  <div class="suggest-card">
+    <div class="suggest-avatar">👩</div>
+    <div class="suggest-body">
+      <h4>Vanessa Ávila</h4>
+      <p>3 amigos em comum</p>
+      <button class="btn-add-small">+ Adicionar</button>
+    </div>
+  </div>
+  <div class="suggest-card">
+    <div class="suggest-avatar">👨</div>
+    <div class="suggest-body">
+      <h4>Jean Phillipe</h4>
+      <p>2 amigos em comum</p>
+      <button class="btn-add-small">+ Adicionar</button>
+    </div>
+  </div>
+  <div class="suggest-card">
+    <div class="suggest-avatar">👩‍🦱</div>
+    <div class="suggest-body">
+      <h4>Carla Matos</h4>
+      <p>8 amigos em comum</p>
+      <button class="btn-add-small">+ Adicionar</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
