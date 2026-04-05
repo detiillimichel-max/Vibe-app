@@ -3,7 +3,7 @@ export function abrirBloco(nome) {
   container.classList.add('fade-out');
 
   setTimeout(() => {
-    fetch(`./bloco-${nome}/index.html`)
+    fetch(`/${nome}`)   // agora pede /home, /watch, /friends etc.
       .then(res => res.text())
       .then(html => {
         container.innerHTML = `<div class="tela">${html}</div>`;
@@ -11,7 +11,7 @@ export function abrirBloco(nome) {
         container.classList.add('fade-in');
       })
       .catch(err => {
-        container.innerHTML = `<p style="color:red;">Erro ao carregar bloco ${nome}</p>`;
+        container.innerHTML = `<p style="color:red;">Erro ao carregar módulo ${nome}</p>`;
         console.error(err);
       });
   }, 300);
