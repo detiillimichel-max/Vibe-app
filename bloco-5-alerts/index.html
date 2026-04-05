@@ -2,31 +2,17 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/dna.css">
     <link rel="stylesheet" href="./style.css">
+    <!-- Biblioteca de ícones profissionais -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-    <div class="alerts-container">
-        <div class="alerts-header">Notificações</div>
-        
-        <div class="notification-list">
-            <div class="notif-item unread">
-                <div class="notif-icon">🔔</div>
-                <div class="notif-content">
-                    Você tem uma nova interação no seu perfil. Clique para ver.
-                    <span class="notif-time">Agora mesmo</span>
-                </div>
-            </div>
-
-            <div class="notif-item">
-                <div class="notif-icon">🚀</div>
-                <div class="notif-content">
-                    O sistema <b>OIO ONE</b> está atualizado e pronto para uso.
-                    <span class="notif-time">Há 30 minutos</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="./script.js"></script>
+    <div id="app"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./services/db.js"></script>
+    <script src="./components/alertCard.js"></script>
+    <script src="./components/actionBar.js"></script>
+    <script src="./app.js"></script>
 </body>
 </html>
