@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Vibe App</title>
-  <!-- Ícones profissionais -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     body {
@@ -76,6 +75,21 @@
         padding: 18px;
       }
     }
+    /* Efeitos de transição */
+    .fade-out {
+      animation: fadeOut 0.3s forwards;
+    }
+    .fade-in {
+      animation: fadeIn 0.3s forwards;
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -95,8 +109,13 @@
     </ul>
   </nav>
 
+  <div id="app"></div>
+
   <footer>
     <p>© 2026 Vibe App — Michel</p>
   </footer>
+
+  <script src="./js/core.js"></script>
+  <script src="./js/quantum.js"></script>
 </body>
 </html>
