@@ -3,93 +3,143 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vibe App</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Watch – Vibe App</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #111; color: #e4e6eb; font-family: 'Segoe UI', sans-serif; padding-bottom: 70px; }
+    nav { background: #1c1c1c; display: flex; justify-content: space-around; align-items: center; padding: 10px 0 6px; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 100; }
+    nav a { color: #aaa; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; gap: 2px; }
+    nav a.active { color: #1877f2; border-bottom: 3px solid #1877f2; padding-bottom: 2px; }
+    nav a svg { width: 24px; height: 24px; fill: currentColor; }
+
+    .top-bar { background: #1c1c1c; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #333; }
+    .top-bar h2 { font-size: 20px; font-weight: 700; }
+
+    .upload-area { margin: 16px; background: #1c1c1c; border-radius: 12px; padding: 20px; text-align: center; border: 2px dashed #3a3a3a; cursor: pointer; }
+    .upload-area input { display: none; }
+    .upload-area label { cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .upload-icon { background: #1877f2; border-radius: 50%; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; }
+    .upload-icon svg { width: 28px; height: 28px; fill: white; }
+    .upload-area h3 { font-size: 16px; }
+    .upload-area p { font-size: 13px; color: #aaa; }
+
+    #video-preview { margin: 0 16px 16px; display: none; background: #000; border-radius: 12px; overflow: hidden; }
+    #video-preview video { width: 100%; max-height: 300px; display: block; }
+    #video-preview .video-info { padding: 12px; background: #1c1c1c; }
+    #video-preview .video-actions { display: flex; gap: 10px; padding: 0 12px 12px; background: #1c1c1c; }
+    .btn-primary { background: #1877f2; color: white; border: none; border-radius: 6px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; flex: 1; }
+    .btn-secondary { background: #3a3a3a; color: #e4e6eb; border: none; border-radius: 6px; padding: 10px 20px; font-size: 14px; cursor: pointer; flex: 1; }
+
+    .section-title { padding: 12px 16px 8px; font-size: 18px; font-weight: 700; }
+    .reels-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; padding: 0 0 8px; }
+    .reel-card { position: relative; background: #2a2a2a; height: 200px; overflow: hidden; cursor: pointer; }
+    .reel-thumb { width: 100%; height: 100%; object-fit: cover; background: linear-gradient(135deg, #1a1a2e, #16213e); display: flex; align-items: center; justify-content: center; font-size: 40px; }
+    .reel-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 8px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); }
+    .reel-user { font-size: 12px; font-weight: 600; }
+    .reel-views { font-size: 11px; color: #ccc; }
+    .play-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); background: rgba(255,255,255,0.2); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
+    .play-btn svg { width: 22px; height: 22px; fill: white; }
+    .likes { position: absolute; right: 8px; top: 50%; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .likes svg { width: 22px; height: 22px; fill: white; }
+    .likes span { font-size: 11px; }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Vibe App</h1>
-    <p>Escolha um módulo para entrar</p>
-  </header>
 
-  <main class="grid">
-    <button data-bloco="home">Home</button>
-    <button data-bloco="watch">Watch</button>
-    <button data-bloco="friends">Friends</button>
-    <button data-bloco="market">Market</button>
-    <button data-bloco="alerts">Alerts</button>
-    <button data-bloco="menu">Menu</button>
-  </main>
+<div class="top-bar">
+  <h2>Watch</h2>
+</div>
 
-  <!-- Área dinâmica -->
-  <div id="app"></div>
+<nav>
+  <a href="/home">
+    <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+  </a>
+  <a href="/watch" class="active">
+    <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 8l-7 4V7l7 4z"/></svg>
+  </a>
+  <a href="/friends">
+    <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+  </a>
+  <a href="/market">
+    <svg viewBox="0 0 24 24"><path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm0 10c-1.66 0-3-1.34-3-3h2c0 .55.45 1 1 1s1-.45 1-1h2c0 1.66-1.34 3-3 3z"/></svg>
+  </a>
+  <a href="/alerts">
+    <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+  </a>
+  <a href="/menu">
+    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+  </a>
+</nav>
 
-  <!-- Módulo Watch embutido -->
-  <section id="watchModule" class="tela glass-effect">
-    <header class="premium-header"><h2>Watch</h2></header>
-    <main>
-      <h3>Enviar vídeo</h3>
-      <input type="file" id="videoUpload" accept="video/*" multiple>
-      <div id="uploadList"></div>
+<!-- Upload -->
+<div class="upload-area" onclick="document.getElementById('fileInput').click()">
+  <input type="file" id="fileInput" accept="video/*" onchange="previewVideo(this)">
+  <label>
+    <div class="upload-icon">
+      <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 8l-7 4V7l7 4z"/></svg>
+    </div>
+    <h3>Adicionar vídeo</h3>
+    <p>Toque para escolher da galeria</p>
+  </label>
+</div>
 
-      <h3>Transmissões</h3>
-      <div id="videoFeed"></div>
-    </main>
-  </section>
+<!-- Preview -->
+<div id="video-preview">
+  <video id="videoEl" controls></video>
+  <div class="video-info">
+    <p id="video-name" style="font-size:14px; font-weight:600;"></p>
+  </div>
+  <div class="video-actions">
+    <button class="btn-secondary" onclick="cancelVideo()">Cancelar</button>
+    <button class="btn-primary">Publicar</button>
+  </div>
+</div>
 
-  <footer>© 2026 Vibe App — Michel</footer>
+<!-- Reels -->
+<div class="section-title">Reels para você</div>
+<div class="reels-grid">
+  <div class="reel-card">
+    <div class="reel-thumb">🎬</div>
+    <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+    <div class="likes"><svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg><span>19 mil</span></div>
+    <div class="reel-info"><div class="reel-user">DeMarco Films</div><div class="reel-views">Top Gun: Making of</div></div>
+  </div>
+  <div class="reel-card">
+    <div class="reel-thumb">🌊</div>
+    <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+    <div class="likes"><svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg><span>5,4 mil</span></div>
+    <div class="reel-info"><div class="reel-user">Natureza Viva</div><div class="reel-views">Pôr do sol incrível</div></div>
+  </div>
+  <div class="reel-card">
+    <div class="reel-thumb">🍳</div>
+    <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+    <div class="likes"><svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg><span>2,1 mil</span></div>
+    <div class="reel-info"><div class="reel-user">Cozinha Express</div><div class="reel-views">Receita em 5 min</div></div>
+  </div>
+  <div class="reel-card">
+    <div class="reel-thumb">⚽</div>
+    <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+    <div class="likes"><svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg><span>12 mil</span></div>
+    <div class="reel-info"><div class="reel-user">Fut Brasil</div><div class="reel-views">Gol incrível!</div></div>
+  </div>
+</div>
 
-  <script>
-    const uploadInput = document.getElementById('videoUpload');
-    const uploadList = document.getElementById('uploadList');
-    const videoFeed = document.getElementById('videoFeed');
-
-    // Upload de múltiplos vídeos
-    uploadInput.addEventListener('change', () => {
-      [...uploadInput.files].forEach(file => {
-        const url = URL.createObjectURL(file);
-
-        const video = document.createElement('video');
-        video.src = url;
-        video.controls = true;
-        video.style.maxWidth = "100%";
-
-        const actions = document.createElement('div');
-        actions.innerHTML = `
-          <button onclick="alert('Curtir vídeo')">Curtir</button>
-          <button onclick="alert('Comentar vídeo')">Comentar</button>
-          <button onclick="alert('Compartilhar vídeo')">Compartilhar</button>
-        `;
-
-        const container = document.createElement('div');
-        container.classList.add('video-card');
-        container.appendChild(video);
-        container.appendChild(actions);
-
-        uploadList.appendChild(container);
-      });
-    });
-
-    // Transmissões simuladas (vai virar dinâmico depois)
-    const transmissoes = [
-      { titulo: "Transmissão de Usuário", autor: "Michel", views: 120 },
-      { titulo: "Podcast", autor: "Outro Usuário", views: 45 }
-    ];
-
-    transmissoes.forEach(t => {
-      const div = document.createElement('div');
-      div.classList.add('transmissao-card');
-      div.innerHTML = `
-        <strong>${t.titulo}</strong><br>
-        Autor: ${t.autor} • ${t.views} views
-        <div>
-          <button onclick="alert('Curtir transmissão')">Curtir</button>
-          <button onclick="alert('Comentar transmissão')">Comentar</button>
-          <button onclick="alert('Compartilhar transmissão')">Compartilhar</button>
-        </div>
-      `;
-      videoFeed.appendChild(div);
-    });
-  </script>
+<script>
+function previewVideo(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const video = document.getElementById('videoEl');
+  video.src = url;
+  document.getElementById('video-name').textContent = file.name;
+  document.getElementById('video-preview').style.display = 'block';
+  document.getElementById('video-preview').scrollIntoView({ behavior: 'smooth' });
+}
+function cancelVideo() {
+  document.getElementById('video-preview').style.display = 'none';
+  document.getElementById('fileInput').value = '';
+}
+</script>
 </body>
-</html>
+  </html>
+  
