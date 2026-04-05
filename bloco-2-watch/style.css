@@ -1,47 +1,12 @@
-/* Estilo Watch - Vídeos OIO */
+/* Ajustes locais do Bloco 2 */
 .watch-container {
-    padding: 10px;
-    background: #000;
-    min-height: 100vh;
+    padding: 15px;
 }
 
 .video-card {
     background: #111;
     border: 1px solid #222;
     border-radius: 16px;
-    margin-bottom: 20px;
-    overflow: hidden;
-    position: relative;
-}
-
-.video-placeholder {
-    width: 100%;
-    aspect-ratio: 9/16; /* Formato vertical de Reels */
-    background: linear-gradient(180deg, #222, #000);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.video-info {
-    padding: 15px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(transparent, rgba(0,0,0,0.9));
-    color: white;
-}
-
-.video-title {
-    font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 5px;
-}
-
-.video-stats {
-    font-size: 12px;
-    color: #ccc;
-    display: flex;
-    gap: 15px;
+    padding: 16px;
+    margin-bottom: 16px;
 }
