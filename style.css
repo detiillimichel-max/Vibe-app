@@ -1,29 +1,40 @@
-/* RAIZ: A moldura do seu sistema OIO ONE */
-body {
-    margin: 0;
-    background: #000;
-    font-family: sans-serif;
+/* RAIZ - Organização Total */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { 
+    background: #000; 
+    font-family: 'Segoe UI', sans-serif; 
     color: white;
 }
 
-/* Os botões da tela inicial (estilo app instalado) */
-.nav-btn {
-    background: #111;
-    border: 1px solid #222;
-    border-radius: 20px;
+.vibe-nav-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* O ponto e vírgula aqui é vital */
+    gap: 15px;
     padding: 20px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-    /* ... resto do estilo dos ícones ... */
 }
 
-/* A "janela" que abre os blocos em tela cheia */
+.nav-btn {
+    background: #111;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+/* Onde os blocos vão brilhar sozinhos */
 #app-view {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background: #000;
-    z-index: 1000;
-    display: none; /* Começa escondido */
+    z-index: 9999;
+    display: none;
+    overflow-y: auto;
 }
