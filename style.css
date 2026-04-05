@@ -1,4 +1,3 @@
-/* Tema Dark Premium estilo aplicativo */
 body {
   margin: 0;
   padding: 0;
@@ -7,7 +6,6 @@ body {
   font-family: Arial, sans-serif;
 }
 
-/* Cada bloco abre como tela cheia */
 .tela {
   width: 100%;
   height: 100vh; /* ocupa toda a altura da tela */
@@ -20,14 +18,12 @@ body {
   justify-content: flex-start;
 }
 
-/* Cabeçalho dentro da tela */
 .tela h2 {
   margin-top: 0;
   color: #1877f2;
   font-size: 1.8rem;
 }
 
-/* Transições */
 .fade-out { animation: fadeOut 0.3s forwards; }
 .fade-in { animation: fadeIn 0.3s forwards; }
 
