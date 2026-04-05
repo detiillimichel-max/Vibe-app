@@ -1,19 +1,95 @@
-<main>
-  <input type="file" id="videoUpload" accept="video/*">
-  <video id="preview" controls></video>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vibe App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Vibe App</h1>
+    <p>Escolha um módulo para entrar</p>
+  </header>
+
+  <main class="grid">
+    <button data-bloco="home">Home</button>
+    <button data-bloco="watch">Watch</button>
+    <button data-bloco="friends">Friends</button>
+    <button data-bloco="market">Market</button>
+    <button data-bloco="alerts">Alerts</button>
+    <button data-bloco="menu">Menu</button>
+  </main>
+
+  <!-- Área dinâmica -->
+  <div id="app"></div>
+
+  <!-- Módulo Watch embutido -->
+  <section id="watchModule" class="tela glass-effect">
+    <header class="premium-header"><h2>Watch</h2></header>
+    <main>
+      <h3>Enviar vídeo</h3>
+      <input type="file" id="videoUpload" accept="video/*" multiple>
+      <div id="uploadList"></div>
+
+      <h3>Transmissões</h3>
+      <div id="videoFeed"></div>
+    </main>
+  </section>
+
+  <footer>© 2026 Vibe App — Michel</footer>
+
   <script>
-    const input = document.getElementById('videoUpload');
-    const preview = document.getElementById('preview');
-    input.addEventListener('change', () => {
-      const file = input.files[0];
-      if (file) preview.src = URL.createObjectURL(file);
+    const uploadInput = document.getElementById('videoUpload');
+    const uploadList = document.getElementById('uploadList');
+    const videoFeed = document.getElementById('videoFeed');
+
+    // Upload de múltiplos vídeos
+    uploadInput.addEventListener('change', () => {
+      [...uploadInput.files].forEach(file => {
+        const url = URL.createObjectURL(file);
+
+        const video = document.createElement('video');
+        video.src = url;
+        video.controls = true;
+        video.style.maxWidth = "100%";
+
+        const actions = document.createElement('div');
+        actions.innerHTML = `
+          <button onclick="alert('Curtir vídeo')">Curtir</button>
+          <button onclick="alert('Comentar vídeo')">Comentar</button>
+          <button onclick="alert('Compartilhar vídeo')">Compartilhar</button>
+        `;
+
+        const container = document.createElement('div');
+        container.classList.add('video-card');
+        container.appendChild(video);
+        container.appendChild(actions);
+
+        uploadList.appendChild(container);
+      });
+    });
+
+    // Transmissões simuladas (vai virar dinâmico depois)
+    const transmissoes = [
+      { titulo: "Transmissão de Usuário", autor: "Michel", views: 120 },
+      { titulo: "Podcast", autor: "Outro Usuário", views: 45 }
+    ];
+
+    transmissoes.forEach(t => {
+      const div = document.createElement('div');
+      div.classList.add('transmissao-card');
+      div.innerHTML = `
+        <strong>${t.titulo}</strong><br>
+        Autor: ${t.autor} • ${t.views} views
+        <div>
+          <button onclick="alert('Curtir transmissão')">Curtir</button>
+          <button onclick="alert('Comentar transmissão')">Comentar</button>
+          <button onclick="alert('Compartilhar transmissão')">Compartilhar</button>
+        </div>
+      `;
+      videoFeed.appendChild(div);
     });
   </script>
-
-  <div class="video-list">
-    <!-- Lista de transmissões dos usuários -->
-    <ul>
-      <li>Transmissão de [usuário]</li>
-    </ul>
-  </div>
-</main>
+</body>
+</html>
