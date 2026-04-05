@@ -1,12 +1,17 @@
-// 🧠 ALMA DO BLOCO 5 - ALERTAS
-console.log("Central de Notificações: Online.");
+// Script principal do Bloco 5 - Alerts
+document.addEventListener('DOMContentLoaded', async () => {
+    const container = document.getElementById('app');
+    const { data, error } = await getAlerts();
 
-// Função para o usuário interagir com os alertas
-document.addEventListener('click', function(e) {
-    const item = e.target.closest('.notif-item');
-    if (item && item.classList.contains('unread')) {
-        item.classList.remove('unread');
-        item.style.borderLeft = "1px solid rgba(255, 255, 255, 0.05)";
-        console.log("Notificação marcada como lida pelo usuário.");
+    if (error) {
+        container.innerHTML = "<p>Erro ao carregar alertas.</p>";
+        console.error(error);
+        return;
     }
+
+    container.innerHTML = `
+        <div class="alerts-container">
+            ${data.map(alert => AlertCard(alert)).join('')}
+        </div>
+    `;
 });
