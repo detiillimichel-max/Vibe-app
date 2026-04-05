@@ -1,17 +1,19 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <title>Watch</title>
-  <link rel="stylesheet" href="../style.css">
-</head>
-<body>
-  <header><h2>Watch</h2></header>
-  <main>
-    <p>Aqui você poderá assistir vídeos e transmissões.</p>
-  </main>
-  <footer>
-    <button class="voltar" onclick="window.location.href='/'">Voltar</button>
-  </footer>
-</body>
-</html>
+<main>
+  <input type="file" id="videoUpload" accept="video/*">
+  <video id="preview" controls></video>
+  <script>
+    const input = document.getElementById('videoUpload');
+    const preview = document.getElementById('preview');
+    input.addEventListener('change', () => {
+      const file = input.files[0];
+      if (file) preview.src = URL.createObjectURL(file);
+    });
+  </script>
+
+  <div class="video-list">
+    <!-- Lista de transmissões dos usuários -->
+    <ul>
+      <li>Transmissão de [usuário]</li>
+    </ul>
+  </div>
+</main>
