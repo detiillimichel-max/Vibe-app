@@ -1,40 +1,42 @@
-/* RAIZ - Organização Total */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body { 
-    background: #000; 
-    font-family: 'Segoe UI', sans-serif; 
-    color: white;
+:root {
+    --bg-dark: #000000;
+    --card-bg: #111111;
+    --accent: #1877f2;
+    --text-main: #ffffff;
 }
 
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { background: var(--bg-dark); color: var(--text-main); font-family: sans-serif; }
+
+/* O ERRO DO PONTO E VÍRGULA CORRIGIDO DEFINITIVAMENTE */
 .vibe-nav-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* O ponto e vírgula aqui é vital */
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
     padding: 20px;
 }
 
 .nav-btn {
-    background: #111;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 20px;
-    height: 120px;
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 24px;
+    height: 140px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-/* Onde os blocos vão brilhar sozinhos */
+/* Isola o conteúdo dos blocos para não herdar lixo da raiz */
 #app-view {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: #000;
     z-index: 9999;
     display: none;
-    overflow-y: auto;
+    background: #000;
 }
