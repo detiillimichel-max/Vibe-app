@@ -1,36 +1,57 @@
-.app-screen { background: #000; min-height: 100vh; color: #e4e6eb; }
-
-.module-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 15px 20px; background: #111; border-bottom: 1px solid #222;
-    position: sticky; top: 0; z-index: 10;
+/* Bloco 1 Home - Nível PS5 / Play Store */
+.app-screen {
+    background: radial-gradient(circle at top, #1a1a1a 0%, #000 100%); /* Efeito de luz no fundo */
+    min-height: 100vh;
 }
 
-.home-container { padding: 15px; }
+.home-container {
+    padding: 20px;
+}
 
-/* Post Card Estilo Premium */
+/* Card Estilo Console/Premium */
 .post-card {
-    background: #111;
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 20px; /* Borda arredondada de app */
-    padding: 16px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    background: linear-gradient(145deg, #111, #080808);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 28px; /* Bordas bem curvas igual ao print */
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.header-post { display: flex; gap: 12px; margin-bottom: 12px; }
-.avatar-user { width: 45px; height: 45px; background: #333; border-radius: 50%; }
-.user-name { font-weight: bold; font-size: 15px; }
-.post-time { font-size: 12px; color: #b0b3b8; }
+/* Efeito de destaque ao tocar */
+.post-card:active {
+    transform: scale(0.97);
+    border-color: #1877f2; /* Brilho azul ao selecionar */
+}
 
-.content-text { font-size: 15px; line-height: 1.4; margin-bottom: 15px; }
+.user-name {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #fff;
+}
 
-/* Action Bar (Curtir, Comentar) */
+.content-text {
+    font-size: 16px;
+    color: #ccc;
+    line-height: 1.5;
+    margin-top: 10px;
+}
+
+/* Barra de Ações Invisível até o foco */
 .action-bar {
-    display: flex; justify-content: space-around;
-    border-top: 1px solid #222; padding-top: 10px;
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
 }
+
 .btn-action {
-    background: none; border: none; color: #b0b3b8;
-    font-size: 13px; font-weight: 600; cursor: pointer;
+    background: rgba(255,255,255,0.05);
+    border: none;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 50px; /* Botões pílula */
+    font-size: 12px;
+    font-weight: bold;
 }
