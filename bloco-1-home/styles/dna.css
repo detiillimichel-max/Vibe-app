@@ -1,0 +1,14 @@
+/* Tema global Dark Premium */
+body {
+    background: #000;
+    color: #e4e6eb;
+    font-family: Arial, sans-serif;
+}
+
+.post-card {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
